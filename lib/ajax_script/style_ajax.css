@@ -1,0 +1,103 @@
+.entry ul {
+	list-style:none;
+	margin:0px;
+	padding: 0 0 0 0;
+	display:block;
+	COLOR: #FFFFFF; 
+	font-family: Arial, sans-serif; 
+	background-color:#FFFFFF;
+	background:#FFFFFF;
+}
+.entry li {
+	display:block;
+	margin:0px;
+	padding: 0 0 0 0;
+	COLOR: #4b4b4d; 
+	font-family: Arial, sans-serif;	 
+	background-color:#FFFFFF;
+	background:#FFFFFF;	
+}
+.entry li a {
+	color:#00267F;text-decoration:none
+	outline: none;
+	background-color: #FFFFFF;
+	text-decoration:none;
+	display:block;
+	border-bottom:1px solid #B3C7DA;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	/*font-size: 0.7em;*/
+	font-size: 11px;
+	font-weight:normal;
+	COLOR: #4b4b4d; 
+	background:#FFFFFF;
+}
+.entry a:hover { color:#4b4b4d;background-color: #ffffff; 		background:#FFFFFF;}
+
+.texton    {	font-size: 1em;
+	font-weight: normal;  COLOR: #4b4b4d; font-family: Arial, sans-serif; background-color:#FFFFFF;	} 
+.texton  a:selected  {	font-size: 1em;
+	font-weight: normal; COLOR: #4b4b4d; font-family: Arial, sans-serif; background-color:#ffffff; 		background:#FFFFFF;} 
+.texton  a:link    {color:#4b4b4d;text-decoration:none;	background:#FFFFFF;}
+.texton  a:visited {color:#4b4b4d;text-decoration:none;		background:#FFFFFF;}
+.texton  a:active  {text-decoration:none;	background: none;}
+.texton  a:hover	{color:#4b4b4d;background-color: #ffffff;		background:#FFFFFF;}
+  
+  
+.entry li a:hover {
+	background-color: #2e8af0;
+	border-bottom:1px solid #ccc;
+	border-top:1px solid #ccc;
+	color:#ffffff;	
+}
+.entry li.selected a{
+	background-color: #2e8af0;
+	color:#ffffff;
+	border-bottom:1px solid #ccc;
+}
+.entry ul a em {
+	display:block;
+	color:#808080;
+	font-size: 1em;
+	font-weight: normal;
+
+	font-style:normal;
+
+}
+/* DIV DEL DESPLEGABLE AJAX */
+.entry a:hover span {
+	color:#800;
+	background: none;	
+}
+div#update {
+	border:1px solid #cdcec1;
+	margin-bottom:5px;
+}
+div.update {
+      position:absolute;
+      width:250px;
+      background-color:white;
+      border:1px solid #888;
+      margin:0px;
+      padding:0px;
+}
+div.update ul {
+      list-style-type:none;
+      margin:0px;
+      padding:0px;
+      background: none;
+}
+div.update ul li.selected { 
+	background-color: #940717;
+	color:#ffffff;
+	background: none;	
+}
+div.update ul li {
+      list-style-type:none;
+      display:block;
+      margin:0;
+      padding:2px;
+      height:32px;
+      cursor:hand;
+	background: none;	  
+	  
+}	  

@@ -1,0 +1,10 @@
+vendor
+examples
+testbench
+composer.json
+composer.lock
+example.php
+example-cli.php
+LICENSE
+README.md
+.idea

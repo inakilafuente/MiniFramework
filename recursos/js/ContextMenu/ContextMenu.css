@@ -1,0 +1,46 @@
+.ContextMenu{
+	text-align:left;
+	margin-left:5px;
+}
+a.ContextMenuTrigger{
+	background:url('./options.gif');
+	display: inline-block;
+	width:16px;
+	height:16px;
+	cursor:pointer;
+}
+
+div.ContextMenu ul{
+	padding: 0px;
+}
+
+div.ContextMenu ul li{
+	display:block;
+}
+
+div.ContextMenu div.ContextMenuElementWrapper{
+	position:absolute;
+	background:#FFF;
+	z-index:999;
+	border: 1px solid #BEBEBE;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+div.ContextMenu div.ContextMenuDiv{
+	display:block;
+	background: #FFF;
+	z-index:2;
+	position:relative;
+	padding: 0.5em 1em;
+}
+
+.IEShadow{
+	position: absolute;
+	z-index:1;
+	filter: progid:DXImageTransform.Microsoft.Blur(pixelradius=3); BACKGROUND-COLOR: #ccc;
+	display:block;
+	left:-4px;
+	top:-4px;
+	right:0px;
+	bottom:0px;
+}

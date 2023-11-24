@@ -1,0 +1,138 @@
+label
+{
+	font-size:11px;
+	font-family:Verdana,helvetica;
+	float:left;
+}
+
+.input {
+	border: 1px solid #99b3b4;
+	width: 400px;
+	background: #e4ebeb;
+	font: 11px verdana, helvetica;
+	color:#443;
+	padding:3px;
+	margin-bottom:4px;
+	outline:none;
+}
+.input:focus {
+	border:1px solid #567475;
+	background: #e4ebeb;
+}
+.submit-btn {
+	width: 54px;
+	height: 20px;
+	background: #743 url(http://www.roscripts.com/images/submit.gif) no-repeat;
+	outline: none;
+	float:right;
+}
+.submit-btn:hover {
+	background: #069 url(http://www.roscripts.com/images/submit.gif) no-repeat 0 -20px;
+}
+div#container {
+	border:1px solid #99b3b4;
+	padding:15px;
+	margin:200px auto;
+	width:400px;
+}
+.entry ul {
+	list-style:none;
+	margin:0px;
+	padding:0px;
+	display:block;
+	COLOR: #FFFFFF; 
+	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; 
+	background-color:#FFFFFF;
+}
+.entry li {
+	display:block;
+	margin:0px;
+	COLOR: #4b4b4d; 
+	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; 
+	background-color:#FFFFFF;
+
+}
+.entry li a {
+	color:#00267F;text-decoration:none;
+	outline: none;
+	background-color: #FFFFFF;
+	text-decoration:none;
+	display:block;
+	border-bottom:1px solid #f2f2f2;
+	FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; 
+	
+	FONT-SIZE: 14px;  
+	COLOR: #4b4b4d; 
+}
+
+.texton    {FONT-SIZE: 10px;  COLOR: #4b4b4d; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; background-color:#FFFFFF} 
+
+  a:link    {color:#4b4b4d;text-decoration:none}
+  a:visited {color:#4b4b4d;text-decoration:none}
+  a:active  {text-decoration:none}
+  a:hover	{color:#4b4b4d;}
+  
+.entry_old li a {
+	color:#00267F;text-decoration:none;
+	outline: none;
+	background-color: #fbfbf9;
+	text-decoration:none;
+	display:block;
+	padding:10px 0 10px 15px;
+	border-bottom:1px solid #f2f2f2;
+	font:bold 75% arial,helvetica,sans-serif;
+
+}
+.entry li a:hover {
+	background:url(../images/go_partner.gif) 645px 25px  #fff;
+	border-bottom:1px solid #ccc;
+	color:#F28E00;	
+		
+}
+.entry ul a em {
+	display:block;
+	color:#808080;
+	font-size:90%;
+	padding-right:30px;
+	font-style:normal;
+	font-weight:normal;
+}
+
+
+.entry span {
+	display:block;
+	color:#a8a8a8;
+	font-size:0.8em;
+	font-style:normal;
+	font-weight:normal;
+	padding-right:10px;
+}
+.entry a:hover span {
+	color:#800;
+}
+div#update {
+	border:1px solid #000000;
+	margin-bottom:5px;
+}
+div.autocomplete {
+      position:absolute;
+      width:250px;
+      background-color:white;
+      border:1px solid #888;
+      margin:0px;
+      padding:0px;
+}
+div.autocomplete ul {
+      list-style-type:none;
+      margin:0px;
+      padding:0px;
+}
+div.autocomplete ul li.selected { background-color: #ffb;}
+div.autocomplete ul li {
+      list-style-type:none;
+      display:block;
+      margin:0;
+      padding:2px;
+      height:32px;
+      cursor:pointer
+}	  
