@@ -14,7 +14,7 @@ define("ENTORNO_WEB", "DOCKER");
 define("MENU_REDUCIDO", "1");
 
 // BASE DE DATOS LOCAL
-$host     = "172.17.0.2";
+$host     = "172.17.0.1";
 $nombrebd = "VICARLI_ACCIONA_SGA_REAL";
 $usuario  = "root";
 $password = "Xacuzedu-77";
