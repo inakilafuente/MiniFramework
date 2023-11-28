@@ -54,16 +54,122 @@ if (trim( (string)$txMaterial) != ""):
     $textoLista = $textoLista . "&" . $auxiliar->traduce("ID Material", $administrador->ID_IDIOMA) . ": " . $txMaterial;
 endif;
 
-//INCIDENCIA_SISTEMA_TIPO_ENG
+//DESC MATERIAL ESP
+if($administrador->ID_IDIOMA=='ESP'):
+    if (trim( (string)$txDesc) != ""):
+    $camposBD   = array('MATERIALES.DESCRIPCION_ESP');
+    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txDesc, $camposBD));
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Desc. Mat", $administrador->ID_IDIOMA) . ": " . $txDesc;
+    endif;
+endif;
+//DESC MATERIAL ENG
+if($administrador->ID_IDIOMA=='ENG'):
+    if (trim( (string)$txDesc) != ""):
+    $camposBD   = array('MATERIALES.DESCRIPCION_ENG');
+    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txDesc, $camposBD));
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Desc. Mat.", $administrador->ID_IDIOMA) . ": " . $txDesc;
+    endif;
+endif;
+
+
+//FAMILIA REPRO
+if (trim( (string)$txFamiliaRepro) != ""):
+    $camposBD   = array('FAMILIA_REPRO');
+    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txFamiliaRepro, $camposBD));
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Familia Repro", $administrador->ID_IDIOMA) . ": " . $txFamiliaRepro;
+endif;
+//FAMILIA MATERIAL
+if (trim( (string)$txFamilaMaterial) != ""):
+    $camposBD   = array('FAMILIA_NOMBRE');
+    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txFamilaMaterial, $camposBD));
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) . ": " . $txFamilaMaterial;
+endif;
+//MARCA
+if (trim( (string)$txMarca) != ""):
+    $camposBD   = array('MARCA');
+    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txMarca, $camposBD));
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Marca", $administrador->ID_IDIOMA) . ": " . $txMarca;
+endif;
+//MODELO
+if (trim( (string)$txModelo) != ""):
+    $camposBD   = array('MODELO');
+    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txModelo, $camposBD));
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Modelo", $administrador->ID_IDIOMA) . ": " . $txModelo;
+endif;
+//TECNOLOGIA
+if (trim( (string)$txTecnologia) != ""):
+    $camposBD   = array('MATERIALES_ENG');
+    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txTecnologia, $camposBD));
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Tecnologia", $administrador->ID_IDIOMA) . ": " . $txTecnologia;
+endif;
+//OBSERVACIONES
+if (trim( (string)$txObservaciones) != ""):
+    $camposBD   = array('OBSERVACIONES');
+    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txObservaciones, $camposBD));
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Observaciones", $administrador->ID_IDIOMA) . ": " . $txObservaciones;
+endif;
+//UNIDAD BASE
+if (trim( (string)$txUnidadBase) != ""):
+    $camposBD   = array('FK_UNIDAD_MEDIDA');
+    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txUnidadBase, $camposBD));
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Incidencia Sistema Tipo Eng.", $administrador->ID_IDIOMA) . ": " . $txUnidadBase;
+endif;
+//UNIDAD COMPRA
+if (trim( (string)$txUnidadCompra) != ""):
+    $camposBD   = array('FK_UNIDAD_COMPRA');
+    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txUnidadCompra, $camposBD));
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Incidencia Sistema Tipo Eng.", $administrador->ID_IDIOMA) . ": " . $txUnidadCompra;
+endif;
+//TIPO EÓLICA
 if (trim( (string)$txIncidenciaSistemaTipoEng) != ""):
     $camposBD   = array('MATERIALES_ENG');
     $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txIncidenciaSistemaTipoEng, $camposBD));
     $textoLista = $textoLista . "&" . $auxiliar->traduce("Incidencia Sistema Tipo Eng.", $administrador->ID_IDIOMA) . ": " . $txIncidenciaSistemaTipoEng;
 endif;
 
+//ESTATUS MATERIAL
+if(!isset($selEstatus)):
+    $selEstatus = 'Todos';
+endif;
+if($selEstatus == '01-Bloqueo General'):
+    $sqlTipos .= " AND (MATERIALES.ESTATUS_MATERIAL='01-Bloqueo General')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("EM",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selEstatus,$administrador->ID_IDIOMA);
+elseif($selEstatus == '02-Obsoleto Fin Existencias (Error)'):
+    $sqlTipos .= " AND (MATERIALES.ESTATUS_MATERIAL='2-Obsoleto Fin Existencias (Error)')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("EM",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selEstatus,$administrador->ID_IDIOMA);
+elseif($selEstatus == '03-Código Duplicado'):
+    $sqlTipos .= " AND (MATERIALES.ESTATUS_MATERIAL='03-Código Duplicado')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("EM",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selEstatus,$administrador->ID_IDIOMA);
+elseif($selEstatus == '04-Código inutilizable'):
+    $sqlTipos .= " AND (MATERIALES.ESTATUS_MATERIAL='04-Código inutilizable')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("EM",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selEstatus,$administrador->ID_IDIOMA);
+elseif($selEstatus == '05-Obsoleto Fin Existencias (Aviso)'):
+    $sqlTipos .= " AND (MATERIALES.ESTATUS_MATERIAL='05-Obsoleto Fin Existencias (Aviso)')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("EM",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selEstatus,$administrador->ID_IDIOMA);
+elseif($selEstatus == '06-Código Solo Fines Logísticos'):
+    $sqlTipos .= " AND (MATERIALES.ESTATUS_MATERIAL='06-Código Solo Fines Logísticos')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("EM",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selEstatus,$administrador->ID_IDIOMA);
+elseif($selEstatus == 'No bloqueado'):
+    $sqlTipos .= " AND (MATERIALES.ESTATUS_MATERIAL='No bloqueado')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("EM",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selEstatus,$administrador->ID_IDIOMA);
+endif;
+
+//RA
+if(!isset($selRA)):
+    $selRA = 'Todos';
+endif;
+if($selRA == 'Si'):
+    $sqlTipos .= " AND (MATERIALES.REFERENCIA_AUTOMATICA='1')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("RA",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selRA,$administrador->ID_IDIOMA);
+elseif($selRA == 'No'):
+    $sqlTipos .= " AND (MATERIALES.REFERENCIA_AUTOMATICA='0')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("RA",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selRA,$administrador->ID_IDIOMA);
+endif;
+
+
 //BAJA
 if(!isset($selBaja)):
-    $selBaja = 'No';
+    $selBaja = 'Todos';
 endif;
 if($selBaja == 'Si'):
     $sqlTipos .= " AND (MATERIALES.BAJA='1')";
@@ -271,10 +377,12 @@ endif;
                                                                             $Elementos_estatus[6]['valor'] = '07-Solo para Refer.Prov';
                                                                             $Elementos_estatus[7]['text'] = $auxiliar->traduce("No bloqueado", $administrador->ID_IDIOMA);
                                                                             $Elementos_estatus[7]['valor'] = 'No bloqueado';
+                                                                            $Elementos_estatus[8]['text'] = $auxiliar->traduce("Todos", $administrador->ID_IDIOMA);
+                                                                            $Elementos_estatus[8]['valor'] = 'Todos';
                                                                             $Tamano = "205px";
                                                                             $Estilo = "copyright";
 
-                                                                            $html->SelectArr($NombreSelect, $Elementos_estatus, 'No bloqueado');
+                                                                            $html->SelectArr($NombreSelect, $Elementos_estatus, 'Todos');
                                                                             ?>
                                                                         </td>
                                                                         <td width="4%" align="center" valign="top">
@@ -294,10 +402,12 @@ endif;
                                                                             $Elementos_RA[0]['valor'] = 'Si';
                                                                             $Elementos_RA[1]['text'] = $auxiliar->traduce("No", $administrador->ID_IDIOMA);
                                                                             $Elementos_RA[1]['valor'] = 'No';
+                                                                            $Elementos_RA[1]['text'] = $auxiliar->traduce("Todos", $administrador->ID_IDIOMA);
+                                                                            $Elementos_RA[1]['valor'] = 'Todos';
                                                                             $Tamano = "205px";
                                                                             $Estilo = "copyright";
 
-                                                                            $html->SelectArr($NombreSelect, $Elementos_RA, 'Si');
+                                                                            $html->SelectArr($NombreSelect, $Elementos_RA, 'Todos');
                                                                             ?>
                                                                         </td>
                                                                         <td width="24%" height="20" align="left"
@@ -309,7 +419,7 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
-                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            $html->TextBox("txFamiliaMaterial", $txFamiliaMaterial);
                                                                             ?>
                                                                         </td>
                                                                     </tr>
@@ -323,7 +433,7 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
-                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            $html->TextBox("txDesc", $txDesc);
                                                                             ?>
                                                                         </td>
                                                                         <td width="24%" height="20" align="left"
@@ -335,7 +445,7 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
-                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            $html->TextBox("txFamiliaRepro", $txFamiliaRepro);
                                                                             ?>
                                                                         </td>
                                                                     </tr>
@@ -349,7 +459,7 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
-                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            $html->TextBox("txMarca", $txMarca);
                                                                             ?>
                                                                         </td>
                                                                         <td width="24%" height="20" align="left"
@@ -384,7 +494,7 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
-                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            $html->TextBox("txModelo", $txModelo);
                                                                             ?>
                                                                         </td>
                                                                         <td width="24%" height="20" align="left"
@@ -396,7 +506,7 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
-                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            $html->TextBox("txUnidadBase", $txUnidadBase);
                                                                             ?>
                                                                         </td>
                                                                     </tr>
@@ -443,7 +553,7 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
-                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            $html->TextBox("txUnidadCompra", $txUnidadCompra);
                                                                             ?>
                                                                         </td>
                                                                     </tr>
@@ -457,7 +567,7 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
-                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            $html->TextBox("txObservaciones", $txtxObservaciones);
                                                                             ?>
                                                                         </td>
                                                                         <td width="24%" height="20" align="left"
@@ -492,7 +602,7 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
-                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            $html->TextBox("txTecnologia", $txTecnologia);
                                                                             ?>
                                                                         </td>
                                                                         <td width="24%" height="20" align="left"
@@ -693,6 +803,8 @@ endif;
                                                                <td height="19" bgcolor="#2E8AF0"
                                                                     class="blanco"><? $navegar->GenerarColumna($auxiliar->traduce("Descripcion Material", $administrador->ID_IDIOMA), "enlaceCabecera", "incidencia_sistema_tipo_eng", $pathRaiz) ?></td>
                                                                 <td height="19" bgcolor="#2E8AF0"
+                                                                    class="blanco"><? $navegar->GenerarColumna($auxiliar->traduce("EM", $administrador->ID_IDIOMA), "enlaceCabecera", "incidencia_sistema_tipo_eng", $pathRaiz) ?></td>
+                                                                <td height="19" bgcolor="#2E8AF0"
                                                                     class="blanco"><? $navegar->GenerarColumna($auxiliar->traduce("Tipo Material", $administrador->ID_IDIOMA), "enlaceCabecera", "incidencia_sistema_tipo_eng", $pathRaiz) ?></td>
                                                                 <td height="19" bgcolor="#2E8AF0"
                                                                     class="blanco"><? $navegar->GenerarColumna($auxiliar->traduce("Familia material", $administrador->ID_IDIOMA), "enlaceCabecera", "incidencia_sistema_tipo_eng", $pathRaiz) ?></td>
@@ -731,7 +843,8 @@ endif;
                                                                                 href="ficha.php?idIncidenciaSistemaTipo=<?= $row->REFERENCIA_SCS; ?>"
                                                                                 class="enlaceceldasacceso"><? echo $row->REFERENCIA_SCS ?></a>&nbsp;
                                                                     </td>
-                                                                    <?php if(($administrador->ID_IDIOMA)=='ESP'){?>
+                                                                    <?php
+                                                                    if(($administrador->ID_IDIOMA)=='ESP'){?>
                                                                     <td height="18" align="left"
                                                                         bgcolor="<? echo $myColor ?>"
                                                                         class="enlaceceldas">&nbsp;<? echo $row->DESCRIPCION_ESP ?></a>&nbsp;
@@ -746,6 +859,11 @@ endif;
                                                                     <td height="18" align="left"
                                                                         bgcolor="<? echo $myColor ?>"
                                                                         class="enlaceceldas">
+                                                                        &nbsp;<? echo (!empty($row->ESTATUS_MATERIAL)) ? $row->ESTATUS_MATERIAL : '-' ?>
+                                                                    </td>
+                                                                    <td height="18" align="left"
+                                                                        bgcolor="<? echo $myColor ?>"
+                                                                        class="enlaceceldas">
                                                                         &nbsp;<? echo (!empty($row->TIPO_MATERIAL)) ? $row->TIPO_MATERIAL : '-' ?>
                                                                     </td>
                                                                     <td height="18" align="left"
@@ -756,7 +874,7 @@ endif;
                                                                     <td height="18" align="left"
                                                                         bgcolor="<? echo $myColor ?>"
                                                                         class="enlaceceldas">
-                                                                        &nbsp;<? echo (!empty($row->FK_FAMILIA_REPRO)) ? $row->FAMILIA_REPRO : '-' ?>
+                                                                        &nbsp;<? echo (!empty($row->FK_FAMILIA_REPRO)) ? $row->REFERENCIA . "- ".$row->FAMILIA_REPRO : '-' ?>
                                                                     </td>
                                                                     <td height="18" align="left"
                                                                         bgcolor="<? echo $myColor ?>"
@@ -771,22 +889,22 @@ endif;
                                                                     <td height="18" align="left"
                                                                         bgcolor="<? echo $myColor ?>"
                                                                         class="enlaceceldas">
-                                                                        &nbsp;<? echo (!empty($row->MODELO)) ? $row->UNIDAD . $row->DESCRIPCION : '-' ?>
+                                                                        &nbsp;<? echo (!empty($row->UNIDAD)) ? $row->UNIDAD ." ".$row->DESCRIPCION : '-' ?>
                                                                     </td>
                                                                     <td height="18" align="left"
                                                                         bgcolor="<? echo $myColor ?>"
                                                                         class="enlaceceldas">
-                                                                        &nbsp;<? echo (!empty($row->MODELO)) ? $row->DIVISIBILIDAD : '-' ?>
+                                                                        &nbsp;<? echo (!empty($row->DIVISIBILIDAD)) ? $row->DIVISIBILIDAD : '-' ?>
                                                                     </td>
                                                                     <td height="18" align="left"
                                                                         bgcolor="<? echo $myColor ?>"
                                                                         class="enlaceceldas">
-                                                                        &nbsp;<? echo (!empty($row->MODELO)) ? $row->REFERENCIA_AUTOMATICA : '-' ?>
+                                                                        &nbsp;<? echo (!empty($row->REFERENCIA_AUTOMATICA)) ? $row->REFERENCIA_AUTOMATICA : '-' ?>
                                                                     </td>
                                                                     <td height="18" align="left"
                                                                         bgcolor="<? echo $myColor ?>"
                                                                         class="enlaceceldas">
-                                                                        &nbsp;<? echo (!empty($row->MODELO)) ? $row->OBSERVACIONES : '-' ?>
+                                                                        &nbsp;<? echo (!empty($row->OBSERVACIONES)) ? $row->OBSERVACIONES : '-' ?>
                                                                     </td>
                                                                     <td height="18" align="center"
                                                                         bgcolor="<? echo $myColor ?>"
