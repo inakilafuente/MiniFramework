@@ -31,7 +31,7 @@ include $pathRaiz . "busqueda_recordar.php";
 
 // CONTROLO EL CAMBIO DEL LIMITE
 if (!Empty($CambiarLimite)):
-    $navegar->$maxfilasMaestroMaterial = $selLimite;
+    $navegar->maxfilasMaestroMaterial = $selLimite;
 endif;
 
 // ORDENACION DE COLUMNAS
@@ -47,11 +47,11 @@ $sentido_defecto = "0"; //ASCENDENTE
 //PARA ACOTAR LAS BUSQUEDAS (QUE NO ESTEN BORRADOS)
 $sqlTipos = "WHERE 1=1";
 
-//INCIDENCIA_SISTEMA_TIPO
-if (trim( (string)$txIncidenciaSistemaTipo) != ""):
-    $camposBD   = array('INCIDENCIA_SISTEMA_TIPO');
-    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txIncidenciaSistemaTipo, $camposBD));
-    $textoLista = $textoLista . "&" . $auxiliar->traduce("Incidencia Sistema Tipo", $administrador->ID_IDIOMA) . ": " . $txIncidenciaSistemaTipo;
+//Nº Material
+if (trim( (string)$txMaterial) != ""):
+    $camposBD   = array('REFERENCIA_SCS');
+    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txMaterial, $camposBD));
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("ID Material", $administrador->ID_IDIOMA) . ": " . $txMaterial;
 endif;
 
 //INCIDENCIA_SISTEMA_TIPO_ENG
@@ -66,10 +66,10 @@ if(!isset($selBaja)):
     $selBaja = 'No';
 endif;
 if($selBaja == 'Si'):
-    $sqlTipos .= " AND (BAJA='1')";
+    $sqlTipos .= " AND (MATERIALES.BAJA='1')";
     $textoLista = $textoLista."&".$auxiliar->traduce("Baja",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selBaja,$administrador->ID_IDIOMA);
 elseif($selBaja == 'No'):
-    $sqlTipos .= " AND (BAJA='0')";
+    $sqlTipos .= " AND (MATERIALES.BAJA='0')";
     $textoLista = $textoLista."&".$auxiliar->traduce("Baja",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selBaja,$administrador->ID_IDIOMA);
 endif;
 
@@ -87,7 +87,7 @@ if ($limite == ""):
     $mySql                          = "SELECT * FROM MATERIALES 
     JOIN FAMILIA_MATERIAL ON MATERIALES.FK_FAMILIA_MATERIAL=FAMILIA_MATERIAL.ID_FAMILIA_MATERIAL
     JOIN FAMILIA_REPRO ON MATERIALES.FK_FAMILIA_REPRO=FAMILIA_REPRO.ID_FAMILIA_REPRO
-    JOIN UNIDAD ON UNIDAD.ID_UNIDAD=MATERIALES.FK_UNIDAD_COMPRA"
+    JOIN UNIDAD ON UNIDAD.ID_UNIDAD=MATERIALES.FK_UNIDAD_COMPRA ".$sqlTipos
     ;
     $navegar->sqlAdminMaestroMaterial = $mySql;
 endif;
@@ -238,7 +238,71 @@ endif;
                                                                     <tr>
                                                                         <td width="24%" height="20" align="left"
                                                                             valign="middle"
-                                                                            class="textoazul"><?= $auxiliar->traduce("Incidencia Sistema Tipo", $administrador->ID_IDIOMA) . ":" ?>
+                                                                            class="textoazul"><?= $auxiliar->traduce("Material", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $TamanoText = "200px";
+                                                                            $ClassText  = "copyright";
+                                                                            $MaxLength  = "50";
+                                                                            $html->TextBox("txMaterial", $txMaterial);
+                                                                            ?>
+                                                                        </td>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Estatus Material", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $NombreSelect = 'selEstatus';
+                                                                            $Elementos_estatus[0]['text'] = $auxiliar->traduce("01-Bloqueo General", $administrador->ID_IDIOMA);
+                                                                            $Elementos_estatus[0]['valor'] = '01-Bloqueo General';
+                                                                            $Elementos_estatus[1]['text'] = $auxiliar->traduce("02-Obsoleto Fin Existencias (Error)", $administrador->ID_IDIOMA);
+                                                                            $Elementos_estatus[1]['valor'] = '02-Obsoleto Fin Existencias (Error)';
+                                                                            $Elementos_estatus[2]['text'] = $auxiliar->traduce("03-Código duplicado", $administrador->ID_IDIOMA);
+                                                                            $Elementos_estatus[2]['valor'] = '03-Código duplicado';
+                                                                            $Elementos_estatus[3]['text'] = $auxiliar->traduce("04-Código inutilizable", $administrador->ID_IDIOMA);
+                                                                            $Elementos_estatus[3]['valor'] = '04-Código inutilizable';
+                                                                            $Elementos_estatus[4]['text'] = $auxiliar->traduce("05-Obsoleto Fin Existencias (Aviso)", $administrador->ID_IDIOMA);
+                                                                            $Elementos_estatus[4]['valor'] = '05-Obsoleto Fin Existencias (Aviso)';
+                                                                            $Elementos_estatus[5]['text'] = $auxiliar->traduce("06-Código Solo Fines Logísticos", $administrador->ID_IDIOMA);
+                                                                            $Elementos_estatus[5]['valor'] = '06-Código Solo Fines Logístico';
+                                                                            $Elementos_estatus[6]['text'] = $auxiliar->traduce("07-Solo para Refer.Prov", $administrador->ID_IDIOMA);
+                                                                            $Elementos_estatus[6]['valor'] = '07-Solo para Refer.Prov';
+                                                                            $Elementos_estatus[7]['text'] = $auxiliar->traduce("No bloqueado", $administrador->ID_IDIOMA);
+                                                                            $Elementos_estatus[7]['valor'] = 'No bloqueado';
+                                                                            $Tamano = "205px";
+                                                                            $Estilo = "copyright";
+
+                                                                            $html->SelectArr($NombreSelect, $Elementos_estatus, 'No bloqueado');
+                                                                            ?>
+                                                                        </td>
+                                                                        <td width="4%" align="center" valign="top">
+                                                                            &nbsp;
+                                                                        </td>
+
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("RA", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $NombreSelect = 'selRA';
+                                                                            $Elementos_RA[0]['text'] = $auxiliar->traduce("Si", $administrador->ID_IDIOMA);
+                                                                            $Elementos_RA[0]['valor'] = 'Si';
+                                                                            $Elementos_RA[1]['text'] = $auxiliar->traduce("No", $administrador->ID_IDIOMA);
+                                                                            $Elementos_RA[1]['valor'] = 'No';
+                                                                            $Tamano = "205px";
+                                                                            $Estilo = "copyright";
+
+                                                                            $html->SelectArr($NombreSelect, $Elementos_RA, 'Si');
+                                                                            ?>
+                                                                        </td>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) . ":" ?>
                                                                         </td>
                                                                         <td width="24%" align="left" valign="middle">
                                                                             <?
@@ -248,27 +312,216 @@ endif;
                                                                             $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
                                                                             ?>
                                                                         </td>
-                                                                        <td width="4%" align="center" valign="top">
-                                                                            &nbsp;
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Desc. Material", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $TamanoText = "200px";
+                                                                            $ClassText  = "copyright";
+                                                                            $MaxLength  = "50";
+                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            ?>
                                                                         </td>
                                                                         <td width="24%" height="20" align="left"
                                                                             valign="middle"
-                                                                            class="textoazul"><?= $auxiliar->traduce("Incidencia Sistema Tipo Eng.", $administrador->ID_IDIOMA) . ":" ?>
+                                                                            class="textoazul"><?= $auxiliar->traduce("Familia Repro", $administrador->ID_IDIOMA) . ":" ?>
                                                                         </td>
-                                                                        <td width="24%" align="left" valign="middle"><?
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
-                                                                            $MaxLength  = "250";
-                                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
+                                                                            $MaxLength  = "50";
+                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
                                                                             ?>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td height="20" align="left" valign="middle"
-                                                                            class="textoazul">&nbsp;</td>
-                                                                        <td align="left" valign="middle"></td>
-                                                                        <td width="4%" align="center" valign="top">
-                                                                            &nbsp;</td>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Marca", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $TamanoText = "200px";
+                                                                            $ClassText  = "copyright";
+                                                                            $MaxLength  = "50";
+                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            ?>
+                                                                        </td>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Con unidad de manipulación", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $NombreSelect = 'selManipulacion';
+                                                                            $Elementos_manipulacion[0]['text'] = $auxiliar->traduce("Si", $administrador->ID_IDIOMA);
+                                                                            $Elementos_manipulacion[0]['valor'] = 'Si';
+                                                                            $Elementos_manipulacion[1]['text'] = $auxiliar->traduce("No", $administrador->ID_IDIOMA);
+                                                                            $Elementos_manipulacion[1]['valor'] = 'No';
+                                                                            $Elementos_manipulacion[2]['text'] = $auxiliar->traduce("Pendiente decisión", $administrador->ID_IDIOMA);
+                                                                            $Elementos_manipulacion[2]['valor'] = 'Pendiente decisión';
+                                                                            $Elementos_manipulacion[3]['text'] = $auxiliar->traduce("No Aplica", $administrador->ID_IDIOMA);
+                                                                            $Elementos_manipulacion[3]['valor'] = 'No Aplica';
+                                                                            $Tamano = "205px";
+                                                                            $Estilo = "copyright";
+
+                                                                            $html->SelectArr($NombreSelect, $Elementos_manipulacion, 'No Aplica');
+                                                                            ?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Modelo", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $TamanoText = "200px";
+                                                                            $ClassText  = "copyright";
+                                                                            $MaxLength  = "50";
+                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            ?>
+                                                                        </td>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Unidad Base", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $TamanoText = "200px";
+                                                                            $ClassText  = "copyright";
+                                                                            $MaxLength  = "50";
+                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            ?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Tipo Material", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $NombreSelect = 'selTipo';
+                                                                            $Elementos_tipo[0]['text'] = $auxiliar->traduce("Pequeño Repuesto", $administrador->ID_IDIOMA);
+                                                                            $Elementos_tipo[0]['valor'] = 'Pequeño Repuesto';
+                                                                            $Elementos_tipo[1]['text'] = $auxiliar->traduce("Gran Componente", $administrador->ID_IDIOMA);
+                                                                            $Elementos_tipo[1]['valor'] = 'Gran Componente';
+                                                                            $Elementos_tipo[2]['text'] = $auxiliar->traduce("Consumibles", $administrador->ID_IDIOMA);
+                                                                            $Elementos_tipo[2]['valor'] = 'Consumibles';
+                                                                            $Elementos_tipo[3]['text'] = $auxiliar->traduce("Heramienta", $administrador->ID_IDIOMA);
+                                                                            $Elementos_tipo[3]['valor'] = 'Heramienta';
+                                                                            $Elementos_tipo[4]['text'] = $auxiliar->traduce("Materias Primas", $administrador->ID_IDIOMA);
+                                                                            $Elementos_tipo[4]['valor'] = 'Materias Primas';
+                                                                            $Elementos_tipo[5]['text'] = $auxiliar->traduce("Material de Oficina", $administrador->ID_IDIOMA);
+                                                                            $Elementos_tipo[5]['valor'] = 'Material de Oficina';
+                                                                            $Elementos_tipo[6]['text'] = $auxiliar->traduce("Otros Materiales", $administrador->ID_IDIOMA);
+                                                                            $Elementos_tipo[6]['valor'] = 'Otros Materiales';
+                                                                            $Elementos_tipo[7]['text'] = $auxiliar->traduce("Servicios Acciona", $administrador->ID_IDIOMA);
+                                                                            $Elementos_tipo[7]['valor'] = 'Servicios Acciona';
+                                                                            $Elementos_tipo[8]['text'] = $auxiliar->traduce("Pruebas logísticas", $administrador->ID_IDIOMA);
+                                                                            $Elementos_tipo[8]['valor'] = 'Pruebas logísticas';
+                                                                            $Elementos_tipo[9]['text'] = $auxiliar->traduce("Código I&C", $administrador->ID_IDIOMA);
+                                                                            $Elementos_tipo[9]['valor'] = 'Código I&C';
+                                                                            $Tamano = "205px";
+                                                                            $Estilo = "copyright";
+
+                                                                            $html->SelectArr($NombreSelect, $Elementos_tipo, 'Pequeño Repuesto');
+                                                                            ?>
+                                                                        </td>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Unidad Compra", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $TamanoText = "200px";
+                                                                            $ClassText  = "copyright";
+                                                                            $MaxLength  = "50";
+                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            ?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Observaciones", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $TamanoText = "200px";
+                                                                            $ClassText  = "copyright";
+                                                                            $MaxLength  = "50";
+                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            ?>
+                                                                        </td>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Divisibilidad", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $NombreSelect = 'selDivisibilidad';
+                                                                            $Elementos_divisibilidad[0]['text'] = $auxiliar->traduce("Si", $administrador->ID_IDIOMA);
+                                                                            $Elementos_divisibilidad[0]['valor'] = 'Si';
+                                                                            $Elementos_divisibilidad[1]['text'] = $auxiliar->traduce("No", $administrador->ID_IDIOMA);
+                                                                            $Elementos_divisibilidad[1]['valor'] = 'No';
+                                                                            $Elementos_divisibilidad[2]['text'] = $auxiliar->traduce("Pendiente decisión", $administrador->ID_IDIOMA);
+                                                                            $Elementos_divisibilidad[2]['valor'] = 'Pendiente decisión';
+                                                                            $Elementos_divisibilidad[3]['text'] = $auxiliar->traduce("No Aplica", $administrador->ID_IDIOMA);
+                                                                            $Elementos_divisibilidad[3]['valor'] = 'No Aplica';
+                                                                            $Tamano = "205px";
+                                                                            $Estilo = "copyright";
+
+                                                                            $html->SelectArr($NombreSelect, $Elementos_divisibilidad, 'No Aplica');
+                                                                            ?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Tecnología", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $TamanoText = "200px";
+                                                                            $ClassText  = "copyright";
+                                                                            $MaxLength  = "50";
+                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            ?>
+                                                                        </td>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Tipo Eólica", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $TamanoText = "200px";
+                                                                            $ClassText  = "copyright";
+                                                                            $MaxLength  = "50";
+                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            ?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="24%" height="20" align="left"
+                                                                            valign="middle"
+                                                                            class="textoazul"><?= $auxiliar->traduce("Ver Observaciones", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td width="24%" align="left" valign="middle">
+                                                                            <?
+                                                                            $TamanoText = "200px";
+                                                                            $ClassText  = "copyright";
+                                                                            $MaxLength  = "50";
+
+                                                                            ?>
+                                                                            <input type="checkbox" id="cboxObservaciones" value="Ver_Observacioens" />
+                                                                        </td>
                                                                         <td width="24%" height="20" align="left"
                                                                             valign="middle"
                                                                             class="textoazul"><?= $auxiliar->traduce("Baja", $administrador->ID_IDIOMA) . ":" ?>
@@ -291,7 +544,16 @@ endif;
                                                                             endif;
                                                                             $html->SelectArr($NombreSelect, $Elementos_baja, $selBaja, $selBaja);
                                                                             ?>
+
                                                                         </td>
+                                                                        <td height="20" align="left" valign="middle"
+                                                                            class="textoazul">&nbsp;</td>
+                                                                        <td align="left" valign="middle"></td>
+                                                                        <td width="4%" align="center" valign="top">
+                                                                            &nbsp;</td>
+
+
+
                                                                     </tr>
                                                                 </table>
                                                             </td>
