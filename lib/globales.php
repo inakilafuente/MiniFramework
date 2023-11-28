@@ -44,7 +44,7 @@ $path_web_adm = '/var/www/html/' . $nombreCarpeta . '/administrador/';
 
 // MOSTRAR ERRORES
 error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 ini_set('display_startup_errors', 1);
 // FIN MOSTRAR ERRORES
 

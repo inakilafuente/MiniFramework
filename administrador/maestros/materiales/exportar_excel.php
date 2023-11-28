@@ -1,4 +1,4 @@
-<?
+<?php
 // PATHS DE LA WEB
 $pathRaiz   = "../../";
 $pathClases = "../../../";
@@ -6,11 +6,8 @@ $pathClases = "../../../";
 // INCLUDES DE LIBRERIAS PROPIAS
 require_once $pathClases . "lib/basedatos.php";
 require_once $pathClases . "lib/administrador.php";
-require_once $pathClases . "lib/material.php";
-require_once $pathClases . "lib/auxiliar.php";
 require_once $pathClases . "lib/html.php";
-require_once $pathClases . "lib/cliente.php";
-require_once $pathClases . "lib/pedido.php";
+require_once $pathClases . "lib/auxiliar.php";
 
 session_start();
 //include $pathRaiz . "seguridad_admin.php";
@@ -19,13 +16,16 @@ session_start();
 $html->PagErrorCondicionado($sql, "==", "", "ConsultaSQLNoEjecutadaExportarExcel");
 
 // LIBRERIAS RELATIVAS A LA EXPORTACION A EXCEL
-require_once($pathClases . "lib/PHPExcel/Classes/PHPExcel.php");
+require_once($pathClases . "lib/exportar_excel/OLEwriter.php");
+require_once($pathClases . "lib/exportar_excel/BIFFwriter.php");
+require_once($pathClases . "lib/exportar_excel/Worksheet.php");
+require_once($pathClases . "lib/exportar_excel/Workbook.php");
 
 //FUNCIONES
 function HeaderingExcel($filename)
 {
-    header("Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    header("Content-Disposition: attachment; filename=$filename.xlsx");
+    header("Content-type: application/vnd.ms-excel");
+    header("Content-Disposition: attachment; filename=$filename");
     header("Expires: 0");
     header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
     header("Pragma: public");
@@ -34,104 +34,130 @@ function HeaderingExcel($filename)
 //HTTP HEADERS
 HeaderingExcel($nombre_fichero);
 
-//CACHEADO DE CELDAS
-$cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_in_memory;
-PHPExcel_Settings::setCacheStorageMethod($cacheMethod);
-$cacheSettings = array('memoryCacheSize' => '8MB');
-ini_set('memory_limit', '2048M');
-set_time_limit(1200);
-
-
-//PARA LIMPIAR EL TEXTO
-function escribirTexto($string)
-{
-    global $auxiliar;
-    return $auxiliar->to_utf8($string);
-}
-
 //CREA LIBRO
-$objPHPExcel = new PHPExcel();
-$worksheet1 = $objPHPExcel->getActiveSheet();
-$worksheet1->setTitle($nombre_fichero);
+$workbook = new Workbook("-");
 
-/**
- * DEFINE ESTILOS PARA LAS DISTINTAS PARTES DEL EXCEL.
- */
-function defineStyles()
-{
-    // ESTILOS PARA LA CABECERA (PRIMERA FILA) DEL EXCEL
-    $cabecera = array(
-        'borders'   => array(
-            'allborders' => array(
-                'style' => PHPExcel_Style_Border::BORDER_THIN,
-            ),
-        ),
-        'fill'      => array(
-            'type'  => PHPExcel_Style_Fill::FILL_SOLID,
-            'color' => array('rgb' => 'ee5b4a')
-        ),
-        "font"      => array(
-            "bold"  => true,
-            'color' => array('rgb' => 'ffffff')
-        ),
-        'alignment' => array(
-            'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-        ),
-    );
+//CREA LA PAGINA
+$worksheet1 =& $workbook->add_worksheet($nombre_hoja);
 
-    return array(
-        'header' => $cabecera
-    );
-}
+$formatot =& $workbook->add_format();
+$formatot->set_size(9);
+$formatot->set_align('center');
+$formatot->set_color('black');
+$formatot->set_pattern();
+$formatot->set_fg_color('41');
+$formatot->set_bold();
+$formatot->set_border(1);
 
-//ESCRIBE TITULOS
-//LINEA - ROW
-$i = 1;
-//COLUMNA
-$col = 0;
+$formatot2 =& $workbook->add_format();
+$formatot2->set_size(9);
+$formatot2->set_align('center');
+$formatot2->set_color('black');
+$formatot2->set_pattern();
+$formatot2->set_fg_color('31');
+$formatot2->set_border(1);
 
-// DATOS CABECERA
-$worksheet1->setCellValueByColumnAndRow($col, $i, escribirTexto($auxiliar->traduce("ID INCIDENCIA SISTEMA TIPO", $administrador->ID_IDIOMA)));
-$col++;
-$worksheet1->setCellValueByColumnAndRow($col, $i, escribirTexto($auxiliar->traduce("INCIDENCIA SISTEMA TIPO", $administrador->ID_IDIOMA)));
-$col++;
-$worksheet1->setCellValueByColumnAndRow($col, $i, escribirTexto($auxiliar->traduce("INCIDENCIA SISTEMA TIPO ENG.", $administrador->ID_IDIOMA)));
-$col++;
-$worksheet1->setCellValueByColumnAndRow($col, $i, escribirTexto($auxiliar->traduce("BAJA", $administrador->ID_IDIOMA)));
-$col++;
+$formatot3 =& $workbook->add_format();
+$formatot3->set_size(9);
+$formatot3->set_align('center');
+$formatot3->set_color('black');
+$formatot3->set_pattern();
+$formatot3->set_bold();
+$formatot3->set_fg_color('51');
+$formatot3->set_border(1);
 
-$i++; // SIGUIENTE FILA
-
-$styles = defineStyles();
-
-// PRIMERA FILA / CABECERA
-$worksheet1->getStyle('A1:D1')->applyFromArray($styles['header']);
-
-$nCols = 4;
-foreach (range(0, $nCols) as $col) {
-    $objPHPExcel->getActiveSheet()->getColumnDimensionByColumn($col)->setAutoSize(true);
-}
+$formato_center =& $workbook->add_format();
+$formato_center->set_align('center');
 
 //CONSTRUYE SELECT
 $sqlFinal = stripslashes( (string)$sql);
 $result   = $bd->ExecSQL($sqlFinal);
 
-// DATOS CUERPO
+//ESCRIBE TITULOS
+$i = 0;
+$col = 0;
+
+$worksheet1->write_string($i, $col, $auxiliar->traduce("Nº material", $administrador->ID_IDIOMA), $formatot);
+$worksheet1->set_column(0, $col, 20);
+$col = $col + 1;
+$worksheet1->write_string($i, $col, $auxiliar->traduce("Descripcion Material", $administrador->ID_IDIOMA), $formatot);
+$worksheet1->set_column(0, $col, 20);
+$col = $col + 1;
+$worksheet1->write_string($i, $col, $auxiliar->traduce("Estatus Material", $administrador->ID_IDIOMA), $formatot);
+$worksheet1->set_column(0, $col, 30);
+$col = $col + 1;
+$worksheet1->write_string($i, $col, $auxiliar->traduce("Tipo Material", $administrador->ID_IDIOMA), $formatot);
+$worksheet1->set_column(0, $col, 20);
+$col = $col + 1;
+$worksheet1->write_string($i, $col, $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA), $formatot);
+$worksheet1->set_column(0, $col, 30);
+$col = $col + 1;
+$worksheet1->write_string($i, $col, $auxiliar->traduce(" Familia Repro", $administrador->ID_IDIOMA), $formatot);
+$worksheet1->set_column(0, $col, 20);
+$col = $col + 1;
+$worksheet1->write_string($i, $col, $auxiliar->traduce("Marca", $administrador->ID_IDIOMA), $formatot);
+$worksheet1->set_column(0, $col, 30);
+$col = $col + 1;
+$worksheet1->write_string($i, $col, $auxiliar->traduce("Modelo", $administrador->ID_IDIOMA), $formatot);
+$worksheet1->set_column(0, $col, 30);
+$col = $col + 1;
+$worksheet1->write_string($i, $col, $auxiliar->traduce("Unidad Manipulación", $administrador->ID_IDIOMA), $formatot);
+$worksheet1->set_column(0, $col, 30);
+$col = $col + 1;
+$worksheet1->write_string($i, $col, $auxiliar->traduce("Divisibilidad", $administrador->ID_IDIOMA), $formatot);
+$worksheet1->set_column(0, $col, 10);
+$col = $col + 1;
+$worksheet1->write_string($i, $col, $auxiliar->traduce("RA", $administrador->ID_IDIOMA), $formatot);
+$worksheet1->set_column(0, $col, 10);
+$col = $col + 1;
+$worksheet1->write_string($i, $col, $auxiliar->traduce("Observaciones", $administrador->ID_IDIOMA), $formatot);
+$worksheet1->set_column(0, $col, 15);
+$col = $col + 1;
+$worksheet1->write_string($i, $col, $auxiliar->traduce("Baja", $administrador->ID_IDIOMA), $formatot);
+$worksheet1->set_column(0, $col, 10);
+
+//ESCRIBE RESULTADOS
+$i = 1;
 while ($row = $bd->SigReg($result)):
     $col = 0;
-    $worksheet1->setCellValueByColumnAndRow($col, $i, escribirTexto($row->ID_INCIDENCIA_SISTEMA_TIPO));
+    $rowInicial = $bd->VerReg("MATERIALES", "ID_MATERIALES", $row->ID_MATERIALES);
+    $worksheet1->write_string($i, $col, $rowInicial->REFERENCIA_SCS);
     $col = $col + 1;
-    $worksheet1->setCellValueByColumnAndRow($col, $i, escribirTexto($row->INCIDENCIA_SISTEMA_TIPO));
+    $row_desc = $bd->VerReg("MATERIALES", "ID_MATERIALES", $row->ID_MATERIALES);
+    if(($administrador->ID_IDIOMA)=='ESP'):
+        $worksheet1->write_string($i, $col, $row_desc->DESCRIPCION_ESP);
+    elseif(($administrador->ID_IDIOMA)=='ENG'):
+        $worksheet1->write_string($i, $col, $row_desc->DESCRIPCION_ENG);
+    endif;
     $col = $col + 1;
-    $worksheet1->setCellValueByColumnAndRow($col, $i, escribirTexto($row->INCIDENCIA_SISTEMA_TIPO_ENG));
+    $worksheet1->write_string($i, $col, $rowInicial->ESTATUS_MATERIAL);
     $col = $col + 1;
-    if ($row->BAJA == 0) $worksheet1->setCellValueByColumnAndRow($col, $i, escribirTexto($auxiliar->traduce("No", $administrador->ID_IDIOMA)));
-    else $worksheet1->setCellValueByColumnAndRow($col, $i, escribirTexto($auxiliar->traduce("Si", $administrador->ID_IDIOMA)));
-
-    $i++;
+    $worksheet1->write_string($i, $col, $rowInicial->TIPO_MATERIAL);
+    $col = $col + 1;
+    $rowFinal = $bd->VerReg("FAMILIA_MATERIAL", "ID_FAMILIA_MATERIAL", $rowInicial->FK_FAMILIA_REPRO);
+    $worksheet1->write_string($i, $col, $rowFinal->NOMBRE_FAMILIA);
+    $col = $col + 1;
+    $rowFinal = $bd->VerReg("FAMILIA_REPRO", "ID_FAMILIA_REPRO", $rowInicial->FK_FAMILIA_REPRO);
+    $worksheet1->write_string($i, $col, $rowFinal->REFERENCIA . "- ".$rowFinal->FAMILIA_REPRO);
+    $col = $col + 1;
+    $worksheet1->write_string($i, $col, $rowInicial->MARCA);
+    $col = $col + 1;
+    $worksheet1->write_string($i, $col, $rowInicial->MODELO);
+    $col = $col + 1;
+    $rowFinal = $bd->VerReg("UNIDAD", "ID_UNIDAD", $rowInicial->FK_UNIDAD_COMPRA);
+    $worksheet1->write_string($i, $col, $rowFinal->UNIDAD ." ".$rowFinal->DESCRIPCION);
+    $col = $col + 1;
+    $worksheet1->write_string($i, $col, $rowInicial->DIVISIBILIDAD);
+    $col = $col + 1;
+    $worksheet1->write_string($i, $col, $rowInicial->REFERENCIA_AUTOMATICA);
+    $col = $col + 1;
+    $worksheet1->write_string($i, $col, $rowInicial->OBSERVACIONES);
+    $col = $col + 1;
+    $worksheet1->write_string($i, $col, $rowInicial->BAJA);
+    $col = $col + 1;
+$i++;
 endwhile;
 
-// CREO EL WRITER Y EXPORTO EL ARCHIVO CREADO
-$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-$objWriter->save('php://output');
+//CIERRA HOJA EXCEL Y FIN
+$workbook->close();
 ?>
