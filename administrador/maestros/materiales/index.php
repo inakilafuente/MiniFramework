@@ -271,7 +271,7 @@ if ($limite == ""):
     JOIN FAMILIA_REPRO ON MATERIALES.FK_FAMILIA_REPRO=FAMILIA_REPRO.ID_FAMILIA_REPRO
     JOIN UNIDAD ON UNIDAD.ID_UNIDAD=MATERIALES.FK_UNIDAD_COMPRA ".$sqlTipos
     ;
-var_dump($mySql);
+
     $navegar->sqlAdminMaestroMaterial = $mySql;
 endif;
 
@@ -1188,7 +1188,7 @@ endif;
                                                                         bgcolor="<? echo $myColor ?>"
                                                                         class="enlaceceldas">&nbsp;<a
                                                                             <?$row = $bd->VerReg("MATERIALES", "ID_MATERIALES", $row->ID_MATERIALES);?>
-                                                                                href="ficha.php?idIncidenciaSistemaTipo=<?= $row->REFERENCIA_SCS; ?>"
+                                                                                href="ficha.php?idMaterial=<?= $row->REFERENCIA_SCS; ?>"
                                                                                 class="enlaceceldasacceso"><? echo $row->REFERENCIA_SCS ?></a>&nbsp;
                                                                     </td>
                                                                     <?php
@@ -1258,14 +1258,24 @@ endif;
                                                                         class="enlaceceldas">
                                                                         &nbsp;<? echo (!empty($row->REFERENCIA_AUTOMATICA)) ? $row->REFERENCIA_AUTOMATICA : '-' ?>
                                                                     </td>
-                                                                    <?if (!$checkboxchecked){ ?>
+                                                                    <?if (!$checkboxchecked){?>
                                                                     <td height="18" align="left"
                                                                         bgcolor="<? echo $myColor ?>"
                                                                         class="enlaceceldas">
-                                                                        &nbsp;<? echo (!empty($row->OBSERVACIONES)) ? '-' : '-' ?>
+                                                                        &nbsp;<? if(!empty($row->OBSERVACIONES)){
+                                                                            ?>
+                                                                            <a href="ficha_observaciones.php"
+                                                                               class="fancyboxUnidad">
+                                                                                <img
+                                                                                        src="<?= $pathRaiz ?>imagenes/form.png"
+                                                                                        name="DeshacerAnulaciones"
+                                                                                        border="0"/>
+                                                                            </a>
+                                                                            <?}else{
+                                                                            echo('-');
+                                                                            }?>
                                                                     </td>
-                                                                    <?
-                                                                    }else{?>
+                                                                    <?}else{?>
                                                                     <td height="18" align="left"
                                                                         bgcolor="<? echo $myColor ?>"
                                                                         class="enlaceceldas">

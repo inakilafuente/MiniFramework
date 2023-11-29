@@ -1,7 +1,7 @@
 <? //print_r($_REQUEST); //die;
 // PATHS DE LA WEB
-$pathRaiz   = "./";
-$pathClases = "../";
+$pathRaiz   = "../.././";
+$pathClases = "../../../";
 
 // INCLUDES DE LIBRERIAS PROPIAS
 require_once $pathClases . "lib/basedatos.php";
@@ -20,14 +20,15 @@ require_once $pathClases . "lib/reserva.php";
 
 session_start();
 include $pathRaiz . "seguridad_admin.php";
-
 //CARGO LA FILA DE LAS OBSERVACIONES
 if ($verObservacionesOT == 1):
 
     //MUESTRO TODAS LAS OBSERVACIONES DE LA OT
-    $sqlObservacionesOT    = "SELECT ID_ADMINISTRADOR, FECHA, TEXTO_OBSERVACION
-                            FROM OBSERVACION_SISTEMA
-                            WHERE ID_OBJETO = $idObjeto AND TIPO_OBSERVACION = 'Cronograma' AND SUBTIPO_OBSERVACION = 'Actualizar fechas'";
+    $camposBD   = array('REFERENCIA_SCS');
+    $sqlTipos  = ($bd->busquedaTextoArray($txMaterial, $camposBD));
+    $sqlObservacionesOT    = "SELECT ID_MATERIAL
+                            FROM MATERIALES".$sqlTipos;
+    var_dump($sqlObservacionesOT);
     $resultObservacionesOT = $bd->ExecSQL($sqlObservacionesOT);
 
     $txObservaciones = "";
@@ -524,325 +525,23 @@ elseif (($enviarNotificacion == 1) && ($accion == 'GrabarObservaciones')):
     <body class="fancy" bgcolor="#FFFFFF" background="<? echo $pathRaiz ?>imagenes/fondo_pantalla.gif" leftmargin="0"
           topmargin="0" marginwidth="0" marginheight="0"
           onLoad="<? if ($editable == 1): ?>document.Form.txObservaciones.focus(); <? endif; ?>">
-    <form method="post" name="Form" action="ficha_observaciones.php">
-        <input type="hidden" name="accion" value="">
-        <input type="hidden" name="idRegistroTexto" value="<?= $row->ID_OBSERVACION_SISTEMA ?>">
-        <input type="hidden" name="tipoObjeto" value="<?= $tipoObjeto ?>">
-        <input type="hidden" name="subcategoria" value="<?= $subcategoria ?>">
-        <input type="hidden" name="idObjeto" value="<?= $idObjeto ?>">
-        <input type="hidden" name="verTipoObservaciones" value="<?= $verTipoObservaciones ?>">
-        <input type="hidden" name="verBotonGrabar" value="<?= $verBotonGrabar ?>">
-        <input type="hidden" name="verBotonBorrar" value="<?= $verBotonBorrar ?>">
-        <input type="hidden" name="editable" value="<?= $editable ?>">
-        <input type="hidden" name="ocultarCategoria" value="<?= $ocultarCategoria ?>">
-        <input type="hidden" name="nuevasObservaciones" value="<?= $nuevasObservaciones ?>">
-        <input type="hidden" name="enviarNotificacion" value="<?= $enviarNotificacion ?>">
 
-        <? $navegar->GenerarCamposOcultosForm(); ?>
-        <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" background="">
-            <tr>
-                <td align="center" valign="top">
-                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                        <tr>
-                            <td height="3" colspan="2" align="center" valign="top" bgcolor="#7A0A0A" class="linearriba">
-                                <img src="<? echo $pathRaiz ?>imagenes/transparente.gif" width="10" height="3"></td>
-                        </tr>
-                        <tr>
-                            <td align="left" valign="top" bgcolor="#FFFFFF"
-                                background="<? echo $pathRaiz ?>imagenes/fondo_pantalla.gif">
-                                <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                                    <tr>
-                                        <td height="23">
-                                            <table width="100%" height="23" border="0" cellpadding="0" cellspacing="0">
-                                                <tr>
-                                                    <td width="25" class="linearriba"><img
-                                                                src="<? echo $pathRaiz ?>imagenes/flechitas_01.gif"
-                                                                width="35" height="23"></td>
-                                                    <td width="469" align="left" valign="middle" bgcolor="#B3C7DA"
-                                                        class="linearriba">
-                                                        <table width="440" border="0" cellspacing="0" cellpadding="0">
-                                                            <tr>
-                                                                <td align="left"
-                                                                    class="alertas"><? echo $tituloPag ?></td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td width="25"><img src="<? echo $pathRaiz ?>imagenes/esquina.gif"
-                                                                        width="25" height="24"></td>
-                                                    <td bgcolor="#7A0A0A">
-                                                        <table width="235" height="23" border="0" cellpadding="0"
-                                                               cellspacing="0">
-                                                            <tr>
-                                                                <td width="20">&nbsp;</td>
-                                                                <td align="left" class="existalert">
-                                                                    <? include "$pathRaiz" . "control_alertas.php" ?>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td height="20" align="left" valign="top">
-                                            <table width="100%" height="20" border="0" cellpadding="0" cellspacing="0">
-                                                <tr>
-                                                    <td width="440" bgcolor="#D9E3EC">
-                                                        <table width="440" border="0" cellspacing="0" cellpadding="0">
-                                                            <tr>
-                                                                <td width="35" bgcolor="#982a29"
-                                                                    class="lineabajoarriba">&nbsp;
-                                                                </td>
-                                                                <td width="224" bgcolor="#982a29"
-                                                                    class="lineabajoarriba" colspan="2">
-                                                                    <font class="tituloNav"><? echo $tituloNav ?>
-                                                                    </font></td>
-                                                                <td valign=top width="20" bgcolor="#B3C7DA"
-                                                                    class="lineabajoarriba"><img
-                                                                            src="<? echo $pathRaiz ?>imagenes/esquina_02.gif"
-                                                                            width="20" height="20"></td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                    <td bgcolor="#B3C7DA" class="lineabajoarriba">&nbsp;</td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr bgcolor="#D9E3EC">
-                                        <td height="13" align="center" valign="top" bgcolor="#AACFF9" class="lineabajo">
-                                            <table width="100%" height="13" border="0" align="center" cellpadding="0"
-                                                   cellspacing="0">
-                                                <tr>
-                                                    <td width="20" align="center" valign="bottom" class="lineaderecha">
-                                                        &nbsp;
-                                                    </td>
-                                                    <td align="center" valign="middle">
-                                                        <table width="97%" height="11" border="0" align="center"
-                                                               cellpadding="0" cellspacing="0" style="margin-top:5px;">
-                                                            <tr>
-                                                                <td height="1" colspan="3" bgcolor="#D9E3EC"
-                                                                    class="linearribadereizq"><img
-                                                                            src="<? echo $pathRaiz ?>imagenes/transparente.gif"
-                                                                            width="10" height="5"></td>
-                                                            </tr>
-                                                            <tr bgcolor="#D9E3EC">
-                                                                <td width="10" bgcolor="#D9E3EC" class="lineaizquierda">
-                                                                    &nbsp;
-                                                                </td>
-                                                                <td width="100%" align="left" bgcolor="#D9E3EC">
-                                                                    <table width="97%" border="0" cellpadding="0"
-                                                                           cellspacing="0">
 
-                                                                        <? if ($verTipoObservaciones == 1): ?>
 
-                                                                            <?
-                                                                            $NombreSelect                    = 'selTipoObservaciones';
-                                                                            $i                               = 0;
-                                                                            $arrTipoObservacion[$i]["text"]  = $auxiliar->traduce("Seleccione Categoria Observacion", $administrador->ID_IDIOMA);
-                                                                            $arrTipoObservacion[$i]["valor"] = "";
-                                                                            $i++;
+                                                                                    <?echo("----------");?>
 
-                                                                            if ($tipoObjeto == 'INCIDENCIA_CALIDAD_CONSTRUCCION' || $tipoObjeto == 'PARAMETROS_MONTAJE_ACCION'):
-                                                                                $arrTipoObservacion[$i]["text"]  = $auxiliar->traduce("Contrata", $administrador->ID_IDIOMA);
-                                                                                $arrTipoObservacion[$i]["valor"] = 'Contrata';
-                                                                                $i++;
-                                                                                $arrTipoObservacion[$i]["text"]  = $auxiliar->traduce("Supervisor", $administrador->ID_IDIOMA);
-                                                                                $arrTipoObservacion[$i]["valor"] = 'Supervisor';
-                                                                                $i++;
-                                                                                $arrTipoObservacion[$i]["text"]  = $auxiliar->traduce("Calidad", $administrador->ID_IDIOMA);
-                                                                                $arrTipoObservacion[$i]["valor"] = 'Calidad';
-                                                                                $i++;
-                                                                            else:
-                                                                                $arrTipoObservacion[$i]["text"]  = $auxiliar->traduce("Comprador", $administrador->ID_IDIOMA);
-                                                                                $arrTipoObservacion[$i]["valor"] = 'Comprador';
-                                                                                $i++;
-                                                                                $arrTipoObservacion[$i]["text"]  = $auxiliar->traduce("Técnico", $administrador->ID_IDIOMA);
-                                                                                $arrTipoObservacion[$i]["valor"] = 'Tecnico';
-                                                                                $i++;
-                                                                                $arrTipoObservacion[$i]["text"]  = $auxiliar->traduce("Logístico", $administrador->ID_IDIOMA);
-                                                                                $arrTipoObservacion[$i]["valor"] = 'Logistico';
-                                                                            endif;
+    <textarea rows="14" class="copyright"
+              style="width: 420px; resize: none;"
+              name="txObservaciones" <? echo($editable == 1 ? '' : "disabled='disabled'"); ?>
+              id="txObservaciones"><?
+        if ($verObservacionesOT == 1):
+            echo $txObservaciones;
+        else:
+            echo($nuevasObservaciones == 1 ? '' : $observaciones_sistema->Leer($tipoObjeto, $idObjeto, $selTipoObservacion, ($editable == 1 ? false : true), ($editable == 1 ? false : true), ($ocultarCategoria == 1 ? false : true)));
+        endif;
+        ?></textarea>
+                                                                                    <?echo("----------");?>
 
-                                                                            $Estilo = "copyright";
-                                                                            $Tamano = "426px";
-
-                                                                            //DETERMINO SI EL CAMPO ESTA HABILITADO PARA EDICION O NO, O PARA BUSQUEDA
-                                                                            if ($editable == 1):
-
-                                                                                if ($tipoObjeto == 'MOVIMIENTO_RECEPCION'):
-                                                                                    $selTipoObservacion = 'IncidenciasProceso';
-                                                                                elseif ($tipoObjeto == 'DEMANDA'):
-                                                                                    $selTipoObservacion = 'Demanda';
-                                                                                elseif ($tipoObjeto == 'ORDEN_CONTRATACION' || $tipoObjeto == 'ORDEN_CONTRATACION_INCIDENCIA'):
-                                                                                    //SI VIENE QUE ES TIPO CHAT LO DEJAMOS,SI NO LE ASIGNAMOS EL TIPO
-                                                                                    if ($selTipoObservacion != "Chat"):
-                                                                                        $selTipoObservacion = 'Contratacion';
-                                                                                    endif;
-                                                                                elseif ($tipoObjeto == 'SOLICITUD_TRANSPORTE'):
-                                                                                    //SI VIENE QUE ES TIPO GESTOR LO DEJAMOS,SI NO LE ASIGNAMOS EL TIPO
-                                                                                    if ($selTipoObservacion != "Gestor"):
-                                                                                        $selTipoObservacion = 'Solicitud Transporte';
-                                                                                    endif;
-                                                                                elseif ($tipoObjeto != 'INCIDENCIA_CALIDAD_CONSTRUCCION' && $tipoObjeto != 'PARAMETROS_MONTAJE_ACCION')://EN LAS DE INCIDENCIA CALIDAD YA NOS VIENE EL TIPO OBSERVACION
-
-                                                                                    if ($administrador->esComprador()):
-                                                                                        $selTipoObservacion = 'Comprador';
-                                                                                    elseif ($administrador->esLogistico()):
-                                                                                        $selTipoObservacion = 'Logistico';
-                                                                                    elseif ($administrador->esTecnico()):
-                                                                                        $selTipoObservacion = 'Tecnico';
-                                                                                    endif;
-                                                                                endif;
-
-                                                                                $disabled = 'disabled';
-                                                                                //$html->SelectArr($NombreSelect,$arrTipoObservacion,$selTipoObservacion,$selTipoObservacion);
-                                                                                ?>
-                                                                                <input type="hidden"
-                                                                                       id="selTipoObservacion"
-                                                                                       name="selTipoObservacion"
-                                                                                       value="<?= $selTipoObservacion ?>">
-                                                                            <?
-                                                                            else:
-                                                                                ?>
-                                                                                <tr>
-                                                                                    <td width="24%" height="20"
-                                                                                        align="left" valign="middle"
-                                                                                        class="textoazul"><?= $auxiliar->traduce("Categoria", $administrador->ID_IDIOMA) ?>
-                                                                                        :
-                                                                                    </td>
-                                                                                    <td width="24%" align="left"
-                                                                                        valign="middle">
-
-                                                                                        <?
-                                                                                        $arrTipoObservacion[0]["text"] = $auxiliar->traduce("Todos", $administrador->ID_IDIOMA);
-
-                                                                                        $jscript = " onchange='BuscarObservaciones(this);' ";
-                                                                                        $html->SelectArr($NombreSelect, $arrTipoObservacion, $selTipoObservacion, $selTipoObservacion);
-                                                                                        ?>
-                                                                                    </td>
-                                                                                </tr>
-                                                                            <?endif;
-
-                                                                            unset($disabled);
-                                                                            unset($jscript);
-                                                                            ?>
-
-                                                                            <input type="hidden"
-                                                                                   id="selTipoObservacion"
-                                                                                   name="selTipoObservacion"
-                                                                                   value="<?= $selTipoObservacion ?>">
-                                                                        <? endif; ?>
-
-                                                                        <tr>
-                                                                            <td width="16%" height="20" align="left"
-                                                                                valign="middle"
-                                                                                class="textoazul">
-                                                                                <? if ($subcategoria == "Reclamacion"):
-                                                                                    echo $auxiliar->traduce("Por favor, Indique el texto de la Reclamacion", $administrador->ID_IDIOMA) . ":";
-                                                                                else:
-                                                                                    echo $auxiliar->traduce("Observaciones", $administrador->ID_IDIOMA) . ":";
-                                                                                endif ?>
-                                                                            </td>
-                                                                            <? if (($tipoObjeto == 'INCIDENCIA_FICHA_SEGURIDAD_MATERIAL')): ?>
-                                                                                <td width="34%" align="left"
-                                                                                    valign="middle">
-                                                                                    <textarea rows="14"
-                                                                                              class="copyright"
-                                                                                              style="width: 650px; resize: none;"
-                                                                                              name="txObservaciones" <? echo($editable == 1 ? '' : "disabled='disabled'"); ?>
-                                                                                              id="txObservaciones"><? echo($nuevasObservaciones == 1 ? '' : $observaciones_sistema->Leer($tipoObjeto, $idObjeto, $selTipoObservacion, ($editable == 1 ? false : true), ($editable == 1 ? false : true), ($editable == 1 ? false : true))); ?></textarea>
-                                                                                </td>
-                                                                            <?
-                                                                            else: ?>
-                                                                                <td width="24%" align="left"
-                                                                                    valign="middle">
-                                                                                    //Importante
-                                                <textarea rows="14" class="copyright"
-                                                          style="width: 420px; resize: none;"
-                                                          name="txObservaciones" <? echo($editable == 1 ? '' : "disabled='disabled'"); ?>
-                                                          id="txObservaciones"><?
-                                                    if ($verObservacionesOT == 1):
-                                                        echo $txObservaciones;
-                                                    else:
-                                                        echo($nuevasObservaciones == 1 ? '' : $observaciones_sistema->Leer($tipoObjeto, $idObjeto, $selTipoObservacion, ($editable == 1 ? false : true), ($editable == 1 ? false : true), ($ocultarCategoria == 1 ? false : true)));
-                                                    endif;
-                                                    ?></textarea>
-                                                                                    //Importante
-                                                                                </td>
-                                                                            <? endif; ?>
-                                                                        </tr>
-
-                                                                    </table>
-                                                                </td>
-                                                                <td width="4" bgcolor="#D9E3EC" class="lineaderecha">
-                                                                    &nbsp;
-                                                                </td>
-                                                            </tr>
-
-                                                            <tr bgcolor="#D9E3EC">
-                                                                <td height="5" colspan="3" bgcolor="#D9E3EC"
-                                                                    class="lineabajodereizq"><img
-                                                                            src="<? echo $pathRaiz ?>imagenes/transparente.gif"
-                                                                            width="10" height="5"></td>
-                                                            </tr>
-                                                        </table>
-                                                        <img src="<? echo $pathRaiz ?>imagenes/transparente.gif"
-                                                             width="10" height="5"></td>
-                                                    <td width="20" align="center" valign="bottom"
-                                                        class="lineaizquierda">&nbsp;
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td align="left" valign="top" bgcolor="#B3C7DA">
-                                            <table width="100%" border="0" cellpadding="0" cellspacing="0"
-                                                   class="lineabajo">
-                                                <tr>
-                                                    <td valign="middle" height="25" align="left" colspan="2"
-                                                        class="textoazul">
-                                                        <span class="textoazul">
-                                                            &nbsp;&nbsp;<a class="senaladoazul"
-                                                                           onclick="return CerrarFancy();" href="#">
-                                                                &nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Cerrar", $administrador->ID_IDIOMA) ?>
-                                                                &nbsp;&nbsp;&nbsp;&nbsp;</a>
-                                                        </span>
-                                                    </td>
-                                                    <td valign="middle" height="25" align="right" colspan="2">
-                                                        <span class="textoazul">
-                                                            <? if ($verBotonBorrar == 1): ?>
-                                                                <a class="senaladorojo"
-                                                                   onclick="return BorrarObservaciones();" href="#">
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Borrar", $administrador->ID_IDIOMA) ?>
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;</a>
-                                                            <? endif; ?>
-                                                            <? if ($verBotonGrabar == 1): ?>
-                                                                <a class="senaladoverde"
-                                                                   onclick="return GrabarObservaciones();" href="#">
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Grabar", $administrador->ID_IDIOMA) ?>
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;</a>&nbsp;&nbsp;
-                                                            <? endif; ?>
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <? include $pathRaiz . "copyright.php"; ?>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-        <input type="submit" style="position:absolute; top:-999999px"/>
-    </FORM>
     </body>
     </html>
 
