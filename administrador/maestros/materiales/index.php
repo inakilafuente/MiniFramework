@@ -11,6 +11,9 @@ require_once $pathClases . "lib/navegar.php";
 require_once $pathClases . "lib/comprobar.php";
 require_once $pathClases . "lib/auxiliar.php";
 
+
+//icono listado observaciones form.png
+
 session_start();
 include $pathRaiz . "seguridad_admin.php";
 if(isset($_POST['cboxObservaciones'])){
@@ -160,7 +163,6 @@ if (trim( (string)$txUnidadBase) != ""):
 endif;
 */
 
-var_dump($_POST);
 if ($idUnidadBase != "" || trim( (string)$txUnidadBase) != ""):
     if ($idUnidadBase != ""):
         $sqlTipos = $sqlTipos . ($bd->busquedaNumero($idUnidadBase, 'ID_UNIDAD'));
@@ -694,7 +696,7 @@ endif;
                                                                                    name="idUnidadBase"
                                                                                    id="idUnidadBase"
                                                                                    value="<?= $idUnidadBase ?>"/>
-                                                                            <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_unidad.php?AlmacenarId=0"
+                                                                            <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_unidad.php?AlmacenarId=0&NombreCampo=UnidadBase"
                                                                                class="fancyboxUnidad"
                                                                                id="categoriasUbicacion"> <img
                                                                                         src="<?= $pathRaiz ?>imagenes/botones/listado.png"
@@ -715,7 +717,7 @@ endif;
                                                                                  id="actualizador_unidad_base"></div>
                                                                             <script type="text/javascript"
                                                                                     language="JavaScript">
-                                                                                new Ajax.Autocompleter('txUnidadBase', 'actualizador_unidad_base', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_unidad.php?AlmacenarId=0',
+                                                                                new Ajax.Autocompleter('txUnidadBase', 'actualizador_unidad_base', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_unidad.php?AlmacenarId=0&NombreCampo=UnidadBase',
                                                                                     {
                                                                                         method: 'post',
                                                                                         indicator: 'desplegable_unidad_base',
@@ -775,13 +777,17 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
+                                                                            $jscript    = "onchange=\"document.FormSelect.idUnidadCompra.value=''\"";
+                                                                            $idTextBox  = 'txUnidadCompra';
                                                                             $html->TextBox("txUnidadCompra", $txUnidadCompra);
+                                                                            unset($jscript);
+                                                                            unset($idTextBox);
                                                                             ?>
                                                                             <input type="hidden"
                                                                                    name="idUnidadCompra"
                                                                                    id="idUnidadCompra"
                                                                                    value="<?= $idUnidadCompra ?>"/>
-                                                                            <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_unidad.php?AlmacenarId=0"
+                                                                            <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_unidad.php?AlmacenarId=0&NombreCampo=UnidadCompra"
                                                                                class="fancyboxUnidad"
                                                                                id="categoriasUbicacion"> <img
                                                                                         src="<?= $pathRaiz ?>imagenes/botones/listado.png"
@@ -789,7 +795,7 @@ endif;
                                                                                         name="Listado"
                                                                                         border="0" align="absbottom"
                                                                                         id="Listado"/> </a>
-                                                                            <span id="desplegable_categorias_ubicacion"
+                                                                            <span id="desplegable_unidad_compra"
                                                                                   style="display: none;">
                                                                                 <img
                                                                                         src="<?= $pathClases; ?>lib/ajax_script/img/esperando.gif"
@@ -799,13 +805,13 @@ endif;
                                                                             </span>
 
                                                                             <div class="entry" align="left"
-                                                                                 id="actualizador_categorias_ubicacion"></div>
+                                                                                 id="actualizador_unidad_compra"></div>
                                                                             <script type="text/javascript"
                                                                                     language="JavaScript">
-                                                                                new Ajax.Autocompleter('txUnidadCompra', 'actualizador_categorias_ubicacion', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_unidad.php?AlmacenarId=0',
+                                                                                new Ajax.Autocompleter('txUnidadCompra', 'actualizador_unidad_compra', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_unidad.php?AlmacenarId=0&NombreCampo=UnidadCompra',
                                                                                     {
                                                                                         method: 'post',
-                                                                                        indicator: 'desplegable_categorias_ubicacion',
+                                                                                        indicator: 'desplegable_unidad_compra',
                                                                                         minChars: '1',
                                                                                         afterUpdateElement: function (textbox, valor) {
                                                                                             siguiente_control(jQuery('#' + this.paramName));
@@ -1279,8 +1285,8 @@ endif;
                                                             if ($checkboxchecked): ?>
                                                             <tr>
                                                                 <td height="18" align="left"
-                                                                    bgcolor="#dc143c"
-                                                                    class="enlaceceldas">
+                                                                    bgcolor="red"
+                                                                    class="copyright">
                                                                     &nbsp;<? echo (!empty($row->OBSERVACIONES)) ? $row->OBSERVACIONES : '-' ?>
                                                                 </td>
                                                             </tr>
