@@ -13,7 +13,11 @@ require_once $pathClases . "lib/auxiliar.php";
 
 session_start();
 include $pathRaiz . "seguridad_admin.php";
-
+if(isset($_POST['cboxObservaciones'])){
+    $checkboxchecked=true;
+}else{
+    $checkboxchecked=false;
+}
 $tituloPag         = $auxiliar->traduce("Tipos de Incidencias", $administrador->ID_IDIOMA);
 $tituloNav         = $auxiliar->traduce("Maestros", $administrador->ID_IDIOMA) . " >> " . $auxiliar->traduce("Tipos de Incidencias", $administrador->ID_IDIOMA);
 $ZonaTablaPadre    = "Maestros";
@@ -73,17 +77,56 @@ endif;
 
 
 //FAMILIA REPRO
+/*
 if (trim( (string)$txFamiliaRepro) != ""):
     $camposBD   = array('FAMILIA_REPRO');
     $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txFamiliaRepro, $camposBD));
     $textoLista = $textoLista . "&" . $auxiliar->traduce("Familia Repro", $administrador->ID_IDIOMA) . ": " . $txFamiliaRepro;
 endif;
-//FAMILIA MATERIAL
-if (trim( (string)$txFamilaMaterial) != ""):
-    $camposBD   = array('FAMILIA_NOMBRE');
-    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txFamilaMaterial, $camposBD));
-    $textoLista = $textoLista . "&" . $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) . ": " . $txFamilaMaterial;
+*/
+
+
+
+
+if ($idFamiliaRepro != "" || trim( (string)$txFamiliaRepro) != ""):
+    if ($idFamiliaRepro != ""):
+        $sqlTipos = $sqlTipos . ($bd->busquedaNumero($idFamiliaRepro, 'FAMILIA_REPRO.ID_FAMILIA_REPRO'));
+    else:
+        $camposBD     = array('FAMILIA_REPRO.FAMILIA_REPRO');
+        $sqlTipos = $sqlTipos . ($bd->busquedaTextoArray($txFamiliaRepro, $camposBD));
+    endif;
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Familia Repro", $administrador->ID_IDIOMA) . ": " . $txFamiliaRepro;
 endif;
+
+
+
+
+
+//FAMILIA MATERIAL
+/*
+if (trim( (string)$txFamiliaMaterial) != ""):
+    $camposBD   = array('NOMBRE_FAMILIA');
+    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txFamiliaMaterial, $camposBD));
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) . ": " . $txFamiliaMaterial;
+endif
+*/
+
+
+if ($idFamiliaMaterial != "" || trim( (string)$txFamiliaMaterial) != ""):
+    if ($idFamiliaMaterial != ""):
+        $sqlTipos = $sqlTipos . ($bd->busquedaNumero($idFamiliaMaterial, 'ID_FAMILIA_MATERIAL'));
+    else:
+        $camposBD     = array('NOMBRE_FAMILIA');
+        $sqlTipos = $sqlTipos . ($bd->busquedaTextoArray($txFamiliaMaterial, $camposBD));
+    endif;
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) . ": " . $txFamiliaMaterial;
+endif;
+
+
+
+
+
+
 //MARCA
 if (trim( (string)$txMarca) != ""):
     $camposBD   = array('MARCA');
@@ -109,17 +152,48 @@ if (trim( (string)$txObservaciones) != ""):
     $textoLista = $textoLista . "&" . $auxiliar->traduce("Observaciones", $administrador->ID_IDIOMA) . ": " . $txObservaciones;
 endif;
 //UNIDAD BASE
+/*
 if (trim( (string)$txUnidadBase) != ""):
-    $camposBD   = array('FK_UNIDAD_MEDIDA');
+    $camposBD   = array('UNIDAD');
     $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txUnidadBase, $camposBD));
-    $textoLista = $textoLista . "&" . $auxiliar->traduce("Incidencia Sistema Tipo Eng.", $administrador->ID_IDIOMA) . ": " . $txUnidadBase;
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) . ": " . $txUnidadBase;
 endif;
+*/
+
+var_dump($_POST);
+if ($idUnidadBase != "" || trim( (string)$txUnidadBase) != ""):
+    if ($idUnidadBase != ""):
+        $sqlTipos = $sqlTipos . ($bd->busquedaNumero($idUnidadBase, 'ID_UNIDAD'));
+    else:
+        $camposBD     = array('UNIDAD');
+        $sqlTipos = $sqlTipos . ($bd->busquedaTextoArray($txUnidadBase, $camposBD));
+    endif;
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Unidad Base", $administrador->ID_IDIOMA) . ": " . $txUnidadBase;
+endif;
+
+
+
 //UNIDAD COMPRA
+/*
 if (trim( (string)$txUnidadCompra) != ""):
-    $camposBD   = array('FK_UNIDAD_COMPRA');
+    $camposBD   = array('UNIDAD');
     $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txUnidadCompra, $camposBD));
-    $textoLista = $textoLista . "&" . $auxiliar->traduce("Incidencia Sistema Tipo Eng.", $administrador->ID_IDIOMA) . ": " . $txUnidadCompra;
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) . ": " . $txUnidadCompra;
+*/
+
+
+
+
+if ($idUnidadCompra != "" || trim( (string)$txUnidadCompra) != ""):
+    if ($idUnidadCompra != ""):
+        $sqlTipos = $sqlTipos . ($bd->busquedaNumero($idUnidadCompra, 'ID_UNIDAD'));
+    else:
+        $camposBD     = array('UNIDAD');
+        $sqlTipos = $sqlTipos . ($bd->busquedaTextoArray($txUnidadCompra, $camposBD));
+    endif;
+    $textoLista = $textoLista . "&" . $auxiliar->traduce("Unidad Compra", $administrador->ID_IDIOMA) . ": " . $txUnidadCompra;
 endif;
+
 //TIPO EÓLICA
 if (trim( (string)$txIncidenciaSistemaTipoEng) != ""):
     $camposBD   = array('MATERIALES_ENG');
@@ -195,6 +269,7 @@ if ($limite == ""):
     JOIN FAMILIA_REPRO ON MATERIALES.FK_FAMILIA_REPRO=FAMILIA_REPRO.ID_FAMILIA_REPRO
     JOIN UNIDAD ON UNIDAD.ID_UNIDAD=MATERIALES.FK_UNIDAD_COMPRA ".$sqlTipos
     ;
+var_dump($mySql);
     $navegar->sqlAdminMaestroMaterial = $mySql;
 endif;
 
@@ -434,26 +509,26 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
-                                                                            $jscript    = "onchange=\"document.FormSelect.idCentroFisico.value=''\"";
-                                                                            $idTextBox  = 'txCentroFisico';
-
+                                                                            $jscript    = "onchange=\"document.FormSelect.idFamiliaMaterial.value=''\"";
+                                                                            $idTextBox  = 'txFamiliaMaterial';
                                                                             $html->TextBox("txFamiliaMaterial", $txFamiliaMaterial);
                                                                             unset($jscript);
                                                                             unset($idTextBox);
+
                                                                             ?>
                                                                             <input type="hidden"
-                                                                                   name="idCategoriaUbicacion"
-                                                                                   id="idCategoriaUbicacion"
-                                                                                   value="<?= $idCategoriaUbicacion ?>"/>
+                                                                                   name="idFamiliaMaterial"
+                                                                                   id="idFamiliaMaterial"
+                                                                                   value="<?= $txFamiliaMaterial ?>"/>
                                                                             <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_familia_material.php?AlmacenarId=0"
                                                                                class="fancyboxFamiliaMaterial"
                                                                                id="categoriasUbicacion"> <img
                                                                                         src="<?= $pathRaiz ?>imagenes/botones/listado.png"
-                                                                                        alt="<?= $auxiliar->traduce("Buscar Categoría Ubicación", $administrador->ID_IDIOMA) ?>"
+                                                                                        alt="<?= $auxiliar->traduce("Buscar Familia Material", $administrador->ID_IDIOMA) ?>"
                                                                                         name="Listado"
                                                                                         border="0" align="absbottom"
                                                                                         id="Listado"/> </a>
-                                                                            <span id="desplegable_categorias_ubicacion"
+                                                                            <span id="desplegable_familia_material"
                                                                                   style="display: none;">
                                                                                 <img
                                                                                         src="<?= $pathClases; ?>lib/ajax_script/img/esperando.gif"
@@ -463,18 +538,18 @@ endif;
                                                                             </span>
 
                                                                             <div class="entry" align="left"
-                                                                                 id="actualizador_categorias_ubicacion"></div>
+                                                                                 id="actualizador_familia_material"></div>
                                                                             <script type="text/javascript"
                                                                                     language="JavaScript">
-                                                                                new Ajax.Autocompleter('txCategoriaUbicacion', 'actualizador_categorias_ubicacion', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_familia_material.php?AlmacenarId=0',
+                                                                                new Ajax.Autocompleter('txFamiliaMaterial', 'actualizador_familia_material', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_familia_material.php?AlmacenarId=0',
                                                                                     {
                                                                                         method: 'post',
-                                                                                        indicator: 'desplegable_categorias_ubicacion',
+                                                                                        indicator: 'desplegable_familia_material',
                                                                                         minChars: '1',
                                                                                         afterUpdateElement: function (textbox, valor) {
                                                                                             siguiente_control(jQuery('#' + this.paramName));
                                                                                             jQuery(textbox).val(jQuery(valor).children('a').attr('alt'));//VALOR DEL PAR&Aacute;METRO ALT DEL ENLACE <a>
-                                                                                            jQuery('#idCategoriaUbicacion').val(jQuery(valor).children('a').attr('rev'));
+                                                                                            jQuery('#idFamiliaMaterial').val(jQuery(valor).children('a').attr('rev'));
                                                                                         }
                                                                                     }
                                                                                 );
@@ -505,25 +580,26 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
-                                                                            $jscript    = "onchange=\"document.FormSelect.idCentroFisico.value=''\"";
-                                                                            $idTextBox  = 'txCentroFisico';
+                                                                            $jscript    = "onchange=\"document.FormSelect.idFamiliaRepro.value=''\"";
+                                                                            $idTextBox  = 'txFamiliaRepro';
+                                                                            $html->TextBox("txFamiliaRepro", $txFamiliaRepro);
                                                                             unset($jscript);
                                                                             unset($idTextBox);
-                                                                            $html->TextBox("txFamiliaRepro", $txFamiliaRepro);
+
                                                                             ?>
                                                                             <input type="hidden"
-                                                                                   name="idCategoriaUbicacion"
-                                                                                   id="idCategoriaUbicacion"
-                                                                                   value="<?= $idCategoriaUbicacion ?>"/>
+                                                                                   name="idFamiliaRepro"
+                                                                                   id="idFamiliaRepro"
+                                                                                   value="<?= $idFamiliaRepro ?>"/>
                                                                             <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_familia_repro.php?AlmacenarId=0"
                                                                                class="fancyboxFamiliaRepro"
                                                                                id="categoriasUbicacion"> <img
                                                                                         src="<?= $pathRaiz ?>imagenes/botones/listado.png"
-                                                                                        alt="<?= $auxiliar->traduce("Buscar Categoría Ubicación", $administrador->ID_IDIOMA) ?>"
+                                                                                        alt="<?= $auxiliar->traduce("Buscar Familia Repro", $administrador->ID_IDIOMA) ?>"
                                                                                         name="Listado"
                                                                                         border="0" align="absbottom"
                                                                                         id="Listado"/> </a>
-                                                                            <span id="desplegable_categorias_ubicacion"
+                                                                            <span id="desplegable_familia_repro"
                                                                                   style="display: none;">
                                                                                 <img
                                                                                         src="<?= $pathClases; ?>lib/ajax_script/img/esperando.gif"
@@ -533,24 +609,22 @@ endif;
                                                                             </span>
 
                                                                             <div class="entry" align="left"
-                                                                                 id="actualizador_categorias_ubicacion"></div>
+                                                                                 id="actualizador_familia_repro"></div>
                                                                             <script type="text/javascript"
                                                                                     language="JavaScript">
-                                                                                new Ajax.Autocompleter('txCategoriaUbicacion', 'actualizador_categorias_ubicacion', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_familia_repro.php?AlmacenarId=0',
+                                                                                new Ajax.Autocompleter('txFamiliaRepro', 'actualizador_familia_repro', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_familia_repro.php?AlmacenarId=0',
                                                                                     {
                                                                                         method: 'post',
-                                                                                        indicator: 'desplegable_categorias_ubicacion',
+                                                                                        indicator: 'desplegable_familia_repro',
                                                                                         minChars: '1',
                                                                                         afterUpdateElement: function (textbox, valor) {
                                                                                             siguiente_control(jQuery('#' + this.paramName));
                                                                                             jQuery(textbox).val(jQuery(valor).children('a').attr('alt'));//VALOR DEL PAR&Aacute;METRO ALT DEL ENLACE <a>
-                                                                                            jQuery('#idCategoriaUbicacion').val(jQuery(valor).children('a').attr('rev'));
+                                                                                            jQuery('#idFamiliaRepro').val(jQuery(valor).children('a').attr('rev'));
                                                                                         }
                                                                                     }
                                                                                 );
                                                                             </script>
-
-                                                                        </td>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -563,9 +637,7 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
-                                                                            $SeleccionMultiple='Si';
                                                                             $html->TextBox("txMarca", $txMarca);
-                                                                            unset($SeleccionMultiple);
                                                                             ?>
                                                                         </td>
                                                                         <td width="24%" height="20" align="left"
@@ -612,21 +684,25 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
+                                                                            $jscript    = "onchange=\"document.FormSelect.idUnidadBase.value=''\"";
+                                                                            $idTextBox  = 'txUnidadBase';
                                                                             $html->TextBox("txUnidadBase", $txUnidadBase);
+                                                                            unset($jscript);
+                                                                            unset($idTextBox);
                                                                             ?>
                                                                             <input type="hidden"
-                                                                                   name="idCategoriaUbicacion"
-                                                                                   id="idCategoriaUbicacion"
-                                                                                   value="<?= $idCategoriaUbicacion ?>"/>
+                                                                                   name="idUnidadBase"
+                                                                                   id="idUnidadBase"
+                                                                                   value="<?= $idUnidadBase ?>"/>
                                                                             <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_unidad.php?AlmacenarId=0"
                                                                                class="fancyboxUnidad"
                                                                                id="categoriasUbicacion"> <img
                                                                                         src="<?= $pathRaiz ?>imagenes/botones/listado.png"
-                                                                                        alt="<?= $auxiliar->traduce("Buscar Categoría Ubicación", $administrador->ID_IDIOMA) ?>"
+                                                                                        alt="<?= $auxiliar->traduce("Buscar Unidad Base", $administrador->ID_IDIOMA) ?>"
                                                                                         name="Listado"
                                                                                         border="0" align="absbottom"
                                                                                         id="Listado"/> </a>
-                                                                            <span id="desplegable_categorias_ubicacion"
+                                                                            <span id="desplegable_unidad_base"
                                                                                   style="display: none;">
                                                                                 <img
                                                                                         src="<?= $pathClases; ?>lib/ajax_script/img/esperando.gif"
@@ -636,24 +712,22 @@ endif;
                                                                             </span>
 
                                                                             <div class="entry" align="left"
-                                                                                 id="actualizador_categorias_ubicacion"></div>
+                                                                                 id="actualizador_unidad_base"></div>
                                                                             <script type="text/javascript"
                                                                                     language="JavaScript">
-                                                                                new Ajax.Autocompleter('txCategoriaUbicacion', 'actualizador_categorias_ubicacion', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_unidad.php?AlmacenarId=0',
+                                                                                new Ajax.Autocompleter('txUnidadBase', 'actualizador_unidad_base', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_unidad.php?AlmacenarId=0',
                                                                                     {
                                                                                         method: 'post',
-                                                                                        indicator: 'desplegable_categorias_ubicacion',
+                                                                                        indicator: 'desplegable_unidad_base',
                                                                                         minChars: '1',
                                                                                         afterUpdateElement: function (textbox, valor) {
                                                                                             siguiente_control(jQuery('#' + this.paramName));
                                                                                             jQuery(textbox).val(jQuery(valor).children('a').attr('alt'));//VALOR DEL PAR&Aacute;METRO ALT DEL ENLACE <a>
-                                                                                            jQuery('#idCategoriaUbicacion').val(jQuery(valor).children('a').attr('rev'));
+                                                                                            jQuery('#idUnidadBase').val(jQuery(valor).children('a').attr('rev'));
                                                                                         }
                                                                                     }
                                                                                 );
                                                                             </script>
-
-                                                                        </td>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -704,14 +778,14 @@ endif;
                                                                             $html->TextBox("txUnidadCompra", $txUnidadCompra);
                                                                             ?>
                                                                             <input type="hidden"
-                                                                                   name="idCategoriaUbicacion"
-                                                                                   id="idCategoriaUbicacion"
-                                                                                   value="<?= $idCategoriaUbicacion ?>"/>
+                                                                                   name="idUnidadCompra"
+                                                                                   id="idUnidadCompra"
+                                                                                   value="<?= $idUnidadCompra ?>"/>
                                                                             <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_unidad.php?AlmacenarId=0"
                                                                                class="fancyboxUnidad"
                                                                                id="categoriasUbicacion"> <img
                                                                                         src="<?= $pathRaiz ?>imagenes/botones/listado.png"
-                                                                                        alt="<?= $auxiliar->traduce("Buscar Categoría Ubicación", $administrador->ID_IDIOMA) ?>"
+                                                                                        alt="<?= $auxiliar->traduce("Buscar Unidad Compra", $administrador->ID_IDIOMA) ?>"
                                                                                         name="Listado"
                                                                                         border="0" align="absbottom"
                                                                                         id="Listado"/> </a>
@@ -728,7 +802,7 @@ endif;
                                                                                  id="actualizador_categorias_ubicacion"></div>
                                                                             <script type="text/javascript"
                                                                                     language="JavaScript">
-                                                                                new Ajax.Autocompleter('txCategoriaUbicacion', 'actualizador_categorias_ubicacion', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_unidad.php?AlmacenarId=0',
+                                                                                new Ajax.Autocompleter('txUnidadCompra', 'actualizador_categorias_ubicacion', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_unidad.php?AlmacenarId=0',
                                                                                     {
                                                                                         method: 'post',
                                                                                         indicator: 'desplegable_categorias_ubicacion',
@@ -736,13 +810,12 @@ endif;
                                                                                         afterUpdateElement: function (textbox, valor) {
                                                                                             siguiente_control(jQuery('#' + this.paramName));
                                                                                             jQuery(textbox).val(jQuery(valor).children('a').attr('alt'));//VALOR DEL PAR&Aacute;METRO ALT DEL ENLACE <a>
-                                                                                            jQuery('#idCategoriaUbicacion').val(jQuery(valor).children('a').attr('rev'));
+                                                                                            jQuery('#idUnidadCompra').val(jQuery(valor).children('a').attr('rev'));
                                                                                         }
                                                                                     }
                                                                                 );
                                                                             </script>
 
-                                                                        </td>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -896,9 +969,9 @@ endif;
                                                                             $TamanoText = "200px";
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "50";
-
+                                                                            $html->Option('cboxObservaciones','Check',$checkboxchecked,true);
                                                                             ?>
-                                                                            <input type="checkbox" id="cboxObservaciones" value="Ver_Observacioens" />
+
                                                                         </td>
                                                                         <td width="24%" height="20" align="left"
                                                                             valign="middle"
@@ -1179,11 +1252,20 @@ endif;
                                                                         class="enlaceceldas">
                                                                         &nbsp;<? echo (!empty($row->REFERENCIA_AUTOMATICA)) ? $row->REFERENCIA_AUTOMATICA : '-' ?>
                                                                     </td>
+                                                                    <?if (!$checkboxchecked){ ?>
                                                                     <td height="18" align="left"
                                                                         bgcolor="<? echo $myColor ?>"
                                                                         class="enlaceceldas">
-                                                                        &nbsp;<? echo (!empty($row->OBSERVACIONES)) ? $row->OBSERVACIONES : '-' ?>
+                                                                        &nbsp;<? echo (!empty($row->OBSERVACIONES)) ? '-' : '-' ?>
                                                                     </td>
+                                                                    <?
+                                                                    }else{?>
+                                                                    <td height="18" align="left"
+                                                                        bgcolor="<? echo $myColor ?>"
+                                                                        class="enlaceceldas">
+                                                                        &nbsp;<? echo (!empty($row->OBSERVACIONES)) ? 'Si' : '-' ?>
+                                                                    </td>
+                                                                    <?};?>
                                                                     <td height="18" align="center"
                                                                         bgcolor="<? echo $myColor ?>"
                                                                         class="enlaceceldas">
@@ -1193,6 +1275,16 @@ endif;
                                                                         ?>
                                                                     </td>
                                                                 </tr>
+                                                            <?
+                                                            if ($checkboxchecked): ?>
+                                                            <tr>
+                                                                <td height="18" align="left"
+                                                                    bgcolor="#dc143c"
+                                                                    class="enlaceceldas">
+                                                                    &nbsp;<? echo (!empty($row->OBSERVACIONES)) ? $row->OBSERVACIONES : '-' ?>
+                                                                </td>
+                                                            </tr>
+                                                            <?endif;?>
                                                                 <? $i++;
                                                                 $numeracion++;
                                                             endwhile; ?>
