@@ -34,11 +34,20 @@ if ($administrador->Hayar_Permiso_Perfil('ADM_MAESTROS_INCIDENCIA_SISTEMA_TIPO')
 endif;
 
 //OBTENGO EL REGISTRO E INICIALIZO VALORES DE LAS VARIABLES CON LO QUE HAY EN BASE DE DATOS
+$nuevo=true;
 if ($idMaterial != ""):
     // OBTENGO REGISTRO
-    $sqlTipo = "SELECT * FROM MATERIALES M JOIN ADMINISTRADOR A ON M.FK_USUARIO_CREACION=A.ID_ADMINISTRADOR JOIN ADMINISTRADOR AA ON M.FK_USUARIO_ULTIMA_MODIFICACION=AA.ID_ADMINISTRADOR WHERE ID_MATERIALES= '" . $bd->escapeCondicional($idMaterial) . "'";
+    $nuevo=false;
+    $sqlTipo = "SELECT * FROM MATERIALES M 
+    JOIN FAMILIA_MATERIAL ON M.FK_FAMILIA_MATERIAL=FAMILIA_MATERIAL.ID_FAMILIA_MATERIAL
+    JOIN FAMILIA_REPRO ON M.FK_FAMILIA_REPRO=FAMILIA_REPRO.ID_FAMILIA_REPRO
+    JOIN  UNIDAD U ON U.ID_UNIDAD=M.FK_UNIDAD_COMPRA
+    JOIN ADMINISTRADOR A ON M.FK_USUARIO_CREACION=A.ID_ADMINISTRADOR 
+    JOIN ADMINISTRADOR AA ON M.FK_USUARIO_ULTIMA_MODIFICACION=AA.ID_ADMINISTRADOR WHERE ID_MATERIALES= '" . $bd->escapeCondicional($idMaterial) . "'";
     $resTipo = $bd->ExecSQL($sqlTipo);
     $rowTipo = $bd->SigReg($resTipo);
+
+    $txUnidadManipulacion=$rowTipo->UNIDAD ." ".$rowTipo->DESCRIPCION;
 
     $txMaterial=$rowTipo->REFERENCIA_SCS;
     $txDesc_esp=$rowTipo->DESCRIPCION_ESP;
@@ -51,6 +60,18 @@ if ($idMaterial != ""):
     $txModelo=$rowTipo->MODELO;
     $txEstatus=$rowTipo->ESTATUS_MATERIAL;
     $txTipo=$rowTipo->TIPO_MATERIAL;
+    $txObservaciones=$rowTipo->OBSERVACIONES;
+    $txDivisibilidad=$rowTipo->DIVISIBILIDAD;
+    $txDenominador=$rowTipo->DENOMINADOR;
+    $txNumerador=$rowTipo->NUMERADOR;
+    $txUnidadCompra_ESP=$rowTipo->UNIDAD_ESP.' - '.$rowTipo->UNIDAD;
+    $txUnidadCompra_ENG=$rowTipo->UNIDAD_ENG.' - '.$rowTipo->UNIDAD;
+
+    $txUnidadMedida_ESP=$rowTipo->UNIDAD_ESP.' - '.$rowTipo->UNIDAD;
+    $txUnidadMedida_ENG=$rowTipo->UNIDAD_ENG.' - '.$rowTipo->UNIDAD;
+
+    $txFamiliaRepro=$rowTipo->REFERENCIA . "- ".$rowTipo->FAMILIA_REPRO;
+    $txFamiliaMaterial=$rowTipo->NOMBRE_FAMILIA;
 
     $chBaja   = $rowTipo->BAJA;
 
@@ -259,7 +280,7 @@ endif;
                                                                         <td class="textoazul" width="60%">
                                                                             <?
                                                                             $TamanoText = "20px";
-                                                                            $ClassText  = "copyright ObligatorioRellenar";
+                                                                            $ClassText  = "copyright";
                                                                             $MaxLength  = "255";
                                                                             $readonly='readonly';
                                                                             $html->TextBox(acortar($txEstatus), acortar($txEstatus));
@@ -324,6 +345,7 @@ endif;
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
+                                                                        <? if(!$nuevo): ?>
                                                                         <td align="center" width="5%"><img
                                                                                     src="<? echo $pathRaiz ?>imagenes/diamante.gif"
                                                                                     width="7" height="7"></td>
@@ -366,6 +388,7 @@ endif;
                                                                         <td class="textoazul" width="60%">
                                                                             <label><?echo $txUsuario_ultimo?></label>
                                                                         </td>
+                                                                        <?endif;?>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="center" width="5%"><img
@@ -400,7 +423,7 @@ endif;
                                                                             $TamanoText = "420px";
                                                                             $ClassText  = "copyright ObligatorioRellenar";
                                                                             $MaxLength  = "80";
-                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                                            $html->TextBox("txFamiliaMaterial", $txFamiliaMaterial);
                                                                             ?>
                                                                         </td>
                                                                     </tr>
@@ -416,7 +439,7 @@ endif;
                                                                             $TamanoText = "420px";
                                                                             $ClassText  = "copyright ObligatorioRellenar";
                                                                             $MaxLength  = "255";
-                                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
+                                                                            $html->TextBox("txFamiliaRepro", $txFamiliaRepro);
                                                                             ?>
                                                                         </td>
                                                                     </tr>
@@ -464,7 +487,7 @@ endif;
                                                         <td class="textoazul" width="60%">
                                                             <?
                                                             $TamanoText = "420px";
-                                                            $ClassText  = "copyright ObligatorioRellenar";
+                                                            $ClassText  = "copyright";
                                                             $MaxLength  = "80";
                                                             $html->TextBox("txMarca", $txMarca);
                                                             ?>
@@ -478,7 +501,7 @@ endif;
                                                         <td class="textoazul" width="60%">
                                                             <?
                                                             $TamanoText = "420px";
-                                                            $ClassText  = "copyright ObligatorioRellenar";
+                                                            $ClassText  = "copyright";
                                                             $MaxLength  = "255";
                                                             $html->TextBox("txModelo", $txModelo);
                                                             ?>
@@ -564,7 +587,12 @@ endif;
                                                             $TamanoText = "420px";
                                                             $ClassText  = "copyright ObligatorioRellenar";
                                                             $MaxLength  = "80";
-                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
+                                                            if($administrador->ID_IDIOMA=='ESP'){
+                                                                $html->TextBox("txUnidadMedida_ESP", $txUnidadMedida_ESP);
+                                                            }
+                                                            elseif($administrador->ID_IDIOMA=='ENG'){
+                                                                $html->TextBox("txUnidadMedida_ENG", $txUnidadMedida_ENG);
+                                                            }
                                                             ?>
                                                         </td>
                                                     </tr>
@@ -580,7 +608,12 @@ endif;
                                                             $TamanoText = "420px";
                                                             $ClassText  = "copyright ObligatorioRellenar";
                                                             $MaxLength  = "255";
-                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
+                                                            if($administrador->ID_IDIOMA=='ESP'){
+                                                                $html->TextBox("txUnidadCompra_ESP", $txUnidadCompra_ESP);
+                                                            }
+                                                            elseif($administrador->ID_IDIOMA=='ENG'){
+                                                                $html->TextBox("txUnidadCompra_ENG", $txUnidadCompra_ENG);
+                                                            }
                                                             ?>
                                                         </td>
                                                     </tr>
@@ -596,7 +629,7 @@ endif;
                                                             $TamanoText = "420px";
                                                             $ClassText  = "copyright ObligatorioRellenar";
                                                             $MaxLength  = "255";
-                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
+                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txNumerador);
                                                             ?>
                                                         </td>
                                                     </tr>
@@ -612,7 +645,7 @@ endif;
                                                             $TamanoText = "420px";
                                                             $ClassText  = "copyright ObligatorioRellenar";
                                                             $MaxLength  = "255";
-                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
+                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txDenominador);
                                                             ?>
                                                         </td>
                                                     </tr>
@@ -623,26 +656,42 @@ endif;
                                                         </td>
                                                         <td class="textoazul" width="60%">
                                                             <?
-                                                            $TamanoText = "420px";
-                                                            $ClassText  = "copyright ObligatorioRellenar";
-                                                            $MaxLength  = "255";
-                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
+                                                            $TamanoText = "100px";
+                                                            $ClassText  = "copyright";
+
+                                                            $html->TextBox("txUnidadManipulacion", $txUnidadManipulacion);
                                                             ?>
+                                                            <?= $auxiliar->traduce("Divisibilidad", $administrador->ID_IDIOMA) . ":" ?>
+
+                                                                <?
+                                                            $NombreSelect = 'selDivisibilidad';
+                                                            $Elementos_divisibilidad[0]['text'] = $auxiliar->traduce("Si", $administrador->ID_IDIOMA);
+                                                            $Elementos_divisibilidad[0]['valor'] = 'Si';
+                                                            $Elementos_divisibilidad[1]['text'] = $auxiliar->traduce("No", $administrador->ID_IDIOMA);
+                                                            $Elementos_divisibilidad[1]['valor'] = 'No';
+                                                            $Elementos_divisibilidad[2]['text'] = $auxiliar->traduce("Pendiente decisión", $administrador->ID_IDIOMA);
+                                                            $Elementos_divisibilidad[2]['valor'] = 'Pendiente decisión';
+                                                            $Elementos_divisibilidad[3]['text'] = $auxiliar->traduce("No Aplica", $administrador->ID_IDIOMA);
+                                                            $Elementos_divisibilidad[3]['valor'] = 'No Aplica';
+                                                            $Tamano = "205px";
+                                                            $Estilo = "copyright";
+
+                                                            $html->SelectArr($NombreSelect, $Elementos_divisibilidad, $txDivisibilidad);
+                                                                ?>
                                                         </td>
+
                                                     </tr>
                                                     <tr>
-                                                        <td align="center" width="5%"><img
-                                                                    src="<? echo $pathRaiz ?>imagenes/diamante.gif"
-                                                                    width="7" height="7"></td>
+                                                        <td align="center" width="5%"></td>
                                                         <td align="left" class="textoazul"
                                                             width="35%"><?= $auxiliar->traduce("Observaciones Material", $administrador->ID_IDIOMA) . ":" ?>
                                                         </td>
                                                         <td class="textoazul" width="60%">
                                                             <?
                                                             $TamanoText = "420px";
-                                                            $ClassText  = "copyright ObligatorioRellenar";
+                                                            $ClassText  = "copyright";
                                                             $MaxLength  = "255";
-                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
+                                                            $html->TextArea("txObservaciones", $txObservaciones);
                                                             ?>
                                                         </td>
                                                     </tr>

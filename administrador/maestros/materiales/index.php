@@ -1264,7 +1264,8 @@ endif;
                                                                         class="enlaceceldas">
                                                                         &nbsp;<? if(!empty($row->OBSERVACIONES)){
                                                                             ?>
-                                                                            <a href="ficha_observaciones.php"
+
+                                                                            <a name="referencia" href="ficha_observaciones.php?referencia=<?= $row->REFERENCIA_SCS; ?>"
                                                                                class="fancyboxUnidad">
                                                                                 <img
                                                                                         src="<?= $pathRaiz ?>imagenes/form.png"

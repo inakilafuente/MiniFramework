@@ -1,37 +1,31 @@
 <? //print_r($_REQUEST); //die;
 // PATHS DE LA WEB
-$pathRaiz   = "../.././";
+
+$pathRaiz   = "../../";
 $pathClases = "../../../";
+
+
 
 // INCLUDES DE LIBRERIAS PROPIAS
 require_once $pathClases . "lib/basedatos.php";
 require_once $pathClases . "lib/administrador.php";
 require_once $pathClases . "lib/html.php";
-require_once $pathClases . "lib/auxiliar.php";
 require_once $pathClases . "lib/navegar.php";
 require_once $pathClases . "lib/comprobar.php";
-require_once $pathClases . "lib/observaciones_sistema.php";
-require_once $pathClases . "lib/necesidad.php";
-require_once $pathClases . "lib/aviso.php";
-require_once $pathClases . "lib/orden_transporte.php";
-require_once $pathClases . "lib/material.php";
-require_once $pathClases . "lib/reserva.php";
-
+require_once $pathClases . "lib/auxiliar.php";
 
 session_start();
+
 include $pathRaiz . "seguridad_admin.php";
 //CARGO LA FILA DE LAS OBSERVACIONES
-if ($verObservacionesOT == 1):
-
     //MUESTRO TODAS LAS OBSERVACIONES DE LA OT
-    $camposBD   = array('REFERENCIA_SCS');
-    $sqlTipos  = ($bd->busquedaTextoArray($txMaterial, $camposBD));
-    $sqlObservacionesOT    = "SELECT ID_MATERIAL
-                            FROM MATERIALES".$sqlTipos;
-    var_dump($sqlObservacionesOT);
-    $resultObservacionesOT = $bd->ExecSQL($sqlObservacionesOT);
 
-    $txObservaciones = "";
+    $sql   = "SELECT OBSERVACIONES
+                            FROM MATERIALES WHERE REFERENCIA_SCS=".$referencia;
+    $result = $bd->ExecSQL($sql);
+
+$row = $bd->SigReg($result);
+$txObservaciones=$row->OBSERVACIONES;
 
     while ($rowObservacionesOT = $bd->SigReg($resultObservacionesOT)):
 
@@ -42,13 +36,6 @@ if ($verObservacionesOT == 1):
         $txObservaciones .= "\r\n" . ">> " . $auxiliar->fechaFmtoEspHora($rowObservacionesOT->FECHA, true, false, true, true) . " - " . trim( (string)$rowAdministrador->NOMBRE) . ": " . trim( (string)$rowObservacionesOT->TEXTO_OBSERVACION);
 
     endwhile;
-
-else:
-
-    $NotificaErrorPorEmail = "No";
-    $row                   = $bd->VerRegRest("OBSERVACION_SISTEMA", "TIPO_OBJETO = '" . $tipoObjeto . "' AND ID_OBJETO = " . $idObjeto, "No");
-
-endif;
 
 unset($NotificaErrorPorEmail);
 $tituloPag = $auxiliar->traduce("Observaciones", $administrador->ID_IDIOMA);
@@ -528,19 +515,15 @@ elseif (($enviarNotificacion == 1) && ($accion == 'GrabarObservaciones')):
 
 
 
-                                                                                    <?echo("----------");?>
+    <!--  "----------" -->
 
     <textarea rows="14" class="copyright"
               style="width: 420px; resize: none;"
               name="txObservaciones" <? echo($editable == 1 ? '' : "disabled='disabled'"); ?>
               id="txObservaciones"><?
-        if ($verObservacionesOT == 1):
-            echo $txObservaciones;
-        else:
-            echo($nuevasObservaciones == 1 ? '' : $observaciones_sistema->Leer($tipoObjeto, $idObjeto, $selTipoObservacion, ($editable == 1 ? false : true), ($editable == 1 ? false : true), ($ocultarCategoria == 1 ? false : true)));
-        endif;
+       echo $txObservaciones;
         ?></textarea>
-                                                                                    <?echo("----------");?>
+    <!--  "----------" -->
 
     </body>
     </html>
