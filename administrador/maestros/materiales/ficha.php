@@ -18,7 +18,37 @@ function acortar($cadena){
     }else{
         return $valores[0][0].$valores[1][0];
     }
+}
+//Funcion pintar arbol
 
+/*
+function pintar_arbol($familia){
+    echo "<ul>";
+    $id=0;
+    foreach ($familia as $nodo){
+        echo "<li>".$nodo['padre'];
+        if(!empty($nodo['hijos'])){
+            pintar_arbol($nodo['hijos']);
+        }
+        echo "</li>";
+        $i++;
+    }
+    echo "</ul>";
+}
+*/
+
+//Funcion rellenar vector con sus respectivos padres
+
+function obtenerPadresFamilia($id,&$vector){
+    $sqlPadres = "SELECT ID_FAMILIA_MATERIAL_PADRE, NOMBRE_FAMILIA FROM FAMILIA_MATERIAL WHERE ID_FAMILIA_MATERIAL= ".$id;
+    $resPadres = $bd->ExecSQL($sqlPadres);
+    $reg=$bd->SigReg($resPadres);
+    if($reg){
+        $vector[]=$reg['NOMBRE_FAMILIA'];
+        if($reg['ID_FAMILIA_MATERIAL_PADRE']!=NULL){
+            obtenerPadresFamilia($reg->ID_FAMILIA_MATERIAL_PADRE,$vector);
+        }
+    }
 }
 include $pathRaiz . "seguridad_admin.php";
 
@@ -72,8 +102,29 @@ if ($idMaterial != ""):
 
     $txFamiliaRepro=$rowTipo->REFERENCIA . "- ".$rowTipo->FAMILIA_REPRO;
     $txFamiliaMaterial=$rowTipo->NOMBRE_FAMILIA;
-
     $chBaja   = $rowTipo->BAJA;
+
+    //Bucle de hacer array de familia material
+/*
+    $familia=array();
+    $i=0;
+    while ($rowTipo->ID_FAMILIA_MATERIAL_PADRE!=NULL){
+        if($rowTipo->ID_FAMILIA_MATERIAL_PADRE==NULL){
+            $familia['padre']=$rowTipo->NOMBRE_FAMILIA;
+        }else{
+            $familia['hijo_id'.$i]=$rowTipo->ID_FAMILIA_MATERIAL_PADRE;
+            $familia['hijo_'.$i]=$rowTipo->NOMBRE_FAMILIA;
+            $sqlTipo = "SELECT ID_FAMILIA_MATERIAL_PADRE, NOMBRE_FAMILIA FROM FAMILIA_MATERIAL ";
+            $resTipo = $bd->ExecSQL($sqlTipo);
+            $rowTipo = $bd->SigReg($resTipo);
+            $i++;
+        }
+
+    }
+
+*/
+
+
 
     $accion = 'Modificar';
 else:
@@ -412,21 +463,29 @@ endif;
                                                                        cellpadding="1" class="tablaFiltros">
 
                                                                     <tr> TAXONOMIA DE MATERIALES
+
                                                                         <td align="center" width="5%"><img
                                                                                     src="<? echo $pathRaiz ?>imagenes/diamante.gif"
                                                                                     width="7" height="7"></td>
                                                                         <td align="left" class="textoazul"
                                                                             width="35%"><?= $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) . ":" ?>
                                                                         </td>
-                                                                        <td class="textoazul" width="60%">
-                                                                            <?
-                                                                            $TamanoText = "420px";
-                                                                            $ClassText  = "copyright ObligatorioRellenar";
-                                                                            $MaxLength  = "80";
-                                                                            $html->TextBox("txFamiliaMaterial", $txFamiliaMaterial);
-                                                                            ?>
-                                                                        </td>
+
                                                                     </tr>
+                                                                    <td align="center" width="5%"><img
+                                                                                src="<? echo $pathRaiz ?>imagenes/diamante.gif"
+                                                                                width="7" height="7"></td>
+                                                                    <td align="left" class="textoazul"
+                                                                        width="35%"><?= $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) . ":" ?>
+                                                                    </td>
+                                                                    <td class="textoazul" width="60%">
+                                                                        <?
+                                                                        $TamanoText = "420px";
+                                                                        $ClassText  = "copyright ObligatorioRellenar";
+                                                                        $MaxLength  = "80";
+                                                                        $html->TextBox("txFamiliaMaterial", $txFamiliaMaterial);
+                                                                        ?>
+                                                                    </td>
                                                                     <tr>
                                                                         <td align="center" width="5%"><img
                                                                                     src="<? echo $pathRaiz ?>imagenes/diamante.gif"
