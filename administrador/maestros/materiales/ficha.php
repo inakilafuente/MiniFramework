@@ -21,35 +21,31 @@ function acortar($cadena){
 }
 //Funcion pintar arbol
 
-/*
-function pintar_arbol($familia){
+
+function pintar_arbol($vector){
     echo "<ul>";
-    $id=0;
-    foreach ($familia as $nodo){
-        echo "<li>".$nodo['padre'];
-        if(!empty($nodo['hijos'])){
-            pintar_arbol($nodo['hijos']);
-        }
+    for ($i=count($vector)-1;$i>=0;$i--){
+        echo "<li>".$vector[$i];
         echo "</li>";
-        $i++;
     }
     echo "</ul>";
 }
-*/
+
 
 //Funcion rellenar vector con sus respectivos padres
 
-function obtenerPadresFamilia($id,&$vector){
+function obtenerPadresFamilia($id,$bd,&$vector){
     $sqlPadres = "SELECT ID_FAMILIA_MATERIAL_PADRE, NOMBRE_FAMILIA FROM FAMILIA_MATERIAL WHERE ID_FAMILIA_MATERIAL= ".$id;
     $resPadres = $bd->ExecSQL($sqlPadres);
     $reg=$bd->SigReg($resPadres);
-    if($reg){
-        $vector[]=$reg['NOMBRE_FAMILIA'];
-        if($reg['ID_FAMILIA_MATERIAL_PADRE']!=NULL){
-            obtenerPadresFamilia($reg->ID_FAMILIA_MATERIAL_PADRE,$vector);
+        if($reg){
+        $vector[]=$reg->NOMBRE_FAMILIA;
+        if($reg->ID_FAMILIA_MATERIAL_PADRE!=NULL){
+            obtenerPadresFamilia($reg->ID_FAMILIA_MATERIAL_PADRE,$bd,$vector);
         }
     }
 }
+
 include $pathRaiz . "seguridad_admin.php";
 
 $tituloPag         = $auxiliar->traduce("Tipos de Incidencias", $administrador->ID_IDIOMA);
@@ -66,6 +62,7 @@ endif;
 //OBTENGO EL REGISTRO E INICIALIZO VALORES DE LAS VARIABLES CON LO QUE HAY EN BASE DE DATOS
 $nuevo=true;
 if ($idMaterial != ""):
+
     // OBTENGO REGISTRO
     $nuevo=false;
     $sqlTipo = "SELECT * FROM MATERIALES M 
@@ -73,7 +70,8 @@ if ($idMaterial != ""):
     JOIN FAMILIA_REPRO ON M.FK_FAMILIA_REPRO=FAMILIA_REPRO.ID_FAMILIA_REPRO
     JOIN  UNIDAD U ON U.ID_UNIDAD=M.FK_UNIDAD_COMPRA
     JOIN ADMINISTRADOR A ON M.FK_USUARIO_CREACION=A.ID_ADMINISTRADOR 
-    JOIN ADMINISTRADOR AA ON M.FK_USUARIO_ULTIMA_MODIFICACION=AA.ID_ADMINISTRADOR WHERE ID_MATERIALES= '" . $bd->escapeCondicional($idMaterial) . "'";
+    JOIN ADMINISTRADOR AA ON M.FK_USUARIO_ULTIMA_MODIFICACION=AA.ID_ADMINISTRADOR WHERE REFERENCIA_SCS= '" . $bd->escapeCondicional($idMaterial) . "'";
+    var_dump($sqlTipo);
     $resTipo = $bd->ExecSQL($sqlTipo);
     $rowTipo = $bd->SigReg($resTipo);
 
@@ -83,6 +81,7 @@ if ($idMaterial != ""):
     $txDesc_esp=$rowTipo->DESCRIPCION_ESP;
     $txDesc_eng=$rowTipo->DESCRIPCION_ENG;
     $txFecha_creacion=$rowTipo->FECHA_CREACION;
+    $idUsuario_creacion=$rowTipo->ID_ADMINISTRADOR;
     $txUsuario_creacion=$rowTipo->NOMBRE;
     $txFecha_ultima=$rowTipo->FECHA_ULTIMA_MODIFICACION;
     $txUsuario_ultimo=$rowTipo->NOMBRE;
@@ -94,38 +93,24 @@ if ($idMaterial != ""):
     $txDivisibilidad=$rowTipo->DIVISIBILIDAD;
     $txDenominador=$rowTipo->DENOMINADOR;
     $txNumerador=$rowTipo->NUMERADOR;
+
+    $idUnidadCompra=$rowTipo->FK_UNIDAD_COMPRA;
     $txUnidadCompra_ESP=$rowTipo->UNIDAD_ESP.' - '.$rowTipo->UNIDAD;
     $txUnidadCompra_ENG=$rowTipo->UNIDAD_ENG.' - '.$rowTipo->UNIDAD;
 
+    $idUnidadMedida=$rowTipo->FK_UNIDAD_MEDIDA;
     $txUnidadMedida_ESP=$rowTipo->UNIDAD_ESP.' - '.$rowTipo->UNIDAD;
     $txUnidadMedida_ENG=$rowTipo->UNIDAD_ENG.' - '.$rowTipo->UNIDAD;
 
+    $idFamiliaRepro=$rowTipo->FK_FAMILIA_REPRO;
     $txFamiliaRepro=$rowTipo->REFERENCIA . "- ".$rowTipo->FAMILIA_REPRO;
+    $vector=array();
+    var_dump($idMaterial);
+    obtenerPadresFamilia($rowTipo->ID_FAMILIA_MATERIAL,$bd,$vector);
+
+    $idFamiliaMaterial=$rowTipo->FK_FAMILIA_MATERIAL;
     $txFamiliaMaterial=$rowTipo->NOMBRE_FAMILIA;
     $chBaja   = $rowTipo->BAJA;
-
-    //Bucle de hacer array de familia material
-/*
-    $familia=array();
-    $i=0;
-    while ($rowTipo->ID_FAMILIA_MATERIAL_PADRE!=NULL){
-        if($rowTipo->ID_FAMILIA_MATERIAL_PADRE==NULL){
-            $familia['padre']=$rowTipo->NOMBRE_FAMILIA;
-        }else{
-            $familia['hijo_id'.$i]=$rowTipo->ID_FAMILIA_MATERIAL_PADRE;
-            $familia['hijo_'.$i]=$rowTipo->NOMBRE_FAMILIA;
-            $sqlTipo = "SELECT ID_FAMILIA_MATERIAL_PADRE, NOMBRE_FAMILIA FROM FAMILIA_MATERIAL ";
-            $resTipo = $bd->ExecSQL($sqlTipo);
-            $rowTipo = $bd->SigReg($resTipo);
-            $i++;
-        }
-
-    }
-
-*/
-
-
-
     $accion = 'Modificar';
 else:
     $accion = 'Insertar';
@@ -150,7 +135,7 @@ endif;
 
     <script language="JavaScript" type="text/javascript">
         function grabar() {
-            if (document.FormSelect.idIncidenciaSistemaTipo.value != '') {
+            if (document.FormSelect.idMaterial.value != '') {
                 document.FormSelect.accion.value = 'Modificar';
             } else {
                 document.FormSelect.accion.value = 'Insertar';
@@ -168,8 +153,12 @@ endif;
       marginwidth="0" marginheight="0">
 <FORM NAME="FormSelect" ACTION="accion.php" METHOD="POST">
     <input type=hidden name="accion" value="<?= $accion ?>">
-    <input type="hidden" name="idIncidenciaSistemaTipo" value="<? echo $idIncidenciaSistemaTipo ?>">
-    <input type="hidden" name="incidenciaSistemaTipo" value="<? echo $txIncidenciaSistemaTipo ?>">
+    <input type="hidden" name="idMaterial" value="<? echo $idMaterial?>">
+    <input type="hidden" name="idFamiliaMaterial" value="<? echo $idFamiliaMaterial ?>">
+    <input type="hidden" name="idFamiliaRepro" value="<? echo $idFamiliaRepro ?>">
+    <input type="hidden" name="idUnidadMedida" value="<? echo $idUnidadMedida ?>">
+    <input type="hidden" name="idUnidadCompra" value="<? echo $idUnidadCompra ?>">
+    <input type="hidden" name="idUsuario_creacion" value="<? echo $idUsuario_creacion ?>">
     <input type="hidden" name="incidenciaSistemaTipoEng" value="<? echo $txIncidenciaSistemaTipoEng ?>">
     <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
 
@@ -467,10 +456,11 @@ endif;
                                                                         <td align="center" width="5%"><img
                                                                                     src="<? echo $pathRaiz ?>imagenes/diamante.gif"
                                                                                     width="7" height="7"></td>
-                                                                        <td align="left" class="textoazul"
-                                                                            width="35%"><?= $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) . ":" ?>
-                                                                        </td>
 
+
+                                                                        <? if(!$nuevo):
+                                                                        pintar_arbol($vector);
+                                                                        endif;?>
                                                                     </tr>
                                                                     <td align="center" width="5%"><img
                                                                                 src="<? echo $pathRaiz ?>imagenes/diamante.gif"
@@ -576,7 +566,7 @@ endif;
                                                         <td class="textoazul" width="60%">
                                                             <?
                                                             $TamanoText = "420px";
-                                                            $ClassText  = "copyright ObligatorioRellenar";
+                                                            $ClassText  = "copyright";
                                                             $MaxLength  = "255";
                                                             $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
                                                             ?>
@@ -591,7 +581,7 @@ endif;
                                                         <td class="textoazul" width="60%">
                                                             <?
                                                             $TamanoText = "420px";
-                                                            $ClassText  = "copyright ObligatorioRellenar";
+                                                            $ClassText  = "copyright";
                                                             $MaxLength  = "255";
                                                             $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
                                                             ?>
@@ -609,7 +599,7 @@ endif;
                                                         <td class="textoazul" width="60%">
                                                             <?
                                                             $TamanoText = "420px";
-                                                            $ClassText  = "copyright ObligatorioRellenar";
+                                                            $ClassText  = "copyright";
                                                             $MaxLength  = "255";
                                                             $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
                                                             ?>
@@ -623,7 +613,7 @@ endif;
                                                         <td class="textoazul" width="60%">
                                                             <?
                                                             $TamanoText = "420px";
-                                                            $ClassText  = "copyright ObligatorioRellenar";
+                                                            $ClassText  = "copyright";
                                                             $MaxLength  = "255";
                                                             $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
                                                             ?>
@@ -688,7 +678,7 @@ endif;
                                                             $TamanoText = "420px";
                                                             $ClassText  = "copyright ObligatorioRellenar";
                                                             $MaxLength  = "255";
-                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txNumerador);
+                                                            $html->TextBox("txNumerador", $txNumerador);
                                                             ?>
                                                         </td>
                                                     </tr>
@@ -704,7 +694,7 @@ endif;
                                                             $TamanoText = "420px";
                                                             $ClassText  = "copyright ObligatorioRellenar";
                                                             $MaxLength  = "255";
-                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txDenominador);
+                                                            $html->TextBox("txDenominador", $txDenominador);
                                                             ?>
                                                         </td>
                                                     </tr>

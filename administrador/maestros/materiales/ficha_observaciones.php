@@ -139,112 +139,6 @@ if ($accion == 'GrabarObservaciones'):
 
 
 endif;
-
-if ($accion == 'BorrarObservaciones'):
-    $observaciones_sistema->Borrar($idRegistroTexto);
-endif;
-
-if ($accion == 'BuscarObservaciones'):
-    //$observaciones_sistema->Borrar($idRegistroTexto);
-endif;
-
-if ($accion == 'EnviarNotificaciones'):
-    if ($tipoObjeto == 'NECESIDAD'):
-        $perfilLogistico    = 0;
-        $perfilTecnico      = 0;
-        $compradorNecesidad = 0;
-        if (count((array) $_POST['chDestinatarios']) > 0):
-            if (in_array("Logistico", (array) $_POST['chDestinatarios'])):
-                $perfilLogistico = 1;
-            endif;
-            if (in_array("Tecnico", (array) $_POST['chDestinatarios'])):
-                $perfilTecnico = 1;
-            endif;
-            if (in_array("Comprador", (array) $_POST['chDestinatarios'])):
-                $compradorNecesidad = 1;
-            endif;
-
-            $necesidad->EnviarNotificacionEmail_Observaciones($idObjeto, $perfilLogistico, $perfilTecnico, $compradorNecesidad, $txObservaciones);
-        endif;
-    endif;
-endif;
-?>
-
-
-<?
-if (($accion == 'GrabarObservaciones' && $enviarNotificacion != 1) || ($accion == 'BorrarObservaciones') || (($accion == 'EnviarNotificaciones'))): //ACCION EJECUTADA, CIERRO EL FANCY
-    ?>
-
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-            "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-    <html>
-    <head>
-        <? require_once $pathClases . "lib/gral_js.php"; ?>
-        <script type="text/javascript" language="javascript">
-            function CerrarFancy() {
-                <?if ($tipoObjeto == 'MOVIMIENTO_RECEPCION'):?>
-                window.parent.document.FormActualizar.idDocumento.value = <?=$idObjeto;?>;
-                window.parent.document.FormActualizar.submit();
-                <?endif;?>
-
-                <?if ($tipoObjeto == 'ORDEN_TRANSPORTE'):?>
-                window.parent.document.FormActualizar.idOrdenTransporte.value = <?=$idObjeto;?>;
-                window.parent.document.FormActualizar.submit();
-                <?endif;?>
-
-                <?if ($tipoObjeto == 'AUTOFACTURA'):?>
-                window.parent.document.FormSelect.action = 'ficha.php?idAutofactura=<?=$idObjeto;?>';
-                window.parent.document.FormSelect.submit();
-                <?endif;?>
-
-                <? if ($tipoObjeto == 'SOLICITUD_TRANSPORTE'): ?>
-                window.parent.document.FormActualizar.submit();
-                <? endif; ?>
-
-                <? if ($tipoObjeto == 'ORDEN_CONTRATACION_INCIDENCIA' || $tipoObjeto == 'ORDEN_CONTRATACION'): ?>
-                window.parent.document.FormActualizar.submit();
-                <?endif;?>
-                <?if( ($tipoObjeto == 'NECESIDAD') && ($subcategoria == "Reclamacion") ):?>
-                window.parent.document.FormActualizar.idNecesidad.value = <?=$idObjeto;?>;
-                window.parent.document.FormActualizar.mostrarPantallaOK.value = true;
-                window.parent.document.FormActualizar.submit();
-                <?endif;?>
-                <? if ( ($tipoObjeto == 'INCIDENCIA_FICHA_SEGURIDAD_MATERIAL')  ): ?>
-                <? if ($subcategoria == "rechazarFicha"):?>
-                window.parent.document.FormActualizar.idFichaSeguridad.value = <?=$idObjeto;?>;
-                window.parent.document.FormActualizar.submit();
-                <?else:?>
-                window.parent.document.FormSelect.submit();
-                <?endif;?>
-                <? endif; ?>
-
-
-                <? if (
-                ($tipoObjeto == 'MATERIAL ALMACEN') ||
-                ($tipoObjeto == 'CONTROL TIEMPO DE REVISION') ||
-                ($tipoObjeto == 'PEDIDOS COMPRA') ||
-                ($tipoObjeto == 'RELEVANCIA PEDIDOS COMPRA') ||
-                ($tipoObjeto == 'RELEVANCIA PEDIDOS SALIDA') ||
-                ($tipoObjeto == 'RELEVANCIA PEDIDOS ENTRADA') ||
-                ($tipoObjeto == 'INCIDENCIA_SISTEMA') ||
-                ($tipoObjeto == 'DEMANDA') ||
-                ($tipoObjeto == 'ORDEN_TRABAJO_LINEA') ||
-                ($tipoObjeto == 'INCIDENCIA_SISTEMA_SUBTIPO')
-                ): ?>
-                window.parent.document.FormSelect.action = "index.php?recordar_busqueda=1";
-                window.parent.document.FormSelect.submit();
-                <?endif;?>
-
-                window.parent.jQuery.fancybox.close();
-            }
-        </script>
-    </head>
-    <body onload="CerrarFancy()"></body>
-    </html>
-
-<?
-elseif (($enviarNotificacion == 1) && ($accion == 'GrabarObservaciones')):
-    //SE ENVIAN NOTIFICACIONES TRAS GRABAR
     ?>
 
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -423,6 +317,15 @@ elseif (($enviarNotificacion == 1) && ($accion == 'GrabarObservaciones')):
                                                                 </td>
                                                             </tr>
 
+                                                            <!--  "----------" -->
+
+                                                            <textarea rows="14" class="copyright"
+                                                                      style="width: 420px; resize: none;"
+                                                                      name="txObservaciones" <? echo($editable == 1 ? '' : "disabled='disabled'"); ?>
+              id="txObservaciones"><?
+                                                                echo $txObservaciones;
+                                                                ?></textarea>
+                                                            <!--  "----------" -->
                                                             <tr bgcolor="#D9E3EC">
                                                                 <td height="5" colspan="3" bgcolor="#D9E3EC"
                                                                     class="lineabajodereizq"><img
@@ -477,57 +380,3 @@ elseif (($enviarNotificacion == 1) && ($accion == 'GrabarObservaciones')):
     </FORM>
     </body>
     </html>
-
-<? else: //ACCION NO EJECUTADA, MUESTRO EL FANCY
-    ?>
-
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-    <html>
-    <head>
-        <? require_once $pathClases . "lib/gral_js.php"; ?>
-        <script type="text/javascript" language="javascript">
-            function CerrarFancy() {
-                window.parent.jQuery.fancybox.close();
-
-                return false;
-            }
-
-            function GrabarObservaciones() {
-                document.Form.accion.value = 'GrabarObservaciones';
-                document.Form.submit();
-            }
-
-            function BorrarObservaciones() {
-                document.Form.accion.value = 'BorrarObservaciones';
-                document.Form.submit();
-            }
-
-            function BuscarObservaciones(obj) {
-                document.Form.accion.value = 'BuscarObservaciones';
-                document.Form.selTipoObservacion.value = obj.value;
-                document.Form.submit();
-            }
-        </script>
-    </head>
-    <body class="fancy" bgcolor="#FFFFFF" background="<? echo $pathRaiz ?>imagenes/fondo_pantalla.gif" leftmargin="0"
-          topmargin="0" marginwidth="0" marginheight="0"
-          onLoad="<? if ($editable == 1): ?>document.Form.txObservaciones.focus(); <? endif; ?>">
-
-
-
-    <!--  "----------" -->
-
-    <textarea rows="14" class="copyright"
-              style="width: 420px; resize: none;"
-              name="txObservaciones" <? echo($editable == 1 ? '' : "disabled='disabled'"); ?>
-              id="txObservaciones"><?
-       echo $txObservaciones;
-        ?></textarea>
-    <!--  "----------" -->
-
-    </body>
-    </html>
-
-<?
-endif; //FIN QUE HACER CON EL FANCY
-?>
