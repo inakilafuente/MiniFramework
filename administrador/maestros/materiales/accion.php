@@ -30,6 +30,32 @@ include $pathRaiz . "busqueda_recordar.php";
 
 //COMPRUEBO DATOS OBLIGATORIOS
 //COMPROBAR LA NO EXISTENCIA DE CAMPOS OBLIGATORIOS VACÍOS
+unset($arr_tx);
+$i                   = 0;
+$arr_tx[$i]["err"]   = $auxiliar->traduce("Nº Material", $administrador->ID_IDIOMA);
+$arr_tx[$i]["valor"] = $txMaterial;
+$i++;
+$arr_tx[$i]["err"]   = $auxiliar->traduce("Descripcion Material", $administrador->ID_IDIOMA);
+$arr_tx[$i]["valor"] = $txDesc_esp;
+$i++;
+$arr_tx[$i]["err"]   = $auxiliar->traduce("Descripcion material ingles", $administrador->ID_IDIOMA);
+$arr_tx[$i]["valor"] = $txDesc_eng;
+$i++;
+$arr_tx[$i]["err"]   = $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA);
+$arr_tx[$i]["valor"] = $txFamiliaMaterial;
+$i++;
+$arr_tx[$i]["err"]   = $auxiliar->traduce("Familia Repro", $administrador->ID_IDIOMA);
+$arr_tx[$i]["valor"] = $txFamiliaRepro;
+$i++;
+$arr_tx[$i]["err"]   = $auxiliar->traduce("Numerador conversion", $administrador->ID_IDIOMA);
+$arr_tx[$i]["valor"] = $txNumerador;
+$i++;
+$arr_tx[$i]["err"]   = $auxiliar->traduce("Denominador conversion", $administrador->ID_IDIOMA);
+$arr_tx[$i]["valor"] = $txDenominador;
+$i++;
+$comp->ComprobarTexto($arr_tx, "CampoSinRellenar");
+
+unset($arr_tx);
 
 
 if ($accion == "Modificar"):
@@ -94,6 +120,7 @@ $chBaja=0;
                 ,REFERENCIA_AUTOMATICA='0'
                 ,FECHA_CREACION='" . date('Y-m-d H:i:s'). "'
                 ,FK_USUARIO_CREACION='" . $administrador->ID_ADMINISTRADOR ."'
+                ,FK_USUARIO_ULTIMA_MODIFICACION='" . $administrador->ID_ADMINISTRADOR ."'
                 ,FECHA_ULTIMA_MODIFICACION='" . date('Y-m-d H:i:s'). "'
                 ,FK_FAMILIA_MATERIAL='" . trim( (string)$bd->escapeCondicional($txFamiliaMaterial)) . "'
                 ,FK_FAMILIA_REPRO='" . trim( (string)$bd->escapeCondicional($txFamiliaRepro)) . "'

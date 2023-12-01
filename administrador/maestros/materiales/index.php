@@ -1171,6 +1171,8 @@ endif;
                                                                     class="blanco"><? $navegar->GenerarColumna($auxiliar->traduce("O", $administrador->ID_IDIOMA), "enlaceCabecera", "incidencia_sistema_tipo_eng", $pathRaiz) ?></td>
                                                                 <td height="19" bgcolor="#2E8AF0"
                                                                     class="blanco"><? $navegar->GenerarColumna($auxiliar->traduce("Baja", $administrador->ID_IDIOMA), "enlaceCabecera", "baja", $pathRaiz); ?></td>
+                                                                <td height="19" bgcolor="#2E8AF0"
+                                                                    class="blanco"><? $navegar->GenerarColumna($auxiliar->traduce("Etiqueta", $administrador->ID_IDIOMA), "enlaceCabecera", "etiqueta", $pathRaiz); ?></td>
                                                             </tr>
                                                             <? // MUESTRO LAS COINCIDENCIAS CON LA BUSQUEDA
                                                             $i = 0;
@@ -1290,6 +1292,19 @@ endif;
                                                                         if($row->BAJA == 0 || $row->BAJA == "0") echo $auxiliar->traduce("No", $administrador->ID_IDIOMA);
                                                                         else echo $auxiliar->traduce("Si", $administrador->ID_IDIOMA);
                                                                         ?>
+                                                                    </td>
+                                                                    <td height="18" align="center"
+                                                                        bgcolor="<? echo $myColor ?>"
+                                                                        class="enlaceceldas">
+
+                                                                        <a name="referencia" href="impEtiquetaPDF.php?referencia=<?= $row->REFERENCIA_SCS; ?>"
+                                                                               class="fancyboxUnidad">
+                                                                                <img
+                                                                                        src="<?= $pathRaiz ?>imagenes/form.png"
+                                                                                        name="Etiqueta"
+                                                                                        border="0"/>
+                                                                            </a>
+
                                                                     </td>
                                                                 </tr>
                                                             <?

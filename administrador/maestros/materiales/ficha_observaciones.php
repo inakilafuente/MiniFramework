@@ -313,8 +313,15 @@ endif;
                                                                     </table>
                                                                 </td>
                                                                 <td width="4" bgcolor="#D9E3EC" class="lineaderecha">
-                                                                    &nbsp;
+
                                                                 </td>
+                                                            </tr>
+
+                                                            <tr bgcolor="#D9E3EC">
+                                                                <td height="5" colspan="3" bgcolor="#D9E3EC"
+                                                                    class="lineabajodereizq"><img
+                                                                            src="<? echo $pathRaiz ?>imagenes/transparente.gif"
+                                                                            width="10" height="5"></td>
                                                             </tr>
 
                                                             <!--  "----------" -->
@@ -326,17 +333,11 @@ endif;
                                                                 echo $txObservaciones;
                                                                 ?></textarea>
                                                             <!--  "----------" -->
-                                                            <tr bgcolor="#D9E3EC">
-                                                                <td height="5" colspan="3" bgcolor="#D9E3EC"
-                                                                    class="lineabajodereizq"><img
-                                                                            src="<? echo $pathRaiz ?>imagenes/transparente.gif"
-                                                                            width="10" height="5"></td>
-                                                            </tr>
                                                         </table>
                                                         <img src="<? echo $pathRaiz ?>imagenes/transparente.gif"
                                                              width="10" height="5"></td>
                                                     <td width="20" align="center" valign="bottom"
-                                                        class="lineaizquierda">&nbsp;
+                                                        class="lineaizquierda">
                                                     </td>
                                                 </tr>
                                             </table>

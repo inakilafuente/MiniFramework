@@ -26,6 +26,7 @@ function pintar_arbol($vector){
     echo "<ul>";
     for ($i=count($vector)-1;$i>=0;$i--){
         echo "<li>".$vector[$i];
+        echo "<ul>";
         echo "</li>";
     }
     echo "</ul>";
