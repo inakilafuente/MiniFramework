@@ -35,7 +35,7 @@ $bd->begin_transaction();
 
 //VARIABLE PARA SABER SI SE HAN PRODUCIDO ERRORES
 $errorImportacionDatos = false;
-
+var_dump($_POST);
 //RECORRO LAS LINEAS
 foreach ($_POST as $clave => $valor):
 
@@ -45,9 +45,15 @@ foreach ($_POST as $clave => $valor):
         $linea = substr( (string) $clave, 8);
 
         //OBTENGO LOS DATOS DE LA FILA
-        $incidenciaSistemaTipo    = ${"txIncidenciaSistemaTipo_" . $linea};
-        $incidenciaSistemaTipoEng  = ${"txIncidenciaSistemaTipoEng_" . $linea};
-        $baja   = ${"txBaja_" . $linea};
+        $NumMaterial_    = ${"NumMaterial_" . $linea};
+        $Desc_ESP_=${"Desc_ESP_" . $linea};
+        $Desc_ENG_=${"Desc_ENG_" . $linea};
+        $Estatus_Material_=${"Estatus_Material_" . $linea};
+        $Tipo_Material_=${"Tipo_Material_" . $linea};
+        $Baja_=${"Baja_" . $linea};
+        $Numerador_Conversion_=${"Numerador_Conversion_" . $linea};
+        $Denominador_Conversion_=${"Denominador_Conversion_" . $linea};
+        $Observaciones_=${"Observaciones_" . $linea};
 
         //COMPROBACIONES DE DATOS OBLIGATORIOS RELLENADOS
         //INCIDENCIA SISTEMA TIPO

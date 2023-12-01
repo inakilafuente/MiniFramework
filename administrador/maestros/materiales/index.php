@@ -295,6 +295,12 @@ endif;
     <? require_once $pathClases . "lib/gral_js.php"; ?>
     <script type="text/javascript">
         jQuery(document).ready(function () {
+            jQuery("a.copyrightbotonesfancyboxImportacion").fancybox({
+                'type': 'iframe',
+                'width': '100%',
+                'height': '100%',
+                'hideOnOverlayClick': false
+            });
             jQuery("a.fancyboxFamiliaMaterial").fancybox({
                 'type': 'iframe',
                 'width': '100%',
@@ -1068,7 +1074,7 @@ endif;
                                                                     <ul>
                                                                         <li>
                                                                             <a href="ficha_importancion_excel_paso1.php"
-                                                                               class="copyright botones fancyboxImportacion">
+                                                                               class="copyrightbotonesfancyboxImportacion">
                                                                                 <img
                                                                                         src="<?= $pathRaiz ?>imagenes/excel.png"
                                                                                         border="0"/>
@@ -1079,7 +1085,7 @@ endif;
                                                                         </li>
                                                                         <li>
                                                                             <a href="ficha_importacion_csv_paso1.php"
-                                                                               class="copyright botones fancyboxImportacion">
+                                                                               class="copyrightbotonesfancyboxImportacion">
                                                                                 <img
                                                                                         src="<?= $pathRaiz ?>imagenes/add_document.png"
                                                                                         border="0"/>
@@ -1090,7 +1096,7 @@ endif;
                                                                         </li>
                                                                         <li>
                                                                             <a href="ficha_importacion_copiar_pegar_paso1.php"
-                                                                               class="copyright botones fancyboxImportacion">
+                                                                               class="copyrightbotonesfancyboxImportacion">
                                                                                 <img
                                                                                         src="<?= $pathRaiz ?>imagenes/edit_form.png"
                                                                                         name="DeshacerAnulaciones"
@@ -1306,7 +1312,7 @@ endif;
                                                                         <a name="referencia" href="impEtiquetaPDF.php?referencia=<?= $row->REFERENCIA_SCS; ?>"
                                                                                class="fancybox">
                                                                                 <img
-                                                                                        src="<?= $pathRaiz ?>imagenes/form.png"
+                                                                                        src="<?= $pathRaiz ?>imagenes/botones/etiqueta.png"
                                                                                         name="Etiqueta"
                                                                                         border="0"/>
                                                                             </a>

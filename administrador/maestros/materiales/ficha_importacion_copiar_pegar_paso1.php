@@ -151,12 +151,49 @@ $txLineasCamposEjemplo = $auxiliar->traduce("Ejemplo", $administrador->ID_IDIOMA
                                                                     <br><br>
                                                                     &nbsp;- <?= $auxiliar->traduce("Debe añadir los siguientes campos en orden y separados por una", $administrador->ID_IDIOMA) . " |:" ?>
                                                                     <br><br>
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Incidencia Sistema Tipo", $administrador->ID_IDIOMA) ?>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Nº material", $administrador->ID_IDIOMA) ?>
                                                                     <br>
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Incidencia Sistema Tipo Eng.", $administrador->ID_IDIOMA) . " (" . $auxiliar->traduce("Puede estar vacio", $administrador->ID_IDIOMA) . ")" ?>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Descripcion material", $administrador->ID_IDIOMA) ?>
                                                                     <br>
-                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Baja", $administrador->ID_IDIOMA) ?>
-                                                                    <br><br>
+                                                                    <br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Descripcion material ingles", $administrador->ID_IDIOMA) ?>
+                                                                    <br>
+                                                                    <br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Estatus Material", $administrador->ID_IDIOMA). " (" . "01 / 01-Bloqueo General / Bloqueo General ". ")"  ?>
+                                                                    <br>
+                                                                    <br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Tipo Material", $administrador->ID_IDIOMA)?>
+                                                                    <br>
+                                                                    <br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Baja", $administrador->ID_IDIOMA) . " (" . $auxiliar->traduce("Y/N", $administrador->ID_IDIOMA) . ")" ?>
+                                                                    <br>
+                                                                    <br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) . " (" . "1 / 1-Material Eléctrico, Electrónico Y Cableado / Material Eléctrico, Electrónico Y Cableado ". ")"  ?>
+                                                                    <br>
+                                                                    <br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Familia Repro", $administrador->ID_IDIOMA) . " (" . "10101 / 10101-Arena / Arena ". ")"  ?>
+                                                                    <br>
+                                                                    <br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Marca", $administrador->ID_IDIOMA) . " (" . $auxiliar->traduce("Puede estar vacio", $administrador->ID_IDIOMA) . ")" ?>
+                                                                    <br>
+                                                                    <br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Modelo", $administrador->ID_IDIOMA) . " (" . $auxiliar->traduce("Puede estar vacio", $administrador->ID_IDIOMA) . ")" ?>
+                                                                    <br>
+                                                                    <br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Unidad de medida", $administrador->ID_IDIOMA) . " (" . "KG / KG-Kilogramo / Kilogramo ". ")"  ?>
+                                                                    <br>
+                                                                    <br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Unidad de compra", $administrador->ID_IDIOMA) . " (" . "AER / AER-AEROSOL / AEROSOL ". ")"  ?>
+                                                                    <br>
+                                                                    <br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Numerador conversion", $administrador->ID_IDIOMA)?>
+                                                                    <br>
+                                                                    <br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Denominador conversion", $administrador->ID_IDIOMA)?>
+                                                                    <br>
+                                                                    <br>
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Observaciones material", $administrador->ID_IDIOMA). " (" . $auxiliar->traduce("Puede estar vacio", $administrador->ID_IDIOMA) . ")" ?>
+                                                                    <br>
                                                                     &nbsp;- <?= $auxiliar->traduce("Pulse intro para generar una linea nueva.", $administrador->ID_IDIOMA) ?>
                                                                     <br><br>
                                                                 </span>

@@ -85,7 +85,7 @@ if ($referencia != ""):
             $tamañoLetra = $tamañoLetra - 10;
             $fpdf->SetFont('Times', '', $tamañoLetra);
         } while ((int)$fpdf->GetStringWidth($row->REFERENCIA_SCS) > 284);
-        $valueQR=$row->REFERENCIA_SCS."/".$row->FK_FAMILIA_REPRO."/".acortar($row->ESTATUS_MATERIAL);
+        $valueQR=$row->REFERENCIA_SCS.SEPARADOR_MATERIAL_PDA.$row->FK_FAMILIA_REPRO.SEPARADOR_MATERIAL_PDA.acortar($row->ESTATUS_MATERIAL);
         //PINTAMOS EL CODIGO QR
         $qrcode = new QRcode($valueQR, 'H'); // error level : L, M, Q, H
         $qrcode->disableBorder();
@@ -126,13 +126,13 @@ if ($referencia != ""):
 
         $fpdf->Text(20, 150, "Marca / Brand:");
         if(($row->MARCA)==null){
-            $fpdf->Text(20, 160, "- / -");
+            $fpdf->Text(20, 160, "-");
         }else{
             $fpdf->Text(20, 160, $row->MARCA);
         }
         $fpdf->Text(20, 170, "Modelo / Model:");
         if(($row->MODELO)==null){
-            $fpdf->Text(20, 180, "- / -");
+            $fpdf->Text(20, 180, "-");
         }else{
             $fpdf->Text(20, 180, $row->MODELO);
         }
