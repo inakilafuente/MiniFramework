@@ -313,6 +313,12 @@ endif;
                 'height': '100%',
                 'hideOnOverlayClick': false
             });
+            jQuery("a.fancyboxEtiqueta").fancybox({
+                'type': 'iframe',
+                'width': '100%',
+                'height': '100%',
+                'hideOnOverlayClick': false
+            });
         });
 
         function exportarExcel() {
@@ -1298,7 +1304,7 @@ endif;
                                                                         class="enlaceceldas">
 
                                                                         <a name="referencia" href="impEtiquetaPDF.php?referencia=<?= $row->REFERENCIA_SCS; ?>"
-                                                                               class="fancyboxUnidad">
+                                                                               class="fancybox">
                                                                                 <img
                                                                                         src="<?= $pathRaiz ?>imagenes/form.png"
                                                                                         name="Etiqueta"

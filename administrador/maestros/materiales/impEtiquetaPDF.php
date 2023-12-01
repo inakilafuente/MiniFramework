@@ -16,6 +16,14 @@ define('FPDF_FONTPATH', $pathClases . 'lib/pdfb/pdfb/fpdf_fpdi/font/');
 require_once $pathClases . "lib/pdfb/pdfb/pdfb.php";
 
 require_once($pathClases . 'lib/qrcode/qrcode.class.php');
+function acortar($cadena){
+    $valores=explode(" ",$cadena);
+    if(intval($valores[0][0])>=0&&intval($valores[0][1])>0){
+        return $valores[0][0].$valores[0][1];
+    }else{
+        return $valores[0][0].$valores[1][0];
+    }
+}
 
 session_start();
 include $pathRaiz . "seguridad_admin.php";
@@ -77,11 +85,11 @@ if ($referencia != ""):
             $tamañoLetra = $tamañoLetra - 10;
             $fpdf->SetFont('Times', '', $tamañoLetra);
         } while ((int)$fpdf->GetStringWidth($row->REFERENCIA_SCS) > 284);
-
+        $valueQR=$row->REFERENCIA_SCS."/".$row->FK_FAMILIA_REPRO."/".acortar($row->ESTATUS_MATERIAL);
         //PINTAMOS EL CODIGO QR
-        $qrcode = new QRcode($row->REFERENCIA_SCS, 'H'); // error level : L, M, Q, H
+        $qrcode = new QRcode($valueQR, 'H'); // error level : L, M, Q, H
         $qrcode->disableBorder();
-        $qrcode->displayFPDF($fpdf, 230, 30, 15);
+        $qrcode->displayFPDF($fpdf, 180, 120, 75);
 
         //IMPRIMO LA REFERENCIA
         $fpdf->Text(20, 20, "REF.:");
@@ -95,25 +103,44 @@ if ($referencia != ""):
         do {
             $tamañoLetra = $tamañoLetra - 10;
             $fpdf->SetFont('Times', '', $tamañoLetra);
-        } while ((int)$fpdf->GetStringWidth($row->REFERENCIA_SCS) > 284);
+        } while ((int)$fpdf->GetStringWidth($row->NOMBRE_FAMILIA." / ".$row->NOMBRE_FAMILIA_ENG) > 284);
         $fpdf->Text(20, 90, "Familia Material / Material Family:");
         $fpdf->Text(20, 100, $row->NOMBRE_FAMILIA." / ".$row->NOMBRE_FAMILIA_ENG);
+        //var_dump($tamañoLetra);
+        //SI NO VA A CABER
+        $tamañoLetra = 30;
+        $fpdf->SetFont('Times', '', $tamañoLetra);
+        do {
+            $tamañoLetra = $tamañoLetra - 10;
+            $fpdf->SetFont('Times', '', $tamañoLetra);
+        } while ((int)$fpdf->GetStringWidth($row->REFERENCIA." - ".$row->FAMILIA_REPRO) > 284);
+        //var_dump($tamañoLetra);
         $fpdf->Text(20, 110, "Familia Repro / Repro Family:");
         $fpdf->Text(20, 120, $row->REFERENCIA." - ".$row->FAMILIA_REPRO);
         $fpdf->Text(20, 130, "Estatus Material / Material Status:");
-        $fpdf->Text(20, 140, $row->ESTATUS_MATERIAL." / ".$auxiliar->traduce($row->ESTATUS_MATERIAL, 'ENG'));
+        if($row->ESTATUS_MATERIAL==null){
+            $fpdf->Text(20, 140, "-"." / "."-");
+        }else{
+            $fpdf->Text(20, 140, $row->ESTATUS_MATERIAL." / ".$auxiliar->traduce($row->ESTATUS_MATERIAL, 'ENG'));
+        }
+
         $fpdf->Text(20, 150, "Marca / Brand:");
         if(($row->MARCA)==null){
-            $row->MARCA='-';
+            $fpdf->Text(20, 160, "- / -");
+        }else{
+            $fpdf->Text(20, 160, $row->MARCA);
         }
-        if(($row->MODELO)==null){
-            $row->MODELO='-';
-        }
-        $fpdf->Text(20, 160, $row->MARCA." / ".$auxiliar->traduce($row->MARCA, 'ENG'));
         $fpdf->Text(20, 170, "Modelo / Model:");
-        $fpdf->Text(20, 180, $row->MODELO." / ".$auxiliar->traduce($row->MODELO, 'ENG'));
+        if(($row->MODELO)==null){
+            $fpdf->Text(20, 180, "- / -");
+        }else{
+            $fpdf->Text(20, 180, $row->MODELO);
+        }
+
+
+
         //IMPRIMO LA IMAGEN DE ACCIONA
-        $fpdf->Image('../../imagenes/logo_acciona_energia.jpg', 230, 8, 40, 0, 'jpg'); //IMAGEN ACCIONA
+        $fpdf->Image('../../imagenes/logo_acciona_energia.jpg', 180, 8, 90, 0, 'jpg'); //IMAGEN ACCIONA
 
 
 
