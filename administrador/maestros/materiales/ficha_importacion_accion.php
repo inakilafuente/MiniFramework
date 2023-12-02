@@ -13,6 +13,7 @@ require_once $pathClases . "lib/auxiliar.php";
 require_once $pathClases . "lib/pedido.php";
 require_once $pathClases . "lib/material.php";
 
+
 session_start();
 include $pathRaiz . "seguridad_admin.php";
 
@@ -35,7 +36,6 @@ $bd->begin_transaction();
 
 //VARIABLE PARA SABER SI SE HAN PRODUCIDO ERRORES
 $errorImportacionDatos = false;
-var_dump($_POST);
 //RECORRO LAS LINEAS
 foreach ($_POST as $clave => $valor):
 
@@ -48,13 +48,20 @@ foreach ($_POST as $clave => $valor):
         $NumMaterial_    = ${"NumMaterial_" . $linea};
         $Desc_ESP_=${"Desc_ESP_" . $linea};
         $Desc_ENG_=${"Desc_ENG_" . $linea};
+        $Marca_=${"Marca_" . $linea};
+        $Modelo_=${"Modelo_" . $linea};
         $Estatus_Material_=${"Estatus_Material_" . $linea};
         $Tipo_Material_=${"Tipo_Material_" . $linea};
+        $Familia_Material_=${"Familia_Material_". $linea};
+        $Familia_Repro_=${"Familia_Material_". $linea};
+        $Unidad_Medida=${"Unidad_Medida_". $linea};
+        $Unidad_Compra=${"Unidad_Compra_". $linea};
         $Baja_=${"Baja_" . $linea};
         $Numerador_Conversion_=${"Numerador_Conversion_" . $linea};
         $Denominador_Conversion_=${"Denominador_Conversion_" . $linea};
         $Observaciones_=${"Observaciones_" . $linea};
 
+        /*
         //COMPROBACIONES DE DATOS OBLIGATORIOS RELLENADOS
         //INCIDENCIA SISTEMA TIPO
         if ($incidenciaSistemaTipo == ""):
@@ -67,43 +74,171 @@ foreach ($_POST as $clave => $valor):
         endif;
 
         //FIN COMPROBACIONES DE DATOS RELLENADOS
-
+*/
         //COMPROBACION VALORES DUPLICADOS
         $rowRepetido = false;
 
         //PARSEO DEL CAMPO 'BAJA' A ENTERO
-        if ($baja == '1'):
-            $baja = 1;
+        if ($Baja_ == 'Y' || $Baja_=='y' || $Baja_=='1'):
+            $Baja_ = 1;
         else:
-            $baja = 0;
+            $Baja_ = 0;
         endif;
 
-        // COMPRUEBO NO CREADO OTRO CON IGUAL CAMPO
-        $sql          = "SELECT ID_INCIDENCIA_SISTEMA_TIPO, COUNT(ID_INCIDENCIA_SISTEMA_TIPO) as NUM_REGS FROM INCIDENCIA_SISTEMA_TIPO WHERE INCIDENCIA_SISTEMA_TIPO='" . trim( (string)$bd->escapeCondicional($incidenciaSistemaTipo)) . "' AND INCIDENCIA_SISTEMA_TIPO_ENG='" . trim( (string)$bd->escapeCondicional($incidenciaSistemaTipoEng)) . "' AND BAJA='" . trim( (string)$bd->escapeCondicional($baja)) . "'";
+        //COMPRUEBO NO CREADO OTRO CON IGUAL CAMPO
+        $sql          = "SELECT ID_MATERIALES FROM MATERIALES WHERE REFERENCIA_SCS=" . trim( (string)$bd->escapeCondicional($NumMaterial_)) ;
         $resultNumero = $bd->ExecSQL($sql);
         $rowNumero    = $bd->SigReg($resultNumero);
 
-        if ($rowNumero->NUM_REGS == 1):
+        // COMPRUEBO ESTATUS EXISTE
+        $sqlEstatus_Material          = "SELECT COLUMN_TYPE
+                                            FROM INFORMATION_SCHEMA.COLUMNS
+                                            WHERE TABLE_NAME='MATERIALES'
+                                            AND COLUMN_NAME ='ESTATUS_MATERIAL'";
+        $resultEstatus_Material = $bd->ExecSQL($sqlEstatus_Material);
+        if($resultEstatus_Material->num_rows>0){
+            $rowEstatus_Material   = $resultEstatus_Material->fetch_assoc();
+            $lista_enum=explode(",",str_replace("'","",substr($rowEstatus_Material['COLUMN_TYPE'], 5,(strlen($rowEstatus_Material['COLUMN_TYPE'])-6))));
+            $result = array_filter($lista_enum, function ($item) use ($Estatus_Material_) {
+                if (stripos($item, $Estatus_Material_) !== false) {
+                    return true;
+                }
+                return false;
+            });
+            if(count($result)<1){
+                echo("Error el Estatus de Materiral no existe");
+                die;
+            }
+        }else{
+            echo("Error el Estatus de Materiral no existe");
+            die;
+        }
+
+        //FIN COMPROBACION ESTATUS EXISTE
+
+        // COMPRUEBO FAMILIA MATERIAL EXISTE
+        $sqlFamilia_Material          = "SELECT ID_FAMILIA_MATERIAL
+                                            FROM FAMILIA_MATERIAL
+                                            WHERE ID_FAMILIA_MATERIAL like ".$Familia_Material_;
+
+        $resultFamilia_Material = $bd->ExecSQL($sqlFamilia_Material);
+        $rowFamilia_Material    = $bd->SigReg($resultFamilia_Material);
+        if($rowFamilia_Material<1){
+            $sqlFamilia_Material          = "SELECT ID_FAMILIA_MATERIAL
+                                            FROM FAMILIA_MATERIAL
+                                            WHERE NOMBRE_FAMILIA like ".$Familia_Material_;
+
+            $resultFamilia_Material = $bd->ExecSQL($sqlFamilia_Material);
+            $rowFamilia_Material    = $bd->SigReg($resultFamilia_Material);
+            if($rowFamilia_Material<1){
+                echo ("Error la Familia introducida no existe");
+            }
+        }
+
+        //FIN COMPROBACION FAMILIA MATERIAL EXISTE
+
+        // COMPRUEBO FAMILIA REPRO EXISTE
+        $sqlFamilia_Material          = "SELECT ID_FAMILIA_REPRO
+                                            FROM FAMILIA_REPRO
+                                            WHERE ID_FAMILIA_REPRO like ".$Familia_Repro_;
+
+        $resultFamilia_Material = $bd->ExecSQL($sqlFamilia_Material);
+        $rowFamilia_Material    = $bd->SigReg($resultFamilia_Material);
+        if($rowFamilia_Material<1){
+            $sqlFamilia_Material          = "SELECT ID_FAMILIA_REPRO
+                                            FROM FAMILIA_REPRO
+                                            WHERE FAMILIA_REPRO like ".$Familia_Repro_;
+
+            $resultFamilia_Material = $bd->ExecSQL($sqlFamilia_Material);
+            $rowFamilia_Material    = $bd->SigReg($resultFamilia_Material);
+            if($rowFamilia_Material<1){
+                echo ("Error la Familia introducida no existe");
+            }
+        }
+
+        //FIN COMPROBACION FAMILIA REPRO EXISTE
+
+
+        // COMPRUEBO UNIDAD COMPRA EXISTE
+        $sqlUnidadCompra          = "SELECT ID_UNIDAD
+                                            FROM UNIDAD
+                                            WHERE ES_UNIDAD_COMPRA =1 AND UNIDAD LIKE '".$Unidad_Compra."'";
+
+        $resultUnidadCompra = $bd->ExecSQL($sqlUnidadCompra);
+        $rowUnidadCompra    = $bd->SigReg($resultUnidadCompra);
+        $Unidad_Compra=$rowUnidadCompra->ID_UNIDAD;
+        if($rowUnidadCompra<1){
+                echo ("Error la Unidad introducida no existe");
+
+        }
+
+        //FIN COMPROBACION UNIDAD MEDIDA EXISTE
+
+        // COMPRUEBO UNIDAD COMPRA EXISTE
+        $sqlUnidadMedida         = "SELECT ID_UNIDAD
+                                            FROM UNIDAD
+                                            WHERE ES_UNIDAD_MEDIDA =1 AND UNIDAD LIKE '".$Unidad_Medida."'";
+
+        $resultUnidadMedida = $bd->ExecSQL($sqlUnidadMedida);
+        $rowUnidadMedida    = $bd->SigReg($resultUnidadMedida);
+        $Unidad_Medida=$rowUnidadMedida->ID_UNIDAD;
+        if($rowUnidadMedida<1){
+            echo ("Error la Unidad introducida no existe");
+
+        }
+        //FIN COMPROBACION UNIDAD MEDIDA EXISTE
+
+
+        // COMPRUEBO TIPO MATERIAL EXISTE
+        $sqlTipo_Material          = "SELECT COLUMN_TYPE
+                                            FROM INFORMATION_SCHEMA.COLUMNS
+                                            WHERE TABLE_NAME='MATERIALES'
+                                            AND COLUMN_NAME ='TIPO_MATERIAL'";
+        $resultTipo_Material = $bd->ExecSQL($sqlTipo_Material);
+        if($resultTipo_Material->num_rows>0){
+            $rowTipo_Material   = $resultTipo_Material->fetch_assoc();
+            $lista_enum=explode(",",str_replace("'","",substr($rowTipo_Material['COLUMN_TYPE'], 5,(strlen($rowTipo_Material['COLUMN_TYPE'])-6))));
+            if(!in_array($Tipo_Material_,$lista_enum)){
+                echo("Error el Tipo de Materiral no existe");
+                die;
+            }
+        }else{
+            echo("Error el Tipo de Materiral no existe");
+            die;
+        }
+        //FIN COMPROBACION TIPO MATERIAL EXISTE
+
+
+        if ($rowNumero->num_rows>0):
             $rowRepetido = true;
 
             //SE OBTIENE EL CAMPO ANTIGUO
-            $rowTipo = $bd->VerReg("INCIDENCIA_SISTEMA_TIPO", "ID_INCIDENCIA_SISTEMA_TIPO", $rowNumero->ID_INCIDENCIA_SISTEMA_TIPO);
+            $rowTipo = $bd->VerReg("MATERIALES", "ID_MATERIALES", $rowNumero->ID_INCIDENCIA_SISTEMA_TIPO);
         endif;
         //FIN COMPROBACION VALORES DUPLICADOS
 
         if ($rowRepetido == false):
-            //ESTE CONDICIONAL SIRVE PARA DETERMINAR SI SE HA UTILIZADO LA IMPORTACIÓN 'COPIAR Y PEGAR'
-            if (${"txCopiarPegar"} == '0'):
-                $sqlInsert = "INSERT INTO INCIDENCIA_SISTEMA_TIPO
-                              SET INCIDENCIA_SISTEMA_TIPO = '" . ($auxiliar->to_iso88591($bd->escapeCondicional($incidenciaSistemaTipo))) . "' ,
-                                  INCIDENCIA_SISTEMA_TIPO_ENG  = '" . ($auxiliar->to_iso88591($bd->escapeCondicional($incidenciaSistemaTipoEng))) . "' ,
-                                  BAJA = '" . ($bd->escapeCondicional($baja)) . "'";
-            else:
-                $sqlInsert = "INSERT INTO INCIDENCIA_SISTEMA_TIPO
-                              SET INCIDENCIA_SISTEMA_TIPO = '" . ($bd->escapeCondicional($incidenciaSistemaTipo)) . "' ,
-                                  INCIDENCIA_SISTEMA_TIPO_ENG  = '" . ($bd->escapeCondicional($incidenciaSistemaTipoEng)) . "' ,
-                                  BAJA = '" . ($bd->escapeCondicional($baja)) . "'";
-            endif;
+                $sqlInsert = "INSERT INTO MATERIALES SET
+                REFERENCIA_SAP='" . trim( (string)$bd->escapeCondicional($NumMaterial_)) . "'
+                ,REFERENCIA_SCS='" . trim( (string)$bd->escapeCondicional($NumMaterial_)) . "'
+                ,DESCRIPCION_ESP='" . trim( (string)$bd->escapeCondicional($Desc_ESP_)) . "'
+                ,DESCRIPCION_ENG='" . trim( (string)$bd->escapeCondicional($Desc_ENG_)) . "'
+                ,ESTATUS_MATERIAL='" . trim( (string)$bd->escapeCondicional($Estatus_Material_)) . "'
+                ,TIPO_MATERIAL='" . trim( (string)$bd->escapeCondicional($Tipo_Material_)) . "'
+                ,MARCA='" . trim( (string)$bd->escapeCondicional($Marca_)) . "'
+                ,MODELO='" . trim( (string)$bd->escapeCondicional($Modelo_)) . "'
+                ,REFERENCIA_AUTOMATICA='0'
+                ,FECHA_CREACION='" . date('Y-m-d H:i:s'). "'
+                ,FK_USUARIO_CREACION='" . $administrador->ID_ADMINISTRADOR ."'
+                ,FK_USUARIO_ULTIMA_MODIFICACION='" . $administrador->ID_ADMINISTRADOR ."'
+                ,FECHA_ULTIMA_MODIFICACION='" . date('Y-m-d H:i:s'). "'
+                ,FK_FAMILIA_MATERIAL='" . trim( (string)$bd->escapeCondicional($Familia_Material_)) . "'
+                ,FK_FAMILIA_REPRO='" . trim( (string)$bd->escapeCondicional($Familia_Repro_)) . "'
+                ,FK_UNIDAD_MEDIDA='" . trim( (string)$bd->escapeCondicional($Unidad_Medida)) . "'
+                ,FK_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($Unidad_Compra)) . "'
+                ,NUMERADOR='" . trim( (string)$bd->escapeCondicional($Numerador_Conversion_)) . "'
+                ,DENOMINADOR='" . trim( (string)$bd->escapeCondicional($Denominador_Conversion_)) . "'
+                ,BAJA='" . $Baja_ . "'";
             $bd->ExecSQL($sqlInsert);
 
             //OBTENGO ID CREADO
@@ -113,19 +248,27 @@ foreach ($_POST as $clave => $valor):
             $administrador->Insertar_Log_Movimientos($administrador->ID_ADMINISTRADOR, "Creación", "Maestro", $idTipo, "Incidencia Sistema Tipo", "INCIDENCIA_SISTEMA_TIPO");
         else:
             //ESTE CONDICIONAL SIRVE PARA DETERMINAR SI SE HA UTILIZADO LA IMPORTACIÓN 'COPIAR Y PEGAR'
-            if (${"txCopiarPegar"} == '0'):
-            $sqlUpdate = "UPDATE INCIDENCIA_SISTEMA_TIPO
-                          SET INCIDENCIA_SISTEMA_TIPO = '" . ($auxiliar->to_iso88591($bd->escapeCondicional($incidenciaSistemaTipo))) . "' ,
-                              INCIDENCIA_SISTEMA_TIPO_ENG  = '" . ($auxiliar->to_iso88591($bd->escapeCondicional($incidenciaSistemaTipoEng))) . "' ,
-                              BAJA = '" . ($bd->escapeCondicional($baja)) . "'
-                          WHERE ID_INCIDENCIA_SISTEMA_TIPO = '" . $rowNumero->ID_INCIDENCIA_SISTEMA_TIPO . "'";
-            else:
-                $sqlUpdate = "UPDATE INCIDENCIA_SISTEMA_TIPO
-                          SET INCIDENCIA_SISTEMA_TIPO = '" . ($bd->escapeCondicional($incidenciaSistemaTipo)) . "' ,
-                              INCIDENCIA_SISTEMA_TIPO_ENG  = '" . ($bd->escapeCondicional($incidenciaSistemaTipoEng)) . "' ,
-                              BAJA = '" . ($bd->escapeCondicional($baja)) . "'
-                          WHERE ID_INCIDENCIA_SISTEMA_TIPO = '" . $rowNumero->ID_INCIDENCIA_SISTEMA_TIPO . "'";
-            endif;
+            $sqlUpdate = "UPDATE MATERIALES SET
+                REFERENCIA_SAP='" . trim( (string)$bd->escapeCondicional($NumMaterial_)) . "'
+                ,REFERENCIA_SCS='" . trim( (string)$bd->escapeCondicional($NumMaterial_)) . "'
+                ,DESCRIPCION_ESP='" . trim( (string)$bd->escapeCondicional($Desc_ESP_)) . "'
+                ,DESCRIPCION_ENG='" . trim( (string)$bd->escapeCondicional($Desc_ENG_)) . "'
+                ,ESTATUS_MATERIAL='" . trim( (string)$bd->escapeCondicional($Estatus_Material_)) . "'
+                ,TIPO_MATERIAL='" . trim( (string)$bd->escapeCondicional($Tipo_Material_)) . "'
+                ,MARCA='" . trim( (string)$bd->escapeCondicional($Marca_)) . "'
+                ,MODELO='" . trim( (string)$bd->escapeCondicional($Modelo_)) . "'
+                ,REFERENCIA_AUTOMATICA='0'
+                ,FECHA_CREACION='" . date('Y-m-d H:i:s'). "'
+                ,FK_USUARIO_CREACION='" . $administrador->ID_ADMINISTRADOR ."'
+                ,FK_USUARIO_ULTIMA_MODIFICACION='" . $administrador->ID_ADMINISTRADOR ."'
+                ,FECHA_ULTIMA_MODIFICACION='" . date('Y-m-d H:i:s'). "'
+                ,FK_FAMILIA_MATERIAL='" . trim( (string)$bd->escapeCondicional($Familia_Material_)) . "'
+                ,FK_FAMILIA_REPRO='" . trim( (string)$bd->escapeCondicional($Familia_Repro_)) . "'
+                ,FK_UNIDAD_MEDIDA='" . trim( (string)$bd->escapeCondicional($Unidad_Medida)) . "'
+                ,FK_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($Unidad_Compra)) . "'
+                ,NUMERADOR='" . trim( (string)$bd->escapeCondicional($Numerador_Conversion_)) . "'
+                ,DENOMINADOR='" . trim( (string)$bd->escapeCondicional($Denominador_Conversion_)) . "'
+                ,BAJA='" . $Baja_ . "' WHERE ID_MATERIALES=".$NumMaterial_;
             $bd->ExecSQL($sqlUpdate);
 
             //SE OBTIENE EL CAMPO ACTUALIZADO
