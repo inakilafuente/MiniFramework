@@ -34,7 +34,7 @@ if ($logeado):
                 $rutaAbs = $path_raiz . 'documentos/';
         endswitch;
 
-        $rutaArchivoAbs = $rutaAbs . $rutaDocumento;
+        $rutaArchivoAbs = $rutaDocumento;
 
         if (file_exists($rutaArchivoAbs)):
             $mime = mime_content_type($rutaArchivoAbs);

@@ -38,14 +38,12 @@ $bd->begin_transaction();
 $errorImportacionDatos = false;
 //RECORRO LAS LINEAS
 foreach ($_POST as $clave => $valor):
-
     if ((substr( (string) $clave, 0, 8) == 'chLinea_') && ($valor == 1)):
 
         //CALCULO EL NUMERO DE LINEA
         $linea = substr( (string) $clave, 8);
-
         //OBTENGO LOS DATOS DE LA FILA
-        $NumMaterial_    = ${"NumMaterial_" . $linea};
+        $NumMaterial_=${"NumMaterial_" . $linea};
         $Desc_ESP_=${"Desc_ESP_" . $linea};
         $Desc_ENG_=${"Desc_ENG_" . $linea};
         $Marca_=${"Marca_" . $linea};
@@ -86,10 +84,9 @@ foreach ($_POST as $clave => $valor):
         endif;
 
         //COMPRUEBO NO CREADO OTRO CON IGUAL CAMPO
-        $sql          = "SELECT ID_MATERIALES FROM MATERIALES WHERE REFERENCIA_SCS=" . trim( (string)$bd->escapeCondicional($NumMaterial_)) ;
+        $sql          = "SELECT REFERENCIA_SCS FROM MATERIALES WHERE REFERENCIA_SCS=" . trim( (string)$bd->escapeCondicional($NumMaterial_)) ;
         $resultNumero = $bd->ExecSQL($sql);
         $rowNumero    = $bd->SigReg($resultNumero);
-
         // COMPRUEBO ESTATUS EXISTE
         $sqlEstatus_Material          = "SELECT COLUMN_TYPE
                                             FROM INFORMATION_SCHEMA.COLUMNS
@@ -208,15 +205,13 @@ foreach ($_POST as $clave => $valor):
         }
         //FIN COMPROBACION TIPO MATERIAL EXISTE
 
-
-        if ($rowNumero->num_rows>0):
+        if ($rowNumero!=null):
             $rowRepetido = true;
 
             //SE OBTIENE EL CAMPO ANTIGUO
-            $rowTipo = $bd->VerReg("MATERIALES", "ID_MATERIALES", $rowNumero->ID_INCIDENCIA_SISTEMA_TIPO);
+            $rowTipo = $bd->VerReg("MATERIALES", "REFERENCIA_SCS", $NumMaterial_);
         endif;
         //FIN COMPROBACION VALORES DUPLICADOS
-
         if ($rowRepetido == false):
                 $sqlInsert = "INSERT INTO MATERIALES SET
                 REFERENCIA_SAP='" . trim( (string)$bd->escapeCondicional($NumMaterial_)) . "'
@@ -245,7 +240,7 @@ foreach ($_POST as $clave => $valor):
             $idTipo = $bd->IdAsignado();
 
             // LOG MOVIMIENTOS
-            $administrador->Insertar_Log_Movimientos($administrador->ID_ADMINISTRADOR, "Creación", "Maestro", $idTipo, "Incidencia Sistema Tipo", "INCIDENCIA_SISTEMA_TIPO");
+           // $administrador->Insertar_Log_Movimientos($administrador->ID_ADMINISTRADOR, "Creación", "Maestro", $idTipo, "Incidencia Sistema Tipo", "INCIDENCIA_SISTEMA_TIPO");
         else:
             //ESTE CONDICIONAL SIRVE PARA DETERMINAR SI SE HA UTILIZADO LA IMPORTACIÓN 'COPIAR Y PEGAR'
             $sqlUpdate = "UPDATE MATERIALES SET
@@ -268,14 +263,14 @@ foreach ($_POST as $clave => $valor):
                 ,FK_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($Unidad_Compra)) . "'
                 ,NUMERADOR='" . trim( (string)$bd->escapeCondicional($Numerador_Conversion_)) . "'
                 ,DENOMINADOR='" . trim( (string)$bd->escapeCondicional($Denominador_Conversion_)) . "'
-                ,BAJA='" . $Baja_ . "' WHERE ID_MATERIALES=".$NumMaterial_;
+                ,BAJA='" . $Baja_ . "' WHERE REFERENCIA_SCS=".$NumMaterial_;
             $bd->ExecSQL($sqlUpdate);
 
             //SE OBTIENE EL CAMPO ACTUALIZADO
-            $rowTipoActualizado = $bd->VerReg("INCIDENCIA_SISTEMA_TIPO", "ID_INCIDENCIA_SISTEMA_TIPO", $rowNumero->ID_INCIDENCIA_SISTEMA_TIPO);
+           // $rowTipoActualizado = $bd->VerReg("INCIDENCIA_SISTEMA_TIPO", "ID_INCIDENCIA_SISTEMA_TIPO", $rowNumero->ID_INCIDENCIA_SISTEMA_TIPO);
 
             // LOG MOVIMIENTOS
-            $administrador->Insertar_Log_Movimientos($administrador->ID_ADMINISTRADOR, "Modificación", "Maestro", $rowNumero->ID_INCIDENCIA_SISTEMA_TIPO, "Incidencia Sistema Tipo", "INCIDENCIA_SISTEMA_TIPO", $rowTipo, $rowTipoActualizado);
+           // $administrador->Insertar_Log_Movimientos($administrador->ID_ADMINISTRADOR, "Modificación", "Maestro", $rowNumero->ID_INCIDENCIA_SISTEMA_TIPO, "Incidencia Sistema Tipo", "INCIDENCIA_SISTEMA_TIPO", $rowTipo, $rowTipoActualizado);
 
         endif; //FIN SI CAMPO YA EXISTE/NO EXISTE
     endif; //FIN CHECK MARCADO

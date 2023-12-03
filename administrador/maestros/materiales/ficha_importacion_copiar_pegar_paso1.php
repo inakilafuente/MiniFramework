@@ -150,8 +150,10 @@ $txLineasCamposEjemplo = $auxiliar->traduce("Ejemplo", $administrador->ID_IDIOMA
                                                                     &nbsp;- <?= $auxiliar->traduce("Cada nuevo registro en una linea de texto diferente", $administrador->ID_IDIOMA) . "." ?>
                                                                     <br><br>
                                                                     &nbsp;- <?= $auxiliar->traduce("Debe añadir los siguientes campos en orden y separados por una", $administrador->ID_IDIOMA) . " |:" ?>
-                                                                    <br><br>
+                                                                    <br>
+                                                                    <br>
                                                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Nº material", $administrador->ID_IDIOMA) ?>
+                                                                    <br>
                                                                     <br>
                                                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Descripcion material", $administrador->ID_IDIOMA) ?>
                                                                     <br>

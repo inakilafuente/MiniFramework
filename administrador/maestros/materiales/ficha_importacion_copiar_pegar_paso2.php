@@ -194,7 +194,7 @@ if (count( (array)$arrLineas) > 0):    //HAY LINEAS
             // COMPRUEBO QUE BAJA NO ESTÉ VACÍO
             if ($baja != "") {
                 if (is_numeric($baja)) {
-                    if (($baja != 0) || ($baja != 1)) {
+                    if (($baja != 0) && ($baja != 1)) {
                         $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
                         $strKo .= $auxiliar->traduce("El campo baja no tiene el formato correcto", $administrador->ID_IDIOMA) . ".\n";
                         $filasKo++;
@@ -202,7 +202,7 @@ if (count( (array)$arrLineas) > 0):    //HAY LINEAS
                     }
                 }
                 if (is_string($baja)) {
-                    if (($baja != 'Y') || ($baja != 'y') || ($baja != 'n') || ($baja != 'N')) {
+                    if (($baja != 'Y') && ($baja != 'y') && ($baja != 'n') && ($baja != 'N')) {
                         $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
                         $strKo .= $auxiliar->traduce("El campo baja no tiene el formato correcto", $administrador->ID_IDIOMA) . ".\n";
                         $filasKo++;

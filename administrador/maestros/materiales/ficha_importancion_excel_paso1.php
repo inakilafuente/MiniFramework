@@ -176,12 +176,53 @@ endif;
                                                                             <p><?= $auxiliar->traduce("La primera linea del fichero contiene los titulos. Esta linea no se tendra en cuenta al importar.", $administrador->ID_IDIOMA) ?>
                                                                                 <br/>
                                                                                 <?= $auxiliar->traduce("El orden de las columnas es el siguiente:", $administrador->ID_IDIOMA) ?>
-                                                                                <br/>
-                                                                                - <?= $auxiliar->traduce("Incidencia Sistema Tipo", $administrador->ID_IDIOMA) ?>
-                                                                                <br/>
-                                                                                - <?= $auxiliar->traduce("Incidencia Sistema Tipo Eng.", $administrador->ID_IDIOMA) . " (" . $auxiliar->traduce("Puede estar vacio", $administrador->ID_IDIOMA) . ")" ?>
-                                                                                <br/>
-                                                                                - <?= $auxiliar->traduce("Baja", $administrador->ID_IDIOMA) . " (" . $auxiliar->traduce("0 ó 1", $administrador->ID_IDIOMA) . ")" ?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Nº material", $administrador->ID_IDIOMA) ?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Descripcion material", $administrador->ID_IDIOMA) ?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Descripcion material ingles", $administrador->ID_IDIOMA) ?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Estatus Material", $administrador->ID_IDIOMA). " (" . "01 / 01-Bloqueo General / Bloqueo General ". ")"  ?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Tipo Material", $administrador->ID_IDIOMA)?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Baja", $administrador->ID_IDIOMA) . " (" . $auxiliar->traduce("Y/N", $administrador->ID_IDIOMA) . ")" ?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) . " (" . "1 / 1-Material Eléctrico, Electrónico Y Cableado / Material Eléctrico, Electrónico Y Cableado ". ")"  ?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Familia Repro", $administrador->ID_IDIOMA) . " (" . "10101 / 10101-Arena / Arena ". ")"  ?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Marca", $administrador->ID_IDIOMA) . " (" . $auxiliar->traduce("Puede estar vacio", $administrador->ID_IDIOMA) . ")" ?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Modelo", $administrador->ID_IDIOMA) . " (" . $auxiliar->traduce("Puede estar vacio", $administrador->ID_IDIOMA) . ")" ?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Unidad de medida", $administrador->ID_IDIOMA) . " (" . "KG / KG-Kilogramo / Kilogramo ". ")"  ?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Unidad de compra", $administrador->ID_IDIOMA) . " (" . "AER / AER-AEROSOL / AEROSOL ". ")"  ?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Numerador conversion", $administrador->ID_IDIOMA)?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Denominador conversion", $administrador->ID_IDIOMA)?>
+                                                                                <br>
+                                                                                <br>
+                                                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <?= $auxiliar->traduce("Observaciones material", $administrador->ID_IDIOMA). " (" . $auxiliar->traduce("Puede estar vacio", $administrador->ID_IDIOMA) . ")" ?>
+                                                                                <br>
+                                                                                <br>
                                                                             </p>
                                                                         </td>
                                                                     </tr>
@@ -193,7 +234,7 @@ endif;
                                                                             <p><?= $auxiliar->traduce("Fichero de ejemplo", $administrador->ID_IDIOMA) ?>
                                                                                 :</p>
                                                                             <p>
-                                                                                <a href="<?= $pathRaiz . "descargarDocumento.php?key=ejemplos&ruta=ficheros_ejemplo/Tipos_Ejemplo.xlsx"; ?>">
+                                                                                <a href="<?= $pathRaiz . "descargarDocumento.php?key=ejemplos&ruta=documentos_app/Tipos_Ejemplo.xlsx"; ?>">
                                                                                     <?= $auxiliar->traduce("Ver Excel ejemplo", $administrador->ID_IDIOMA) ?></a>
                                                                             </p>
                                                                         </td>
@@ -201,7 +242,7 @@ endif;
                                                                             <p><?= $auxiliar->traduce("Plantilla", $administrador->ID_IDIOMA) ?>
                                                                                 :</p>
                                                                             <p>
-                                                                                <a href="<?= $pathRaiz . "descargarDocumento.php?key=ejemplos&ruta=ficheros_ejemplo/Tipos_Plantilla.xlsx"; ?>">
+                                                                                <a href="<?= $pathRaiz . "descargarDocumento.php?key=ejemplos&ruta=documentos_app/Tipos_Plantilla.xlsx"; ?>">
                                                                                     <?= $auxiliar->traduce("Ver Plantilla", $administrador->ID_IDIOMA) ?></a>
                                                                             </p>
                                                                         </td>
