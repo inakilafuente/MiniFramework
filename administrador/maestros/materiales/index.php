@@ -16,6 +16,39 @@ require_once $pathClases . "lib/auxiliar.php";
 
 session_start();
 include $pathRaiz . "seguridad_admin.php";
+function acortar($cadena){
+    $valores=explode(" ",$cadena);
+    if(intval($valores[0][0])>=0&&intval($valores[0][1])>0){
+        return $valores[0][0].$valores[0][1];
+    }else{
+        return $valores[0][0].$valores[1][0];
+    }
+}
+function obtenerHijosMateriales($id,$bd,&$vector){
+    $sqlHijos = "SELECT M.ID_MATERIALES ,M.REFERENCIA_SCS , M.DESCRIPCION_ESP , M.DESCRIPCION_ENG ,fr.REFERENCIA, fr.FAMILIA_REPRO , fm.NOMBRE_FAMILIA ,MCA.CANTIDAD ,M.FK_UNIDAD_MEDIDA ,M.AGM ,MCA.BAJA,MCA.MATERIAL_AGM ,MCA.MATERIAL_COMPONENTE  	 FROM MATERIALES M JOIN MATERIAL_COMPONENTE_AGM MCA ON M.ID_MATERIALES=MCA.MATERIAL_AGM JOIN FAMILIA_MATERIAL fm ON M.FK_FAMILIA_MATERIAL = fm.ID_FAMILIA_MATERIAL JOIN FAMILIA_REPRO fr ON M.FK_FAMILIA_REPRO = fr.ID_FAMILIA_REPRO WHERE M.ID_MATERIALES=".$id;
+    $resHijos = $bd->ExecSQL($sqlHijos);
+    $reg=$bd->SigReg($resHijos);
+    while($bd->SigReg($resHijos)!=null){
+        var_dump($reg);
+    }
+    die;
+    if($reg){
+        $vector[]=$reg;
+        if($reg->AGM!=0){
+            $reg=$bd->SigReg($resHijos);
+            if($reg){
+                obtenerHijosMateriales($reg->MATERIAL_COMPONENTE,$bd,$vector);
+            }
+        }
+    }
+}
+
+
+if(isset($_POST['cboxAGM'])){
+    $checkboxcheckedAGM=true;
+}else{
+    $checkboxcheckedAGM=false;
+}
 if(isset($_POST['cboxObservaciones'])){
     $checkboxchecked=true;
 }else{
@@ -142,12 +175,7 @@ if (trim( (string)$txModelo) != ""):
     $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txModelo, $camposBD));
     $textoLista = $textoLista . "&" . $auxiliar->traduce("Modelo", $administrador->ID_IDIOMA) . ": " . $txModelo;
 endif;
-//TECNOLOGIA
-if (trim( (string)$txTecnologia) != ""):
-    $camposBD   = array('MATERIALES_ENG');
-    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txTecnologia, $camposBD));
-    $textoLista = $textoLista . "&" . $auxiliar->traduce("Tecnologia", $administrador->ID_IDIOMA) . ": " . $txTecnologia;
-endif;
+
 //OBSERVACIONES
 if (trim( (string)$txObservaciones) != ""):
     $camposBD   = array('OBSERVACIONES');
@@ -194,13 +222,6 @@ if ($idUnidadCompra != "" || trim( (string)$txUnidadCompra) != ""):
         $sqlTipos = $sqlTipos . ($bd->busquedaTextoArray($txUnidadCompra, $camposBD));
     endif;
     $textoLista = $textoLista . "&" . $auxiliar->traduce("Unidad Compra", $administrador->ID_IDIOMA) . ": " . $txUnidadCompra;
-endif;
-
-//TIPO EÓLICA
-if (trim( (string)$txIncidenciaSistemaTipoEng) != ""):
-    $camposBD   = array('MATERIALES_ENG');
-    $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txIncidenciaSistemaTipoEng, $camposBD));
-    $textoLista = $textoLista . "&" . $auxiliar->traduce("Incidencia Sistema Tipo Eng.", $administrador->ID_IDIOMA) . ": " . $txIncidenciaSistemaTipoEng;
 endif;
 
 //ESTATUS MATERIAL
@@ -287,6 +308,10 @@ if ($exportar_excel == "1"):
     include("exportar_excel.php");
     exit;
 endif;
+
+$vector=array();
+obtenerHijosMateriales(2,$bd,$vector);
+var_dump($vector);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -872,110 +897,8 @@ endif;
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td width="24%" height="20" align="left"
-                                                                            valign="middle"
-                                                                            class="textoazul"><?= $auxiliar->traduce("Tecnología", $administrador->ID_IDIOMA) . ":" ?>
-                                                                        </td>
-                                                                        <td width="24%" align="left" valign="middle">
-                                                                            <?
-                                                                            $TamanoText = "200px";
-                                                                            $ClassText  = "copyright";
-                                                                            $MaxLength  = "50";
-                                                                            $html->TextBox("txTecnologia", $txTecnologia);
-                                                                            ?>
-                                                                            <input type="hidden"
-                                                                                   name="idCategoriaUbicacion"
-                                                                                   id="idCategoriaUbicacion"
-                                                                                   value="<?= $idCategoriaUbicacion ?>"/>
-                                                                            <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_categoria_ubicacion.php?AlmacenarId=0"
-                                                                               class="fancyboxImportacion"
-                                                                               id="categoriasUbicacion"> <img
-                                                                                        src="<?= $pathRaiz ?>imagenes/botones/listado.png"
-                                                                                        alt="<?= $auxiliar->traduce("Buscar Categoría Ubicación", $administrador->ID_IDIOMA) ?>"
-                                                                                        name="Listado"
-                                                                                        border="0" align="absbottom"
-                                                                                        id="Listado"/> </a>
-                                                                            <span id="desplegable_categorias_ubicacion"
-                                                                                  style="display: none;">
-                                                                                <img
-                                                                                        src="<?= $pathClases; ?>lib/ajax_script/img/esperando.gif"
-                                                                                        width="15"
-                                                                                        height="11"
-                                                                                        alt="<?= $auxiliar->traduce("Buscando...", $administrador->ID_IDIOMA) ?>"/>
-                                                                            </span>
 
-                                                                            <div class="entry" align="left"
-                                                                                 id="actualizador_categorias_ubicacion"></div>
-                                                                            <script type="text/javascript"
-                                                                                    language="JavaScript">
-                                                                                new Ajax.Autocompleter('txCategoriaUbicacion', 'actualizador_categorias_ubicacion', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_categoria_ubicacion.php?AlmacenarId=0',
-                                                                                    {
-                                                                                        method: 'post',
-                                                                                        indicator: 'desplegable_categorias_ubicacion',
-                                                                                        minChars: '1',
-                                                                                        afterUpdateElement: function (textbox, valor) {
-                                                                                            siguiente_control(jQuery('#' + this.paramName));
-                                                                                            jQuery(textbox).val(jQuery(valor).children('a').attr('alt'));//VALOR DEL PAR&Aacute;METRO ALT DEL ENLACE <a>
-                                                                                            jQuery('#idCategoriaUbicacion').val(jQuery(valor).children('a').attr('rev'));
-                                                                                        }
-                                                                                    }
-                                                                                );
-                                                                            </script>
 
-                                                                        </td>
-                                                                        </td>
-                                                                        <td width="24%" height="20" align="left"
-                                                                            valign="middle"
-                                                                            class="textoazul"><?= $auxiliar->traduce("Tipo Eólica", $administrador->ID_IDIOMA) . ":" ?>
-                                                                        </td>
-                                                                        <td width="24%" align="left" valign="middle">
-                                                                            <?
-                                                                            $TamanoText = "200px";
-                                                                            $ClassText  = "copyright";
-                                                                            $MaxLength  = "50";
-                                                                            $html->TextBox("txIncidenciaSistemaTipo", $txIncidenciaSistemaTipo);
-                                                                            ?>
-                                                                            <input type="hidden"
-                                                                                   name="idCategoriaUbicacion"
-                                                                                   id="idCategoriaUbicacion"
-                                                                                   value="<?= $idCategoriaUbicacion ?>"/>
-                                                                            <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_categoria_ubicacion.php?AlmacenarId=0"
-                                                                               class="fancyboxImportacion"
-                                                                               id="categoriasUbicacion"> <img
-                                                                                        src="<?= $pathRaiz ?>imagenes/botones/listado.png"
-                                                                                        alt="<?= $auxiliar->traduce("Buscar Categoría Ubicación", $administrador->ID_IDIOMA) ?>"
-                                                                                        name="Listado"
-                                                                                        border="0" align="absbottom"
-                                                                                        id="Listado"/> </a>
-                                                                            <span id="desplegable_categorias_ubicacion"
-                                                                                  style="display: none;">
-                                                                                <img
-                                                                                        src="<?= $pathClases; ?>lib/ajax_script/img/esperando.gif"
-                                                                                        width="15"
-                                                                                        height="11"
-                                                                                        alt="<?= $auxiliar->traduce("Buscando...", $administrador->ID_IDIOMA) ?>"/>
-                                                                            </span>
-
-                                                                            <div class="entry" align="left"
-                                                                                 id="actualizador_categorias_ubicacion"></div>
-                                                                            <script type="text/javascript"
-                                                                                    language="JavaScript">
-                                                                                new Ajax.Autocompleter('txCategoriaUbicacion', 'actualizador_categorias_ubicacion', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_categoria_ubicacion.php?AlmacenarId=0',
-                                                                                    {
-                                                                                        method: 'post',
-                                                                                        indicator: 'desplegable_categorias_ubicacion',
-                                                                                        minChars: '1',
-                                                                                        afterUpdateElement: function (textbox, valor) {
-                                                                                            siguiente_control(jQuery('#' + this.paramName));
-                                                                                            jQuery(textbox).val(jQuery(valor).children('a').attr('alt'));//VALOR DEL PAR&Aacute;METRO ALT DEL ENLACE <a>
-                                                                                            jQuery('#idCategoriaUbicacion').val(jQuery(valor).children('a').attr('rev'));
-                                                                                        }
-                                                                                    }
-                                                                                );
-                                                                            </script>
-
-                                                                        </td>
-                                                                        </td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td width="24%" height="20" align="left"
@@ -991,6 +914,7 @@ endif;
                                                                             ?>
 
                                                                         </td>
+
                                                                         <td width="24%" height="20" align="left"
                                                                             valign="middle"
                                                                             class="textoazul"><?= $auxiliar->traduce("Baja", $administrador->ID_IDIOMA) . ":" ?>
@@ -1015,6 +939,7 @@ endif;
                                                                             ?>
 
                                                                         </td>
+
                                                                         <td height="20" align="left" valign="middle"
                                                                             class="textoazul">&nbsp;</td>
                                                                         <td align="left" valign="middle"></td>
@@ -1024,6 +949,62 @@ endif;
 
 
                                                                     </tr>
+                                <td width="24%" height="20" align="left"
+                                    valign="middle"
+                                    class="textoazul"><?= $auxiliar->traduce("Ver Detalle AGM", $administrador->ID_IDIOMA) . ":" ?>
+                                </td>
+                                <td width="24%" align="left" valign="middle">
+                                    <?
+                                    $TamanoText = "200px";
+                                    $ClassText  = "copyright";
+                                    $MaxLength  = "50";
+                                    $html->Option('cboxAGM','Check',$checkboxcheckedAGM,true);
+                                    ?>
+                                </td>
+                                                        <td width="24%" height="20" align="left"
+                                                            valign="middle"
+                                                            class="textoazul"><?= $auxiliar->traduce("Material AGM", $administrador->ID_IDIOMA) . ":" ?>
+                                                        </td>
+                                                        <td width="24%" align="left" valign="middle">
+                                                            <?
+                                                            $NombreSelect = 'selMaterialAGM';
+                                                            $Elementos_AGM[0]['text'] = $auxiliar->traduce("Si", $administrador->ID_IDIOMA);
+                                                            $Elementos_AGM[0]['valor'] = 'Si';
+                                                            $Elementos_AGM[1]['text'] = $auxiliar->traduce("No", $administrador->ID_IDIOMA);
+                                                            $Elementos_AGM[1]['valor'] = 'No';
+                                                            $Tamano = "205px";
+                                                            $Estilo = "copyright";
+                                                            if (!isset($selAGM)):
+                                                                $selAGM = "No";
+                                                            else:
+                                                                $selAGM = $selAGM;
+                                                            endif;
+                                                            $html->SelectArr($NombreSelect, $Elementos_AGM, $selAGM, $selAGM);
+                                                            ?>
+
+                                                        </td>
+                                                        <tr>
+                                                            <td width="24%" height="20" align="left"
+                                                                valign="middle"
+                                                                class="textoazul">
+                                                            </td>
+                                                            <td width="24%" height="20" align="left"
+                                                                valign="middle"
+                                                                class="textoazul">
+                                                            </td>
+                                                            <td width="24%" height="20" align="left"
+                                                                valign="middle"
+                                                                class="textoazul"><?= $auxiliar->traduce("Componente AGM", $administrador->ID_IDIOMA) . ":" ?>
+                                                            </td>
+                                                            <td width="24%" align="left" valign="middle">
+                                                                <?
+                                                                $TamanoText = "200px";
+                                                                $ClassText  = "copyright";
+                                                                $MaxLength  = "50";
+                                                                $html->TextBox("txComponenteAGM", $txComponenteAGM);
+                                                                ?>
+                                                            </td>
+                                                        </tr>
                                                                 </table>
                                                             </td>
                                                             <td width="4" bgcolor="#D9E3EC" class="lineaderecha">
@@ -1151,6 +1132,7 @@ endif;
                                                         </div>
                                                     </td>
                                                 </tr>
+
                                                 <tr class="lineabajo">
                                                     <td colspan="2" align="center" bgcolor="#D9E3EC">
                                                         <table width="98%" cellpadding="0" cellspacing="2"
@@ -1185,6 +1167,8 @@ endif;
                                                                     class="blanco"><? $navegar->GenerarColumna($auxiliar->traduce("Baja", $administrador->ID_IDIOMA), "enlaceCabecera", "baja", $pathRaiz); ?></td>
                                                                 <td height="19" bgcolor="#2E8AF0"
                                                                     class="blanco"><? $navegar->GenerarColumna($auxiliar->traduce("Etiqueta", $administrador->ID_IDIOMA), "enlaceCabecera", "etiqueta", $pathRaiz); ?></td>
+                                                                <td height="19" bgcolor="#2E8AF0"
+                                                                    class="blanco"><? $navegar->GenerarColumna($auxiliar->traduce("AGM", $administrador->ID_IDIOMA), "enlaceCabecera", "agm", $pathRaiz); ?></td>
                                                             </tr>
                                                             <? // MUESTRO LAS COINCIDENCIAS CON LA BUSQUEDA
                                                             $i = 0;
@@ -1220,10 +1204,40 @@ endif;
                                                                         &nbsp;<? echo (!empty($row->DESCRIPCION_ENG)) ? $row->DESCRIPCION_ENG : '-' ?>
                                                                     </td>
                                                                     <?php }?>
+
+                                                                    <?
+                                                                    $row = $bd->VerReg("MATERIALES", "ID_MATERIALES", $row->ID_MATERIALES);
+                                                                    $eb_bgcolor = "#FFFFFF";
+                                                                    $eb_color   = "";
+                                                                    if ($row->ESTATUS_MATERIAL == '01-Bloqueo General'):
+                                                                        $eb_bgcolor = "#F04343";
+                                                                        $eb_color   = "#FFFFFF";
+                                                                    elseif ($row->ESTATUS_MATERIAL == '02-Obsoleto Fin Existencias (Error)'):
+                                                                        $eb_bgcolor = "#F04343";
+                                                                        $eb_color   = "#FFFFFF";
+                                                                    elseif ($row->ESTATUS_MATERIAL == '03-Código duplicado'):
+                                                                        $eb_bgcolor = "#F04343";
+                                                                        $eb_color   = "#FFFFFF";
+                                                                    elseif ($row->ESTATUS_MATERIAL == '04-Código inutilizable'):
+                                                                        $eb_bgcolor = "#F04343";
+                                                                        $eb_color   = "#FFFFFF";
+                                                                    elseif ($row->ESTATUS_MATERIAL == '05-Obsoleto Fin Existencias (Aviso)'):
+                                                                        $eb_bgcolor = "#E9E238";
+                                                                    elseif ($row->ESTATUS_MATERIAL == '06-Código Solo Fines Logísticos'):
+                                                                        $eb_bgcolor = "#F04343";
+                                                                        $eb_color   = "#FFFFFF";
+                                                                    elseif ($row->ESTATUS_MATERIAL == '07-Solo para Refer. Prov'):
+                                                                        ////////////////////////
+                                                                    elseif ($row->ESTATUS_MATERIAL == 'No bloqueado'):
+                                                                        $eb_bgcolor = "#B3C7DA";
+                                                                    endif;?>
+
+
                                                                     <td height="18" align="left"
-                                                                        bgcolor="<? echo $myColor ?>"
-                                                                        class="enlaceceldas">
-                                                                        &nbsp;<? echo (!empty($row->ESTATUS_MATERIAL)) ? $row->ESTATUS_MATERIAL : '-' ?>
+                                                                        bgcolor="<? echo $eb_bgcolor ?>"
+                                                                        class="enlaceceldas"
+                                                                        style="color: <?echo $eb_color?>">
+                                                                        &nbsp;<? echo (!empty($row->ESTATUS_MATERIAL)) ? acortar($row->ESTATUS_MATERIAL) : '-' ?>
                                                                     </td>
                                                                     <td height="18" align="left"
                                                                         bgcolor="<? echo $myColor ?>"
@@ -1318,6 +1332,14 @@ endif;
                                                                             </a>
 
                                                                     </td>
+                                                                    <td height="18" align="center"
+                                                                        bgcolor="<? echo $myColor ?>"
+                                                                        class="enlaceceldas">
+                                                                        <?
+                                                                        if($row->AGM == 0 || $row->AGM == "0") echo $auxiliar->traduce("No", $administrador->ID_IDIOMA);
+                                                                        else echo $auxiliar->traduce("Si", $administrador->ID_IDIOMA);
+                                                                        ?>
+                                                                    </td>
                                                                 </tr>
                                                             <?
                                                             if ($checkboxchecked): ?>
@@ -1328,7 +1350,32 @@ endif;
                                                                     &nbsp;<? echo (!empty($row->OBSERVACIONES)) ? $row->OBSERVACIONES : '-' ?>
                                                                 </td>
                                                             </tr>
-                                                            <?endif;?>
+                                                                <?endif;?>
+                                                                <?if ($checkboxcheckedAGM): ?>
+                                                                    <tr>
+                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Nivel", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
+                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Ref. Material", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
+                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Material", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
+                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("EM", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
+                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Tipo Material", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
+                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
+                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Familia Repro", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
+                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Cantidad", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
+                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("UB", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
+                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("AGM", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
+                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("B", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
+                                                                    </tr>
+                                                                    <?foreach ($listaAGM as $agm):?>
+                                                                    <tr>
+                                                                        <td><?$auxiliar->traduce("B", $administrador->ID_IDIOMA)?></td>
+                                                                    </tr>
+                                                            <?endforeach;?>
+                                                                    <tr>
+                                                                        <td>Centro comercial Moctezuma</td>
+                                                                        <td>Francisco Chang</td>
+                                                                        <td>Mexico</td>
+                                                                    </tr>
+                                                                <?endif;?>
                                                                 <? $i++;
                                                                 $numeracion++;
                                                             endwhile; ?>
