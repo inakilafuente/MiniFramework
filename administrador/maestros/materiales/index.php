@@ -25,25 +25,38 @@ function acortar($cadena){
     }
 }
 function obtenerHijosMateriales($id,$bd,&$vector){
-    $sqlHijos = "SELECT M.ID_MATERIALES ,M.REFERENCIA_SCS , M.DESCRIPCION_ESP , M.DESCRIPCION_ENG ,fr.REFERENCIA, fr.FAMILIA_REPRO , fm.NOMBRE_FAMILIA ,MCA.CANTIDAD ,M.FK_UNIDAD_MEDIDA ,M.AGM ,MCA.BAJA,MCA.MATERIAL_AGM ,MCA.MATERIAL_COMPONENTE  	 FROM MATERIALES M JOIN MATERIAL_COMPONENTE_AGM MCA ON M.ID_MATERIALES=MCA.MATERIAL_AGM JOIN FAMILIA_MATERIAL fm ON M.FK_FAMILIA_MATERIAL = fm.ID_FAMILIA_MATERIAL JOIN FAMILIA_REPRO fr ON M.FK_FAMILIA_REPRO = fr.ID_FAMILIA_REPRO WHERE M.ID_MATERIALES=".$id;
+    $sqlHijos = "SELECT M.ID_MATERIALES ,M.REFERENCIA_SCS , M.DESCRIPCION_ESP , M.DESCRIPCION_ENG ,M.ESTATUS_MATERIAL,M.TIPO_MATERIAL,fr.REFERENCIA, fr.FAMILIA_REPRO , fm.NOMBRE_FAMILIA ,MCA.CANTIDAD ,M.FK_UNIDAD_MEDIDA ,M.AGM ,MCA.BAJA,MCA.MATERIAL_AGM ,MCA.MATERIAL_COMPONENTE  	 FROM MATERIALES M JOIN MATERIAL_COMPONENTE_AGM MCA ON M.ID_MATERIALES=MCA.MATERIAL_AGM JOIN FAMILIA_MATERIAL fm ON M.FK_FAMILIA_MATERIAL = fm.ID_FAMILIA_MATERIAL JOIN FAMILIA_REPRO fr ON M.FK_FAMILIA_REPRO = fr.ID_FAMILIA_REPRO WHERE M.ID_MATERIALES=".$id;
     $resHijos = $bd->ExecSQL($sqlHijos);
-    $reg=$bd->SigReg($resHijos);
-    while($bd->SigReg($resHijos)!=null){
-        var_dump($reg);
-    }
-    die;
-    if($reg){
-        $vector[]=$reg;
-        if($reg->AGM!=0){
-            $reg=$bd->SigReg($resHijos);
-            if($reg){
-                obtenerHijosMateriales($reg->MATERIAL_COMPONENTE,$bd,$vector);
-            }
-        }
+    while($reg=$bd->SigReg($resHijos)) {
+        $reg->ID_PARENT=$id;
+        $vector[] = $reg;
+        obtenerHijosMateriales($reg->MATERIAL_COMPONENTE, $bd, $vector);
     }
 }
 
+function pintar_tabla_hijos($vector){
+    if(!empty($vector)){
+        echo"<tr><td>";
+        echo "<tr><td>FM</td><td>FR</td><td>MARCA</td></tr>";
 
+        foreach ($vector as $material){
+            echo "<tr>";
+            echo "<td>". "1"."</td>";
+            echo "<td>". $material->ID_MATERIALES."</td>";
+            echo "<td>". $material->DESCRIPCION_ESP."</td>";
+            echo "<td>". acortar($material->ESTATUS_MATERIAL)."</td>";
+            echo "<td>". $material->TIPO_MATERIAL."</td>";
+            echo "<td>". $material->NOMBRE_FAMILIA."</td>";
+            echo "<td>". $material->REFERENCIA."-".$material->FAMILIA_REPRO."</td>";
+            echo "<td>". $material->CANTIDAD."</td>";
+            echo "<td>". $material->FK_UNIDAD_MEDIDA."</td>";
+            echo "<td>". $material->AGM."</td>";
+            echo "<td>". $material->BAJA."</td>";
+            echo "</tr>";
+        }
+        echo "</td></tr>";
+}
+}
 if(isset($_POST['cboxAGM'])){
     $checkboxcheckedAGM=true;
 }else{
@@ -308,10 +321,11 @@ if ($exportar_excel == "1"):
     include("exportar_excel.php");
     exit;
 endif;
-
+/*
 $vector=array();
 obtenerHijosMateriales(2,$bd,$vector);
 var_dump($vector);
+*/
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -1344,7 +1358,7 @@ var_dump($vector);
                                                             <?
                                                             if ($checkboxchecked): ?>
                                                             <tr>
-                                                                <td height="18" align="left"
+                                                                <td colspan="15" height="18" align="left"
                                                                     bgcolor="red"
                                                                     class="copyright">
                                                                     &nbsp;<? echo (!empty($row->OBSERVACIONES)) ? $row->OBSERVACIONES : '-' ?>
@@ -1352,30 +1366,27 @@ var_dump($vector);
                                                             </tr>
                                                                 <?endif;?>
                                                                 <?if ($checkboxcheckedAGM): ?>
+                                                            <!--
                                                                     <tr>
-                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Nivel", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
-                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Ref. Material", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
-                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Material", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
-                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("EM", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
-                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Tipo Material", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
-                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
-                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Familia Repro", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
-                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Cantidad", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
-                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("UB", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
-                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("AGM", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
-                                                                        <th height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("B", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></th>
+                                                                        <td height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Nivel", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></td>
+                                                                        <td height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Ref. Material", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></td>
+                                                                        <td height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Material", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></td>
+                                                                        <td height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("EM", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></td>
+                                                                        <td height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Tipo Material", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></td>
+                                                                        <td height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></td>
+                                                                        <td height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Familia Repro", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></td>
+                                                                        <td height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("Cantidad", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></td>
+                                                                        <td height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("UB", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></td>
+                                                                        <td height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("AGM", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></td>
+                                                                        <td height="19" bgcolor="#808080"><? $navegar->GenerarColumna($auxiliar->traduce("B", $administrador->ID_IDIOMA), "enlaceCabecera", "id_incidencia_sistema_tipo", $pathRaiz) ?></td>
                                                                     </tr>
-                                                                    <?foreach ($listaAGM as $agm):?>
-                                                                    <tr>
-                                                                        <td><?$auxiliar->traduce("B", $administrador->ID_IDIOMA)?></td>
-                                                                    </tr>
-                                                            <?endforeach;?>
-                                                                    <tr>
-                                                                        <td>Centro comercial Moctezuma</td>
-                                                                        <td>Francisco Chang</td>
-                                                                        <td>Mexico</td>
-                                                                    </tr>
-                                                                <?endif;?>
+                                                                    -->
+                                                                    <?
+                                                                $row = $bd->VerReg("MATERIALES", "ID_MATERIALES", $row->ID_MATERIALES);
+                                                                $vector=array();
+                                                                obtenerHijosMateriales($row->REFERENCIA_SCS,$bd,$vector);
+                                                                pintar_tabla_hijos($vector);
+                                                                endif;?>
                                                                 <? $i++;
                                                                 $numeracion++;
                                                             endwhile; ?>
