@@ -25,33 +25,115 @@ function acortar($cadena){
     }
 }
 function obtenerHijosMateriales($id,$bd,&$vector){
-    $sqlHijos = "SELECT M.ID_MATERIALES ,M.REFERENCIA_SCS , M.DESCRIPCION_ESP , M.DESCRIPCION_ENG ,M.ESTATUS_MATERIAL,M.TIPO_MATERIAL,fr.REFERENCIA, fr.FAMILIA_REPRO , fm.NOMBRE_FAMILIA ,MCA.CANTIDAD ,M.FK_UNIDAD_MEDIDA ,M.AGM ,MCA.BAJA,MCA.MATERIAL_AGM ,MCA.MATERIAL_COMPONENTE  	 FROM MATERIALES M JOIN MATERIAL_COMPONENTE_AGM MCA ON M.ID_MATERIALES=MCA.MATERIAL_AGM JOIN FAMILIA_MATERIAL fm ON M.FK_FAMILIA_MATERIAL = fm.ID_FAMILIA_MATERIAL JOIN FAMILIA_REPRO fr ON M.FK_FAMILIA_REPRO = fr.ID_FAMILIA_REPRO WHERE M.ID_MATERIALES=".$id;
+    $sqlHijos = "SELECT M.ID_MATERIALES ,M.REFERENCIA_SCS , M.DESCRIPCION_ESP , M.DESCRIPCION_ENG ,M.ESTATUS_MATERIAL,M.TIPO_MATERIAL,fr.REFERENCIA, fr.FAMILIA_REPRO , fm.NOMBRE_FAMILIA ,MCA.CANTIDAD ,M.FK_UNIDAD_MEDIDA ,M.AGM ,MCA.BAJA,MCA.MATERIAL_AGM ,MCA.MATERIAL_COMPONENTE, UNIDAD.UNIDAD,UNIDAD.DESCRIPCION 
+    FROM MATERIALES M JOIN MATERIAL_COMPONENTE_AGM MCA ON M.ID_MATERIALES=MCA.MATERIAL_AGM 
+    JOIN FAMILIA_MATERIAL fm ON M.FK_FAMILIA_MATERIAL = fm.ID_FAMILIA_MATERIAL 
+    JOIN FAMILIA_REPRO fr ON M.FK_FAMILIA_REPRO = fr.ID_FAMILIA_REPRO 
+    JOIN UNIDAD ON M.FK_UNIDAD_MEDIDA=UNIDAD.ID_UNIDAD 
+    WHERE M.ID_MATERIALES=".$id;
+
     $resHijos = $bd->ExecSQL($sqlHijos);
     while($reg=$bd->SigReg($resHijos)) {
+
         $reg->ID_PARENT=$id;
         $vector[] = $reg;
         obtenerHijosMateriales($reg->MATERIAL_COMPONENTE, $bd, $vector);
     }
 }
 
-function pintar_tabla_hijos($vector){
+function pintar_tabla_hijos($vector,$myColor){
     if(!empty($vector)){
         echo"<tr><td>";
-        echo "<tr><td>FM</td><td>FR</td><td>MARCA</td></tr>";
-
+        echo "<tr><td height='19' bgcolor='#2f4f4f'class='blanco'>Nivel</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco'>Referencia</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco' colspan='2'>Material</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco'>EM</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco' colspan='2'>Tipo Material</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco' colspan='2'>Familia Material</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco' colspan='2'>Familia Repro</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco'>Cantidad</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco'>UB</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco'>AGM</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco'>B</td></tr>";
+        $nivel=0;
+        $referencias=array();
         foreach ($vector as $material){
             echo "<tr>";
-            echo "<td>". "1"."</td>";
-            echo "<td>". $material->ID_MATERIALES."</td>";
-            echo "<td>". $material->DESCRIPCION_ESP."</td>";
-            echo "<td>". acortar($material->ESTATUS_MATERIAL)."</td>";
-            echo "<td>". $material->TIPO_MATERIAL."</td>";
-            echo "<td>". $material->NOMBRE_FAMILIA."</td>";
-            echo "<td>". $material->REFERENCIA."-".$material->FAMILIA_REPRO."</td>";
-            echo "<td>". $material->CANTIDAD."</td>";
-            echo "<td>". $material->FK_UNIDAD_MEDIDA."</td>";
-            echo "<td>". $material->AGM."</td>";
-            echo "<td>". $material->BAJA."</td>";
+            if(!in_array($material->ID_MATERIALES,$referencias)){
+                $referencias[]=$material->ID_MATERIALES;
+                $nivel++;
+            }
+            switch ($nivel) {
+                case 1:
+                    $myColor = '#d3f3ff';
+                    break;
+                case 2:
+                    $myColor = '#e2ffe4';
+                    break;
+                case 3:
+                    $myColor = '#fbfbd2';
+                    break;
+                case 4:
+                    $myColor = '#eed9c9';
+                    break;
+                case 5:
+                    $myColor = '#e6cff0';
+                    break;
+                case 6:
+                    $myColor = '#e3c0c0';
+                    break;
+            };
+
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'>". $nivel."</td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><a href='ficha.php?idMaterial=$material->ID_MATERIALES' class='enlaceceldasacceso'>$material->ID_MATERIALES</a></td>";
+            //echo "<td>". $material->ID_MATERIALES."</td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $material->DESCRIPCION_ESP."</td>";
+
+
+
+
+            if ($material->ESTATUS_MATERIAL == '01-Bloqueo General'):
+                $eb_bgcolor = "#F04343";
+                $eb_color   = "#FFFFFF";
+            elseif ($material->ESTATUS_MATERIAL == '02-Obsoleto Fin Existencias (Error)'):
+                $eb_bgcolor = "#F04343";
+                $eb_color   = "#FFFFFF";
+            elseif ($material->ESTATUS_MATERIAL == '03-Código duplicado'):
+                $eb_bgcolor = "#F04343";
+                $eb_color   = "#FFFFFF";
+            elseif ($material->ESTATUS_MATERIAL == '04-Código inutilizable'):
+                $eb_bgcolor = "#F04343";
+                $eb_color   = "#FFFFFF";
+            elseif ($material->ESTATUS_MATERIAL == '05-Obsoleto Fin Existencias (Aviso)'):
+                $eb_bgcolor = "#E9E238";
+            elseif ($material->ESTATUS_MATERIAL == '06-Código Solo Fines Logísticos'):
+                $eb_bgcolor = "#F04343";
+                $eb_color   = "#FFFFFF";
+            elseif ($material->ESTATUS_MATERIAL == '07-Solo para Refer. Prov'):
+                ////////////////////////
+            elseif ($material->ESTATUS_MATERIAL == 'No bloqueado'):
+                $eb_bgcolor = "#B3C7DA";
+            endif;
+
+
+
+
+
+
+            echo "<td height='18' align='left' style='color: $eb_color' bgcolor='$eb_bgcolor' class='enlaceceldas'>". acortar($material->ESTATUS_MATERIAL)."</td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $material->TIPO_MATERIAL."</td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $material->NOMBRE_FAMILIA."</td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $material->REFERENCIA."-".$material->FAMILIA_REPRO."</td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'>". $material->CANTIDAD."</td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'>". $material->UNIDAD." ".$material->DESCRIPCION."</td>";
+            if($material->AGM=='1'){
+                $valor_AGM='Si';
+            }
+            else{
+                $valor_AGM='No';
+            }
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'>". $valor_AGM."</td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'>". $material->BAJA."</td>";
             echo "</tr>";
         }
         echo "</td></tr>";
@@ -289,6 +371,50 @@ elseif($selBaja == 'No'):
     $textoLista = $textoLista."&".$auxiliar->traduce("Baja",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selBaja,$administrador->ID_IDIOMA);
 endif;
 
+//MATERIAL AGM
+if(!isset($selMaterialAGM)):
+    $selMaterialAGM = 'Todos';
+endif;
+if($selMaterialAGM == 'Si'):
+    $sqlTipos .= " AND (MATERIALES.AGM='1')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("AGM",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selBaja,$administrador->ID_IDIOMA);
+elseif($selMaterialAGM == 'No'):
+    $sqlTipos .= " AND (MATERIALES.AGM='0')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("AGM",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selBaja,$administrador->ID_IDIOMA);
+endif;
+
+
+
+
+//COMPONENTE AGM
+if ($txComponenteAGM!= ""):
+    var_dump($txComponenteAGM);
+    if(is_numeric($txComponenteAGM)){
+        $camposBD   = array('REFERENCIA_SCS');
+        $sqlTipos  = $sqlTipos . ($bd->busquedaTextoArray($txComponenteAGM, $camposBD));
+
+        $textoLista = $textoLista . "&" . $auxiliar->traduce("Componente AGM", $administrador->ID_IDIOMA) . ": " . $txComponenteAGM;
+    }elseif($administrador->ID_IDIOMA=='ESP') {
+            $camposBD = 'MATERIALES.DESCRIPCION_ESP';
+            $sqlTipos = $sqlTipos . ($bd->busquedaTextoExacta($txComponenteAGM, $camposBD));
+            $textoLista = $textoLista . "&" . $auxiliar->traduce("Componente AGM ESP", $administrador->ID_IDIOMA) . ": " . $txComponenteAGM;
+    }elseif($administrador->ID_IDIOMA == 'ENG') {
+            $camposBD = 'MATERIALES.DESCRIPCION_ENG';
+            $sqlTipos = $sqlTipos . ($bd->busquedaTextoExacta($txComponenteAGM, $camposBD));
+            $textoLista = $textoLista . "&" . $auxiliar->traduce("Componente AGM ENG", $administrador->ID_IDIOMA) . ": " . $txComponenteAGM;
+        }
+
+
+endif;
+
+//DESC ESP COMPONENTE AGM
+
+//DESC ENG COMPONENTE AGM
+
+
+
+
+
 // TEXTO LISTADO
 if ($textoLista == ""):
     $textoLista = $auxiliar->traduce("Todas las incidencias", $administrador->ID_IDIOMA);
@@ -305,7 +431,6 @@ if ($limite == ""):
     JOIN FAMILIA_REPRO ON MATERIALES.FK_FAMILIA_REPRO=FAMILIA_REPRO.ID_FAMILIA_REPRO
     JOIN UNIDAD ON UNIDAD.ID_UNIDAD=MATERIALES.FK_UNIDAD_COMPRA ".$sqlTipos
     ;
-
     $navegar->sqlAdminMaestroMaterial = $mySql;
 endif;
 
@@ -982,18 +1107,18 @@ var_dump($vector);
                                                         <td width="24%" align="left" valign="middle">
                                                             <?
                                                             $NombreSelect = 'selMaterialAGM';
-                                                            $Elementos_AGM[0]['text'] = $auxiliar->traduce("Si", $administrador->ID_IDIOMA);
-                                                            $Elementos_AGM[0]['valor'] = 'Si';
-                                                            $Elementos_AGM[1]['text'] = $auxiliar->traduce("No", $administrador->ID_IDIOMA);
-                                                            $Elementos_AGM[1]['valor'] = 'No';
+                                                            $Elementos_AGM[0]['text'] = $auxiliar->traduce("Todos", $administrador->ID_IDIOMA);
+                                                            $Elementos_AGM[0]['valor'] = 'Todos';
+                                                            $Elementos_AGM[1]['text'] = $auxiliar->traduce("Si", $administrador->ID_IDIOMA);
+                                                            $Elementos_AGM[1]['valor'] = 'Si';
+                                                            $Elementos_AGM[2]['text'] = $auxiliar->traduce("No", $administrador->ID_IDIOMA);
+                                                            $Elementos_AGM[2]['valor'] = 'No';
                                                             $Tamano = "205px";
                                                             $Estilo = "copyright";
                                                             if (!isset($selAGM)):
                                                                 $selAGM = "No";
-                                                            else:
-                                                                $selAGM = $selAGM;
                                                             endif;
-                                                            $html->SelectArr($NombreSelect, $Elementos_AGM, $selAGM, $selAGM);
+                                                            $html->SelectArr($NombreSelect, $Elementos_AGM, $selAGM, 'Todos');
                                                             ?>
 
                                                         </td>
@@ -1359,7 +1484,7 @@ var_dump($vector);
                                                             if ($checkboxchecked): ?>
                                                             <tr>
                                                                 <td colspan="15" height="18" align="left"
-                                                                    bgcolor="red"
+                                                                    bgcolor="#FF9999"
                                                                     class="copyright">
                                                                     &nbsp;<? echo (!empty($row->OBSERVACIONES)) ? $row->OBSERVACIONES : '-' ?>
                                                                 </td>
@@ -1385,7 +1510,7 @@ var_dump($vector);
                                                                 $row = $bd->VerReg("MATERIALES", "ID_MATERIALES", $row->ID_MATERIALES);
                                                                 $vector=array();
                                                                 obtenerHijosMateriales($row->REFERENCIA_SCS,$bd,$vector);
-                                                                pintar_tabla_hijos($vector);
+                                                                pintar_tabla_hijos($vector,$myColor);
                                                                 endif;?>
                                                                 <? $i++;
                                                                 $numeracion++;

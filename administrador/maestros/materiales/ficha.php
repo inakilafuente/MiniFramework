@@ -25,9 +25,15 @@ function acortar($cadena){
 function pintar_arbol($vector){
     echo "<ul>";
     for ($i=count($vector)-1;$i>=0;$i--){
-        echo "<li>".$vector[$i];
-        echo "<ul>";
+
+        echo "<li style='list-style: none'>".$vector[$i];
+
+        echo "<ul style='list-style: none'>";
+        if($i>0){
+            echo "<span style='background-color: red; color: red' >.</span>";
+        }
         echo "</li>";
+
     }
     echo "</ul>";
 }
@@ -250,7 +256,7 @@ endif;
                                                     <table width="97%" border="0" align="center" cellpadding="0"
                                                            cellspacing="0">
                                                         <tr bgcolor="#D9E3EC">
-                                                            <td height="10" colspan="3" bgcolor="d9e3ec"
+                                                            <td height="10" colspan="3" bgcolor="AACFF9"
                                                                 class="linearribadereizq"><img
                                                                     src="<? echo $pathRaiz ?>imagenes/transparente.gif"
                                                                     width="10" height="10"></td>
@@ -453,12 +459,6 @@ endif;
                                                                        cellpadding="1" class="tablaFiltros">
 
                                                                     <tr> TAXONOMIA DE MATERIALES
-
-                                                                        <td align="center" width="5%"><img
-                                                                                    src="<? echo $pathRaiz ?>imagenes/diamante.gif"
-                                                                                    width="7" height="7"></td>
-
-
                                                                         <? if(!$nuevo):
                                                                         pintar_arbol($vector);
                                                                         endif;?>
@@ -493,9 +493,12 @@ endif;
                                                                             ?>
                                                                         </td>
                                                                     </tr>
+
                                                                 </table>
+
                                                             </td>
-                                                            <td class=lineaderecha width="3%" bgcolor=#d9e3ec
+
+                                                            <td class=lineaderecha width="3%" bgcolor=#AACFF9
                                                                 align="right" valign="top">
                                                                 <?
                                                                 if ($rowTipo->ID_INCIDENCIA_SISTEMA_TIPO != ""):
@@ -505,14 +508,215 @@ endif;
                                                                 endif;
                                                                 ?>
                                                             </td>
+
                                                         <tr bgcolor="#D9E3EC">
-                                                            <td height="10" colspan="3" bgcolor="#D9E3EC"
+                                                            <td height="10" colspan="3" bgcolor="#AACFF9"
                                                                 class="lineabajodereizq"><img
                                                                     src="<? echo $pathRaiz ?>imagenes/transparente.gif"
                                                                     width="10" height="10"></td>
                                                         </tr>
+                                                        <table width="97%" align="center" border="0" cellspacing="0" cellpadding="0">
+                                                            <tr bgcolor="#D9E3EC">
+                                                                <td height="10" colspan="3" bgcolor="#AACFF9"
+                                                                    class="lineabajodereizq"><img
+                                                                            src="<? echo $pathRaiz ?>imagenes/transparente.gif"
+                                                                            width="10" height="10"></td>
+                                                            </tr>
+                                                            <td width="5" bgcolor="d9e3ec" class="lineaizquierda">
+                                                            </td>
+                                                            <td width="640" align="left" bgcolor="d9e3ec">FICHA MATERIAL
+                                                                <table width="750" border="0" cellspacing="0"
+                                                                       cellpadding="1" class="tablaFiltros">
+                                                                    <tr>
+                                                                        <td align="center" width="5%"></td>
+                                                                        <td align="left" class="textoazul"
+                                                                            width="35%"><?= $auxiliar->traduce("Marca", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td class="textoazul" width="60%">
+                                                                            <?
+                                                                            $TamanoText = "420px";
+                                                                            $ClassText  = "copyright";
+                                                                            $MaxLength  = "80";
+                                                                            $html->TextBox("txMarca", $txMarca);
+                                                                            ?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="center" width="5%"></td>
+                                                                        <td align="left" class="textoazul"
+                                                                            width="35%"><?= $auxiliar->traduce("Modelo", $administrador->ID_IDIOMA) . ":" ?>
+                                                                        </td>
+                                                                        <td class="textoazul" width="60%">
+                                                                            <?
+                                                                            $TamanoText = "420px";
+                                                                            $ClassText  = "copyright";
+                                                                            $MaxLength  = "255";
+                                                                            $html->TextBox("txModelo", $txModelo);
+                                                                            ?>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+
+                                                                    <tr>
+
+                                                                    </tr>
+                                            </tr>
+
+                                                <tr>
+
+                                                </tr>
+                                                <tr>
+
+                                                </tr>
+                                            </table>
+                                    </td>
+                                    <td width="640" align="left" bgcolor="d9e3ec">
+                                        <table width="750" border="0" cellspacing="0"
+                                               cellpadding="1" class="tablaFiltros">
+                                            <tr>
+                                                <td align="center" width="5%"><img
+                                                            src="<? echo $pathRaiz ?>imagenes/diamante.gif"
+                                                            width="7" height="7"></td>
+                                                <td align="left" class="textoazul"
+                                                    width="35%"><?= $auxiliar->traduce("Unidad de medida", $administrador->ID_IDIOMA) . ":" ?>
+                                                </td>
+                                                <td class="textoazul" width="60%">
+                                                    <?
+                                                    $TamanoText = "420px";
+                                                    $ClassText  = "copyright ObligatorioRellenar";
+                                                    $MaxLength  = "80";
+                                                    if($administrador->ID_IDIOMA=='ESP'){
+                                                        $html->TextBox("txUnidadMedida_ESP", $txUnidadMedida_ESP);
+                                                    }
+                                                    elseif($administrador->ID_IDIOMA=='ENG'){
+                                                        $html->TextBox("txUnidadMedida_ENG", $txUnidadMedida_ENG);
+                                                    }
+                                                    ?>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" width="5%"><img
+                                                            src="<? echo $pathRaiz ?>imagenes/diamante.gif"
+                                                            width="7" height="7"></td>
+                                                <td align="left" class="textoazul"
+                                                    width="35%"><?= $auxiliar->traduce("Unidad de compra", $administrador->ID_IDIOMA) . ":" ?>
+                                                </td>
+                                                <td class="textoazul" width="60%">
+                                                    <?
+                                                    $TamanoText = "420px";
+                                                    $ClassText  = "copyright ObligatorioRellenar";
+                                                    $MaxLength  = "255";
+                                                    if($administrador->ID_IDIOMA=='ESP'){
+                                                        $html->TextBox("txUnidadCompra_ESP", $txUnidadCompra_ESP);
+                                                    }
+                                                    elseif($administrador->ID_IDIOMA=='ENG'){
+                                                        $html->TextBox("txUnidadCompra_ENG", $txUnidadCompra_ENG);
+                                                    }
+                                                    ?>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" width="5%"><img
+                                                            src="<? echo $pathRaiz ?>imagenes/diamante.gif"
+                                                            width="7" height="7"></td>
+                                                <td align="left" class="textoazul"
+                                                    width="35%"><?= $auxiliar->traduce("Numerador conversión", $administrador->ID_IDIOMA) . ":" ?>
+                                                </td>
+                                                <td class="textoazul" width="60%">
+                                                    <?
+                                                    $TamanoText = "420px";
+                                                    $ClassText  = "copyright ObligatorioRellenar";
+                                                    $MaxLength  = "255";
+                                                    $html->TextBox("txNumerador", $txNumerador);
+                                                    ?>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" width="5%"><img
+                                                            src="<? echo $pathRaiz ?>imagenes/diamante.gif"
+                                                            width="7" height="7"></td>
+                                                <td align="left" class="textoazul"
+                                                    width="35%"><?= $auxiliar->traduce("Denominador conversión", $administrador->ID_IDIOMA) . ":" ?>
+                                                </td>
+                                                <td class="textoazul" width="60%">
+                                                    <?
+                                                    $TamanoText = "420px";
+                                                    $ClassText  = "copyright ObligatorioRellenar";
+                                                    $MaxLength  = "255";
+                                                    $html->TextBox("txDenominador", $txDenominador);
+                                                    ?>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" width="5%"></td>
+                                                <td align="left" class="textoazul"
+                                                    width="35%"><?= $auxiliar->traduce("Unidades de manipulacion", $administrador->ID_IDIOMA) . ":" ?>
+                                                </td>
+                                                <td class="textoazul" width="60%">
+                                                    <?
+                                                    $TamanoText = "100px";
+                                                    $ClassText  = "copyright";
+
+                                                    $html->TextBox("txUnidadManipulacion", $txUnidadManipulacion);
+                                                    ?>
+                                                    <?= $auxiliar->traduce("Divisibilidad", $administrador->ID_IDIOMA) . ":" ?>
+
+                                                    <?
+                                                    $NombreSelect = 'selDivisibilidad';
+                                                    $Elementos_divisibilidad[0]['text'] = $auxiliar->traduce("Si", $administrador->ID_IDIOMA);
+                                                    $Elementos_divisibilidad[0]['valor'] = 'Si';
+                                                    $Elementos_divisibilidad[1]['text'] = $auxiliar->traduce("No", $administrador->ID_IDIOMA);
+                                                    $Elementos_divisibilidad[1]['valor'] = 'No';
+                                                    $Elementos_divisibilidad[2]['text'] = $auxiliar->traduce("Pendiente decisión", $administrador->ID_IDIOMA);
+                                                    $Elementos_divisibilidad[2]['valor'] = 'Pendiente decisión';
+                                                    $Elementos_divisibilidad[3]['text'] = $auxiliar->traduce("No Aplica", $administrador->ID_IDIOMA);
+                                                    $Elementos_divisibilidad[3]['valor'] = 'No Aplica';
+                                                    $Tamano = "205px";
+                                                    $Estilo = "copyright";
+
+                                                    $html->SelectArr($NombreSelect, $Elementos_divisibilidad, $txDivisibilidad);
+                                                    ?>
+                                                </td>
+
+                                            </tr>
+                                            <tr>
+                                                <td align="center" width="5%"></td>
+                                                <td align="left" class="textoazul"
+                                                    width="35%"><?= $auxiliar->traduce("Observaciones Material", $administrador->ID_IDIOMA) . ":" ?>
+                                                </td>
+                                                <td class="textoazul" width="60%">
+                                                    <?
+                                                    $TamanoText = "420px";
+                                                    $ClassText  = "copyright";
+                                                    $MaxLength  = "255";
+                                                    $html->TextArea("txObservaciones", $txObservaciones);
+                                                    ?>
+                                                </td>
+                                            </tr>
+
+
+                                        </table>
+                                    </td>
+                                <tr bgcolor="#D9E3EC">
+                                    <td height="10" colspan="3" bgcolor="#AACFF9"
+                                        class="lineabajodereizq"><img
+                                                src="<? echo $pathRaiz ?>imagenes/transparente.gif"
+                                                width="10" height="10"></td>
+                                </tr>
+                                <tr height="25">
+                                    <td class="lineabajo" width="50%" align="left"><span class="textoazul">&nbsp;<a
+                                                    href="index.php?recordar_busqueda=1"
+                                                    class="senaladoazul">&nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Volver", $administrador->ID_IDIOMA) ?>&nbsp;&nbsp;&nbsp;&nbsp;</a></span>
+                                    </td>
+                                    <td align="right" class="lineabajo"><span class="textoazul">
+  							&nbsp;<a href="#" id="botonGrabar" class="senalado6" onclick="grabar()">&nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Grabar", $administrador->ID_IDIOMA) ?>&nbsp;&nbsp;&nbsp;&nbsp;</a>&nbsp;</span>
+                                    </td>
+
+                                </tr>
+                            </table>
                                                     </table>
                                                 </td>
+
                                                 <td width="20" align="center" valign="middle" class="lineaizquierda">
                                                     &nbsp;
                                                 </td>
@@ -524,241 +728,7 @@ endif;
 
                                     <td align="left" valign="top" bgcolor="#B3C7DA" class="lineabajo">
 
-                                        <table width="100%" border="0" cellspacing="0" cellpadding="0"
-                                               bgcolor="#D9E3EC">
-                                            <td width="640" align="left" bgcolor="d9e3ec">FICHA MATERIAL
-                                                <table width="750" border="0" cellspacing="0"
-                                                       cellpadding="1" class="tablaFiltros">
-                                                    <tr>
-                                                        <td align="center" width="5%"></td>
-                                                        <td align="left" class="textoazul"
-                                                            width="35%"><?= $auxiliar->traduce("Marca", $administrador->ID_IDIOMA) . ":" ?>
-                                                        </td>
-                                                        <td class="textoazul" width="60%">
-                                                            <?
-                                                            $TamanoText = "420px";
-                                                            $ClassText  = "copyright";
-                                                            $MaxLength  = "80";
-                                                            $html->TextBox("txMarca", $txMarca);
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="center" width="5%"></td>
-                                                        <td align="left" class="textoazul"
-                                                            width="35%"><?= $auxiliar->traduce("Modelo", $administrador->ID_IDIOMA) . ":" ?>
-                                                        </td>
-                                                        <td class="textoazul" width="60%">
-                                                            <?
-                                                            $TamanoText = "420px";
-                                                            $ClassText  = "copyright";
-                                                            $MaxLength  = "255";
-                                                            $html->TextBox("txModelo", $txModelo);
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="center" width="5%"><img
-                                                                    src="<? echo $pathRaiz ?>imagenes/diamante.gif"
-                                                                    width="7" height="7"></td>
-                                                        <td align="left" class="textoazul"
-                                                            width="35%"><?= $auxiliar->traduce("Tecnología", $administrador->ID_IDIOMA) . ":" ?>
-                                                        </td>
-                                                        <td class="textoazul" width="60%">
-                                                            <?
-                                                            $TamanoText = "420px";
-                                                            $ClassText  = "copyright";
-                                                            $MaxLength  = "255";
-                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
-                                                            ?>
-                                                        </td>
-                                                    <tr>
-                                                        <td align="center" width="5%"><img
-                                                                    src="<? echo $pathRaiz ?>imagenes/diamante.gif"
-                                                                    width="7" height="7"></td>
-                                                        <td align="left" class="textoazul"
-                                                            width="35%"><?= $auxiliar->traduce("Tecnólogo Eólica", $administrador->ID_IDIOMA) . ":" ?>
-                                                        </td>
-                                                        <td class="textoazul" width="60%">
-                                                            <?
-                                                            $TamanoText = "420px";
-                                                            $ClassText  = "copyright";
-                                                            $MaxLength  = "255";
-                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-                                                    </tr>
 
-                                                    <tr>
-                                                        <td align="center" width="5%"><img
-                                                                    src="<? echo $pathRaiz ?>imagenes/diamante.gif"
-                                                                    width="7" height="7"></td>
-                                                        <td align="left" class="textoazul"
-                                                            width="35%"><?= $auxiliar->traduce("Tipo Eólica", $administrador->ID_IDIOMA) . ":" ?>
-                                                        </td>
-                                                        <td class="textoazul" width="60%">
-                                                            <?
-                                                            $TamanoText = "420px";
-                                                            $ClassText  = "copyright";
-                                                            $MaxLength  = "255";
-                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="center" width="5%"></td>
-                                                        <td align="left" class="textoazul"
-                                                            width="35%"><?= $auxiliar->traduce("Subcojunto Eólica", $administrador->ID_IDIOMA) . ":" ?>
-                                                        </td>
-                                                        <td class="textoazul" width="60%">
-                                                            <?
-                                                            $TamanoText = "420px";
-                                                            $ClassText  = "copyright";
-                                                            $MaxLength  = "255";
-                                                            $html->TextBox("txIncidenciaSistemaTipoEng", $txIncidenciaSistemaTipoEng);
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                            <td width="640" align="left" bgcolor="d9e3ec">
-                                                <table width="750" border="0" cellspacing="0"
-                                                       cellpadding="1" class="tablaFiltros">
-                                                    <tr>
-                                                        <td align="center" width="5%"><img
-                                                                    src="<? echo $pathRaiz ?>imagenes/diamante.gif"
-                                                                    width="7" height="7"></td>
-                                                        <td align="left" class="textoazul"
-                                                            width="35%"><?= $auxiliar->traduce("Unidad de medida", $administrador->ID_IDIOMA) . ":" ?>
-                                                        </td>
-                                                        <td class="textoazul" width="60%">
-                                                            <?
-                                                            $TamanoText = "420px";
-                                                            $ClassText  = "copyright ObligatorioRellenar";
-                                                            $MaxLength  = "80";
-                                                            if($administrador->ID_IDIOMA=='ESP'){
-                                                                $html->TextBox("txUnidadMedida_ESP", $txUnidadMedida_ESP);
-                                                            }
-                                                            elseif($administrador->ID_IDIOMA=='ENG'){
-                                                                $html->TextBox("txUnidadMedida_ENG", $txUnidadMedida_ENG);
-                                                            }
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="center" width="5%"><img
-                                                                    src="<? echo $pathRaiz ?>imagenes/diamante.gif"
-                                                                    width="7" height="7"></td>
-                                                        <td align="left" class="textoazul"
-                                                            width="35%"><?= $auxiliar->traduce("Unidad de compra", $administrador->ID_IDIOMA) . ":" ?>
-                                                        </td>
-                                                        <td class="textoazul" width="60%">
-                                                            <?
-                                                            $TamanoText = "420px";
-                                                            $ClassText  = "copyright ObligatorioRellenar";
-                                                            $MaxLength  = "255";
-                                                            if($administrador->ID_IDIOMA=='ESP'){
-                                                                $html->TextBox("txUnidadCompra_ESP", $txUnidadCompra_ESP);
-                                                            }
-                                                            elseif($administrador->ID_IDIOMA=='ENG'){
-                                                                $html->TextBox("txUnidadCompra_ENG", $txUnidadCompra_ENG);
-                                                            }
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="center" width="5%"><img
-                                                                    src="<? echo $pathRaiz ?>imagenes/diamante.gif"
-                                                                    width="7" height="7"></td>
-                                                        <td align="left" class="textoazul"
-                                                            width="35%"><?= $auxiliar->traduce("Numerador conversión", $administrador->ID_IDIOMA) . ":" ?>
-                                                        </td>
-                                                        <td class="textoazul" width="60%">
-                                                            <?
-                                                            $TamanoText = "420px";
-                                                            $ClassText  = "copyright ObligatorioRellenar";
-                                                            $MaxLength  = "255";
-                                                            $html->TextBox("txNumerador", $txNumerador);
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="center" width="5%"><img
-                                                                    src="<? echo $pathRaiz ?>imagenes/diamante.gif"
-                                                                    width="7" height="7"></td>
-                                                        <td align="left" class="textoazul"
-                                                            width="35%"><?= $auxiliar->traduce("Denominador conversión", $administrador->ID_IDIOMA) . ":" ?>
-                                                        </td>
-                                                        <td class="textoazul" width="60%">
-                                                            <?
-                                                            $TamanoText = "420px";
-                                                            $ClassText  = "copyright ObligatorioRellenar";
-                                                            $MaxLength  = "255";
-                                                            $html->TextBox("txDenominador", $txDenominador);
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="center" width="5%"></td>
-                                                        <td align="left" class="textoazul"
-                                                            width="35%"><?= $auxiliar->traduce("Unidades de manipulacion", $administrador->ID_IDIOMA) . ":" ?>
-                                                        </td>
-                                                        <td class="textoazul" width="60%">
-                                                            <?
-                                                            $TamanoText = "100px";
-                                                            $ClassText  = "copyright";
-
-                                                            $html->TextBox("txUnidadManipulacion", $txUnidadManipulacion);
-                                                            ?>
-                                                            <?= $auxiliar->traduce("Divisibilidad", $administrador->ID_IDIOMA) . ":" ?>
-
-                                                                <?
-                                                            $NombreSelect = 'selDivisibilidad';
-                                                            $Elementos_divisibilidad[0]['text'] = $auxiliar->traduce("Si", $administrador->ID_IDIOMA);
-                                                            $Elementos_divisibilidad[0]['valor'] = 'Si';
-                                                            $Elementos_divisibilidad[1]['text'] = $auxiliar->traduce("No", $administrador->ID_IDIOMA);
-                                                            $Elementos_divisibilidad[1]['valor'] = 'No';
-                                                            $Elementos_divisibilidad[2]['text'] = $auxiliar->traduce("Pendiente decisión", $administrador->ID_IDIOMA);
-                                                            $Elementos_divisibilidad[2]['valor'] = 'Pendiente decisión';
-                                                            $Elementos_divisibilidad[3]['text'] = $auxiliar->traduce("No Aplica", $administrador->ID_IDIOMA);
-                                                            $Elementos_divisibilidad[3]['valor'] = 'No Aplica';
-                                                            $Tamano = "205px";
-                                                            $Estilo = "copyright";
-
-                                                            $html->SelectArr($NombreSelect, $Elementos_divisibilidad, $txDivisibilidad);
-                                                                ?>
-                                                        </td>
-
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="center" width="5%"></td>
-                                                        <td align="left" class="textoazul"
-                                                            width="35%"><?= $auxiliar->traduce("Observaciones Material", $administrador->ID_IDIOMA) . ":" ?>
-                                                        </td>
-                                                        <td class="textoazul" width="60%">
-                                                            <?
-                                                            $TamanoText = "420px";
-                                                            $ClassText  = "copyright";
-                                                            $MaxLength  = "255";
-                                                            $html->TextArea("txObservaciones", $txObservaciones);
-                                                            ?>
-                                                        </td>
-                                                    </tr>
-
-                                                </table>
-                                            </td>
-                                            <tr height="25">
-                                                <td class="lineabajo" width="50%" align="left"><span class="textoazul">&nbsp;<a
-                                                            href="index.php?recordar_busqueda=1"
-                                                            class="senaladoazul">&nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Volver", $administrador->ID_IDIOMA) ?>&nbsp;&nbsp;&nbsp;&nbsp;</a></span>
-                                                </td>
-                                                <td align="right" class="lineabajo"><span class="textoazul">
-  							&nbsp;<a href="#" id="botonGrabar" class="senalado6" onclick="grabar()">&nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Grabar", $administrador->ID_IDIOMA) ?>&nbsp;&nbsp;&nbsp;&nbsp;</a>&nbsp;</span>
-                                                </td>
-
-                                            </tr>
-                                        </table>
                                         <br><br>
                                     </td>
                                 </tr>
