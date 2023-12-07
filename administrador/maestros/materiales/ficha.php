@@ -11,6 +11,82 @@ require_once $pathClases . "lib/navegar.php";
 require_once $pathClases . "lib/auxiliar.php";
 
 session_start();
+
+
+function addMaterial($idpadre,$idhijo,$bd){
+
+}
+
+
+function obtenerHijosMateriales($id,$bd,&$vector){
+    $sqlHijos = "SELECT M.ID_MATERIALES ,M.REFERENCIA_SCS , M.DESCRIPCION_ESP , M.DESCRIPCION_ENG ,M.ESTATUS_MATERIAL,M.TIPO_MATERIAL,fr.REFERENCIA, fr.FAMILIA_REPRO , fm.NOMBRE_FAMILIA ,MCA.CANTIDAD ,M.FK_UNIDAD_MEDIDA ,M.AGM ,MCA.BAJA,MCA.MATERIAL_AGM ,MCA.MATERIAL_COMPONENTE, UNIDAD.UNIDAD,UNIDAD.DESCRIPCION 
+    FROM MATERIALES M JOIN MATERIAL_COMPONENTE_AGM MCA ON M.ID_MATERIALES=MCA.MATERIAL_AGM 
+    JOIN FAMILIA_MATERIAL fm ON M.FK_FAMILIA_MATERIAL = fm.ID_FAMILIA_MATERIAL 
+    JOIN FAMILIA_REPRO fr ON M.FK_FAMILIA_REPRO = fr.ID_FAMILIA_REPRO 
+    JOIN UNIDAD ON M.FK_UNIDAD_MEDIDA=UNIDAD.ID_UNIDAD 
+    WHERE M.ID_MATERIALES=".$id;
+
+    $resHijos = $bd->ExecSQL($sqlHijos);
+    while($reg=$bd->SigReg($resHijos)) {
+
+        $reg->ID_PARENT=$id;
+        $vector[] = $reg;
+        obtenerHijosMateriales($reg->MATERIAL_COMPONENTE, $bd, $vector);
+    }
+}
+function pintar_tabla_hijos($vector,$myColor){
+    if(!empty($vector)){
+        echo"<tr>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco'><input type='checkbox' id='chboxAllAGM'></td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco'>Nivel</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco'>Ref.</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco' colspan='2'>Material</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco'>Cantidad</td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco' colspan='2'>Acciones</td>";
+        echo "<input id='idMaterialTabla' type='hidden' value='$material->MATERIAL_COMPONENTE'>";
+        $nivel=0;
+        $referencias=array();
+        foreach ($vector as $material){
+            echo "<tr>";
+            if(!in_array($material->ID_MATERIALES,$referencias)){
+                $referencias[]=$material->ID_MATERIALES;
+                $nivel++;
+            }
+            switch ($nivel) {
+                case 1:
+                    $myColor = '#d3f3ff';
+                    break;
+                case 2:
+                    $myColor = '#e2ffe4';
+                    break;
+                case 3:
+                    $myColor = '#fbfbd2';
+                    break;
+                case 4:
+                    $myColor = '#eed9c9';
+                    break;
+                case 5:
+                    $myColor = '#e6cff0';
+                    break;
+                case 6:
+                    $myColor = '#e3c0c0';
+                    break;
+            };
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><input type='checkbox' id='chbox'></td>";
+            //echo "<input id='idMaterialTabla' type='hidden' value='$material->MATERIAL_COMPONENTE'";
+            echo "<td height='18' align='center'bgcolor='$myColor' class='enlaceceldas'>". $nivel."</td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><a href='ficha.php?idMaterial=$material->ID_MATERIALES' class='enlaceceldasacceso'>$material->ID_MATERIALES</a></td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $material->DESCRIPCION_ESP."</td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><input type='text' id='txCantidad' value='$material->CANTIDAD'></td>";
+            echo "<td><button style='background-color: #1b6d85; color: whitesmoke' type='button' onclick='addMaterial($material->ID_MATERIALES,$material->MATERIAL_COMPONENTE,$bd)'>Grabar</button></td>";
+            echo "<td><button style='background-color: #ac2925; color: whitesmoke' type='button' onclick='cancelarLinea($material->MATERIAL_COMPONENTE)'>Borrar</button></td>";
+            echo "</tr>";
+        }
+        echo "</tr>";
+    }
+}
+
+
 function acortar($cadena){
     $valores=explode(" ",$cadena);
     if(intval($valores[0][0])>=0&&intval($valores[0][1])>0){
@@ -79,9 +155,15 @@ if ($idMaterial != ""):
     JOIN ADMINISTRADOR A ON M.FK_USUARIO_CREACION=A.ID_ADMINISTRADOR 
     JOIN ADMINISTRADOR AA ON M.FK_USUARIO_ULTIMA_MODIFICACION=AA.ID_ADMINISTRADOR WHERE REFERENCIA_SCS= '" . $bd->escapeCondicional($idMaterial) . "'";
     var_dump($sqlTipo);
+
     $resTipo = $bd->ExecSQL($sqlTipo);
     $rowTipo = $bd->SigReg($resTipo);
-
+    $isAGM=$rowTipo->AGM;
+    if($isAGM==1){
+        $isAGM=true;
+    }else{
+        $isAGM=false;
+    }
     $txUnidadManipulacion=$rowTipo->UNIDAD ." ".$rowTipo->DESCRIPCION;
 
     $txMaterial=$rowTipo->REFERENCIA_SCS;
@@ -126,7 +208,7 @@ endif;
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<head>
+
     <? require_once $pathClases . "lib/gral_js.php"; ?>
     <!-- BUSQUEDA AJAX -->
     <script src="<?= $pathClases; ?>lib/ajax_script/lib/prototype.js" type="text/javascript"></script>
@@ -155,6 +237,27 @@ endif;
             return false;
         }
     </script>
+
+
+    <script>
+        function mostrarTablas(){
+            let tables=document.getElementsByTagName('table');
+            for(let i=0;i<tables.length;i++){
+                if(tables[i].id=='table1' || tables[i].id=='table2'){
+                    let display=tables[i].style.display;
+                    tables[i].style.display=display==='none'?'table':'none';
+                }
+
+            }
+        }
+
+        function mostrarTabla(id){
+            let table=document.getElementById(id);
+            let display=table.style.display;
+            table.style.display=display==='none'?'table':'none';
+        }
+    </script>
+
 </head>
 <body bgcolor="#FFFFFF" background="<? echo "$pathRaiz" ?>imagenes/fondo_pantalla.gif" leftmargin="0" topmargin="0"
       marginwidth="0" marginheight="0">
@@ -245,15 +348,21 @@ endif;
                                 </tr>
                                 <tr bgcolor="#D9E3EC">
                                     <td align="center" valign="top" bgcolor="#AACFF9" class="lineabajo">
+                                        <button type="button" onclick="mostrarTablas()" style="background-color: #1b6d85; color: white">Mostrar/Ocultar Fichas</button>
+                                        <button type="button" onclick="mostrarTabla('table1')"style="background-color: #1b6d85; color: white">Datos Esenciales</button>
+                                        <button type="button" onclick="mostrarTabla('table2')"style="background-color: #1b6d85; color: white">Material</button>
+                                        <button type="button" onclick="mostrarTabla('table3')"style="background-color: #1b6d85; color: white">AGM</button>
                                         <table width="100%" border="0" cellpadding="0" cellspacing="0">
                                             <table width="97%" border="0" align="center" cellpadding="0"
                                                    cellspacing="0">
                                                 <caption></caption>
                                             <tr>
                                                 <td width="20" align="center" valign="middle" class="lineaderecha">
+
+
                                                 </td>
                                                 <td align="center" valign="middle">
-                                                    <table width="97%" border="0" align="center" cellpadding="0"
+                                                    <table id="table1" width="97%" border="0" align="center" cellpadding="0"
                                                            cellspacing="0">
                                                         <tr bgcolor="#D9E3EC">
                                                             <td height="10" colspan="3" bgcolor="AACFF9"
@@ -266,7 +375,7 @@ endif;
                                                                 &nbsp;
                                                             </td>
                                                             <td width="640" align="left" bgcolor="d9e3ec"> DATOS ESENCIALES
-                                                                <table width="750" border="0" cellspacing="0"
+                                                                <table  width="750" border="0" cellspacing="0"
                                                                        cellpadding="1" class="tablaFiltros">
 
                                                                     <tr>
@@ -330,7 +439,7 @@ endif;
                                                                             $ClassText  = "copyright";
                                                                             $MaxLength  = "255";
                                                                             $readonly='readonly';
-                                                                            $html->TextBox(acortar($txEstatus), acortar($txEstatus));
+                                                                            $html->TextBox("acortarEstatus", acortar($txEstatus));
                                                                             unset($readonly);
                                                                             $NombreSelect = 'selEstatus';
                                                                             $Elementos_estatus[0]['text'] = $auxiliar->traduce("01-Bloqueo General", $administrador->ID_IDIOMA);
@@ -515,7 +624,7 @@ endif;
                                                                     src="<? echo $pathRaiz ?>imagenes/transparente.gif"
                                                                     width="10" height="10"></td>
                                                         </tr>
-                                                        <table width="97%" align="center" border="0" cellspacing="0" cellpadding="0">
+                                                        <table id="table2" width="97%" align="center" border="0" cellspacing="0" cellpadding="0">
                                                             <tr bgcolor="#D9E3EC">
                                                                 <td height="10" colspan="3" bgcolor="#AACFF9"
                                                                     class="lineabajodereizq"><img
@@ -525,7 +634,7 @@ endif;
                                                             <td width="5" bgcolor="d9e3ec" class="lineaizquierda">
                                                             </td>
                                                             <td width="640" align="left" bgcolor="d9e3ec">FICHA MATERIAL
-                                                                <table width="750" border="0" cellspacing="0"
+                                                                <table  width="750" border="0" cellspacing="0"
                                                                        cellpadding="1" class="tablaFiltros">
                                                                     <tr>
                                                                         <td align="center" width="5%"></td>
@@ -703,17 +812,121 @@ endif;
                                                 src="<? echo $pathRaiz ?>imagenes/transparente.gif"
                                                 width="10" height="10"></td>
                                 </tr>
-                                <tr height="25">
-                                    <td class="lineabajo" width="50%" align="left"><span class="textoazul">&nbsp;<a
-                                                    href="index.php?recordar_busqueda=1"
-                                                    class="senaladoazul">&nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Volver", $administrador->ID_IDIOMA) ?>&nbsp;&nbsp;&nbsp;&nbsp;</a></span>
-                                    </td>
-                                    <td align="right" class="lineabajo"><span class="textoazul">
-  							&nbsp;<a href="#" id="botonGrabar" class="senalado6" onclick="grabar()">&nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Grabar", $administrador->ID_IDIOMA) ?>&nbsp;&nbsp;&nbsp;&nbsp;</a>&nbsp;</span>
-                                    </td>
 
-                                </tr>
+
+                                <table id="table3" width="97%" border="0" align="center" cellpadding="0"
+                                       cellspacing="0">
+                                    <tr bgcolor="#D9E3EC">
+                                        <td height="10" colspan="3" bgcolor="AACFF9"
+                                            class="linearribadereizq"><img
+                                                    src="<? echo $pathRaiz ?>imagenes/transparente.gif"
+                                                    width="10" height="10"></td>
+                                    </tr>
+                                    <tr bgcolor="#D9E3EC" class="lineabajodereizq">
+                                        <td width="640" align="left" bgcolor="d9e3ec"> FICHA AGM
+                                            <table  width="100%" border="0" cellspacing="0"
+                                                    cellpadding="1" class="tablaFiltros">
+                                                <tr>
+
+                                                    <td align="left" class="textoazul"
+                                                        width="35%"><?= $auxiliar->traduce("Material AGM", $administrador->ID_IDIOMA) . ":" ?>
+
+                                                        <?
+                                                        $TamanoText = "420px";
+                                                        $ClassText  = "copyright ObligatorioRellenar";
+                                                        $MaxLength  = "80";
+                                                        $html->Option("isAGM",'Check',1, $isAGM,);
+                                                        ?>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td>
+                                                        <div class="menu_herramientas"
+                                                             style="display: inline-block; ">
+                                                            <a href="#" id="btnAccionesLinea"
+                                                               onmouseenter="ventana_opciones(this,event);return false;"
+                                                               class="senaladoverde botones"
+                                                               style="white-space: nowrap;">
+                                                                &nbsp;&nbsp;
+                                                                <img src="<?= $pathRaiz ?>imagenes/wheel.png"
+                                                                     alt="Herramientas"
+                                                                     height="16px" width="16px"
+                                                                     style="vertical-align: middle;padding-bottom:2px;"/>
+                                                                <? echo $auxiliar->traduce("Carga Masiva AGM", $administrador->ID_IDIOMA) ?>
+                                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                                            </a>&nbsp;
+                                                            <ul>
+                                                                <li>
+                                                                    <a href="ficha_importacion_copiar_pegar_paso1.php"
+                                                                       class="copyrightbotonesfancyboxImportacion">
+                                                                        <img
+                                                                                src="<?= $pathRaiz ?>imagenes/edit_form.png"
+                                                                                name="DeshacerAnulaciones"
+                                                                                border="0"/>
+                                                                        &nbsp;&nbsp;&nbsp;
+                                                                        <?= $auxiliar->traduce("Copiar y Pegar", $administrador->ID_IDIOMA) ?>
+                                                                        &nbsp;&nbsp;&nbsp;
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                    <tr>
+                                                    <tr>
+                                                    <?if($isAGM):?>
+                                                            <tr> </tr>
+                                                            <tr>
+                                                                <tr>
+                                                                <td><label>Material:</label></td>
+                                                                <td><label>Cantidad:</label></td>
+                                                                </tr>
+                                                                <td><input type="text" id="material" name="material"></td>
+                                                                <td><input type="text" id="cantidad" name="cantidad"></td>
+                                                <td> </td>
+                                                <td> </td><td> </td>
+                                                <td> </td><td> </td>
+
+
+                                                                <td><button style="background-color: #1b6d85; color: whitesmoke" type="button" onclick="addMateriral()">Añadir material</button></td>
+                                                                <td><button style="background-color: #ac2925; color: whitesmoke" type="button" onclick="cancelarLineas()">Anular líneas seleccionadas</button></td>
+                                                            </tr>
+                                                </tr>
+                                                </tr>
+                                                    <?
+                                                    $vector=array();
+                                                    obtenerHijosMateriales($txMaterial,$bd,$vector);
+                                                    pintar_tabla_hijos($vector,"red");
+                                                    ?>
+                                                </tr>
+                                                <tr>
+                                                </tr>
+                                            </table>
+    <?endif;?>
                             </table>
+
+                    <tr height="25">
+                        <td class="lineabajo" width="50%" align="left"><span class="textoazul">&nbsp;<a
+                                        href="index.php?recordar_busqueda=1"
+                                        class="senaladoazul">&nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Volver", $administrador->ID_IDIOMA) ?>&nbsp;&nbsp;&nbsp;&nbsp;</a></span>
+                        </td>
+                        <td align="right" class="lineabajo"><span class="textoazul">
+  							&nbsp;<a href="#" id="botonGrabar" class="senalado6" onclick="grabar()">&nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Grabar", $administrador->ID_IDIOMA) ?>&nbsp;&nbsp;&nbsp;&nbsp;</a>&nbsp;</span>
+                        </td>
+
+                    </tr>
                                                     </table>
                                                 </td>
 
