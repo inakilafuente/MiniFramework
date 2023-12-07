@@ -14,7 +14,22 @@ session_start();
 
 
 function addMaterial($idpadre,$idhijo,$bd){
+    $sql       = "INSERT INTO MATERIAL_COMPONENTE_AGM SET
+                MATERIAL_AGM='" . trim( (string)$bd->escapeCondicional($idpadre)) . "'
+                ,MATERIAL_COMPONENTE='" . trim( (string)$bd->escapeCondicional($idhijo)) . "'
+                ,CANTIDAD='" . trim( (string)$bd->escapeCondicional($txCantidad)) . "'
+                ,BAJA='" . $chBaja . "'";
+    $TipoError = "ErrorEjecutarSql";
+    $bd->ExecSQL($sql);
+}
 
+function cancelarLinea($idpadre,$idhijo,$bd){
+    $sql       = "UPDATE MATERIAL_COMPONENTE_AGM SET
+                    BAJA=false 
+                    WHERE MATERIAL_AGM='" . trim( (string)$bd->escapeCondicional($idpadre)) . "' AND MATERIAL_COMPONENTE='" . trim( (string)$bd->escapeCondicional($idhijo)) . "'";
+    $TipoError = "ErrorEjecutarSql";
+    var_dump($sql);
+   // $bd->ExecSQL($sql);
 }
 
 
@@ -74,12 +89,12 @@ function pintar_tabla_hijos($vector,$myColor){
             };
             echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><input type='checkbox' id='chbox'></td>";
             //echo "<input id='idMaterialTabla' type='hidden' value='$material->MATERIAL_COMPONENTE'";
-            echo "<td height='18' align='center'bgcolor='$myColor' class='enlaceceldas'>". $nivel."</td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'>". $nivel."</td>";
             echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><a href='ficha.php?idMaterial=$material->ID_MATERIALES' class='enlaceceldasacceso'>$material->ID_MATERIALES</a></td>";
             echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $material->DESCRIPCION_ESP."</td>";
             echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><input type='text' id='txCantidad' value='$material->CANTIDAD'></td>";
             echo "<td><button style='background-color: #1b6d85; color: whitesmoke' type='button' onclick='addMaterial($material->ID_MATERIALES,$material->MATERIAL_COMPONENTE,$bd)'>Grabar</button></td>";
-            echo "<td><button style='background-color: #ac2925; color: whitesmoke' type='button' onclick='cancelarLinea($material->MATERIAL_COMPONENTE)'>Borrar</button></td>";
+            echo "<td><button style='background-color: #ac2925; color: whitesmoke' type='button' onclick='cancelarLinea($material->ID_MATERIALES,$material->MATERIAL_COMPONENTE,$bd)'>Borrar</button></td>";
             echo "</tr>";
         }
         echo "</tr>";
@@ -835,6 +850,7 @@ endif;
                                                         $TamanoText = "420px";
                                                         $ClassText  = "copyright ObligatorioRellenar";
                                                         $MaxLength  = "80";
+                                                        $jscript="onclick='alert('hola')'";
                                                         $html->Option("isAGM",'Check',1, $isAGM,);
                                                         ?>
                                                     <td> </td>
@@ -908,7 +924,7 @@ endif;
                                                     <?
                                                     $vector=array();
                                                     obtenerHijosMateriales($txMaterial,$bd,$vector);
-                                                    pintar_tabla_hijos($vector,"red");
+                                                    pintar_tabla_hijos($vector,"red",$bd);
                                                     ?>
                                                 </tr>
                                                 <tr>
