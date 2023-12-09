@@ -34,12 +34,12 @@ function cancelarLinea($idpadre,$idhijo,$bd){
 
 
 function obtenerHijosMateriales($id,$bd,&$vector){
-    $sqlHijos = "SELECT M.ID_MATERIALES ,M.REFERENCIA_SCS , M.DESCRIPCION_ESP , M.DESCRIPCION_ENG ,M.ESTATUS_MATERIAL,M.TIPO_MATERIAL,fr.REFERENCIA, fr.FAMILIA_REPRO , fm.NOMBRE_FAMILIA ,MCA.CANTIDAD ,M.FK_UNIDAD_MEDIDA ,M.AGM ,MCA.BAJA,MCA.MATERIAL_AGM ,MCA.MATERIAL_COMPONENTE, UNIDAD.UNIDAD,UNIDAD.DESCRIPCION 
-    FROM MATERIALES M JOIN MATERIAL_COMPONENTE_AGM MCA ON M.ID_MATERIALES=MCA.MATERIAL_AGM 
-    JOIN FAMILIA_MATERIAL fm ON M.FK_FAMILIA_MATERIAL = fm.ID_FAMILIA_MATERIAL 
-    JOIN FAMILIA_REPRO fr ON M.FK_FAMILIA_REPRO = fr.ID_FAMILIA_REPRO 
-    JOIN UNIDAD ON M.FK_UNIDAD_MEDIDA=UNIDAD.ID_UNIDAD 
-    WHERE M.ID_MATERIALES=".$id;
+    $sqlHijos = "SELECT M.ID_MATERIAL ,M.REFERENCIA_SCS , M.DESCRIPCION_ESP , M.DESCRIPCION_ENG ,M.ESTATUS_MATERIAL,M.TIPO_MATERIAL,fr.REFERENCIA, fr.FAMILIA_REPRO , fm.NOMBRE_FAMILIA ,MCA.CANTIDAD ,M.ID_UNIDAD_MEDIDA ,M.MATERIAL_AGM as isAGM ,MCA.BAJA,MCA.MATERIAL_AGM ,MCA.MATERIAL_COMPONENTE, UNIDAD.UNIDAD,UNIDAD.DESCRIPCION 
+    FROM MATERIAL M JOIN MATERIAL_COMPONENTE_AGM MCA ON M.ID_MATERIAL=MCA.MATERIAL_AGM 
+    JOIN FAMILIA_MATERIAL fm ON M.ID_FAMILIA_MATERIAL = fm.ID_FAMILIA_MATERIAL 
+    JOIN FAMILIA_REPRO fr ON M.ID_FAMILIA_REPRO = fr.ID_FAMILIA_REPRO 
+    JOIN UNIDAD ON M.ID_UNIDAD_MEDIDA=UNIDAD.ID_UNIDAD 
+    WHERE M.ID_MATERIAL=".$id;
 
     $resHijos = $bd->ExecSQL($sqlHijos);
     while($reg=$bd->SigReg($resHijos)) {
@@ -49,7 +49,7 @@ function obtenerHijosMateriales($id,$bd,&$vector){
         obtenerHijosMateriales($reg->MATERIAL_COMPONENTE, $bd, $vector);
     }
 }
-function pintar_tabla_hijos($vector,$myColor){
+function pintar_tabla_hijos($vector,$myColor,$bd){
     if(!empty($vector)){
         echo"<tr>";
         echo "<td height='19' bgcolor='#2f4f4f'class='blanco'><input type='checkbox' id='chboxAllAGM'></td>";
@@ -61,10 +61,11 @@ function pintar_tabla_hijos($vector,$myColor){
         echo "<input id='idMaterialTabla' type='hidden' value='$material->MATERIAL_COMPONENTE'>";
         $nivel=0;
         $referencias=array();
+
         foreach ($vector as $material){
             echo "<tr>";
-            if(!in_array($material->ID_MATERIALES,$referencias)){
-                $referencias[]=$material->ID_MATERIALES;
+            if(!in_array($material->ID_MATERIAL,$referencias)){
+                $referencias[]=$material->ID_MATERIAL;
                 $nivel++;
             }
             switch ($nivel) {
@@ -90,11 +91,21 @@ function pintar_tabla_hijos($vector,$myColor){
             echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><input type='checkbox' id='chbox'></td>";
             //echo "<input id='idMaterialTabla' type='hidden' value='$material->MATERIAL_COMPONENTE'";
             echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'>". $nivel."</td>";
-            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><a href='ficha.php?idMaterial=$material->ID_MATERIALES' class='enlaceceldasacceso'>$material->ID_MATERIALES</a></td>";
-            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $material->DESCRIPCION_ESP."</td>";
-            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><input type='text' id='txCantidad' value='$material->CANTIDAD'></td>";
-            echo "<td><button style='background-color: #1b6d85; color: whitesmoke' type='button' onclick='addMaterial($material->ID_MATERIALES,$material->MATERIAL_COMPONENTE,$bd)'>Grabar</button></td>";
-            echo "<td><button style='background-color: #ac2925; color: whitesmoke' type='button' onclick='cancelarLinea($material->ID_MATERIALES,$material->MATERIAL_COMPONENTE,$bd)'>Borrar</button></td>";
+
+            $sqlagm = "SELECT M.ID_MATERIAL , M.DESCRIPCION_ESP , M.DESCRIPCION_ENG ,
+       MCA.MATERIAL_AGM ,MCA.MATERIAL_COMPONENTE, MCA.CANTIDAD
+    FROM MATERIAL M LEFT JOIN MATERIAL_COMPONENTE_AGM MCA ON M.ID_MATERIAL=MCA.MATERIAL_COMPONENTE
+            WHERE ID_MATERIAL=".$material->MATERIAL_COMPONENTE;
+//var_dump($sqlagm);
+//die;
+            $resagm = $bd->ExecSQL($sqlagm);
+            $valAGM=$bd->sigReg($resagm);
+
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><a href='ficha.php?idMaterial=$valAGM->MATERIAL_COMPONENTE' class='enlaceceldasacceso'>$valAGM->MATERIAL_COMPONENTE</a></td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $valAGM->DESCRIPCION_ESP."</td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><input type='text' id='txCantidad' value='$valAGM->CANTIDAD'></td>";
+            echo "<td><button style='background-color: #1b6d85; color: whitesmoke' type='button'>Grabar</button></td>";
+            echo "<td><button style='background-color: #ac2925; color: whitesmoke' type='button'>Borrar</button></td>";
             echo "</tr>";
         }
         echo "</tr>";
@@ -163,17 +174,17 @@ if ($idMaterial != ""):
 
     // OBTENGO REGISTRO
     $nuevo=false;
-    $sqlTipo = "SELECT * FROM MATERIALES M 
-    JOIN FAMILIA_MATERIAL ON M.FK_FAMILIA_MATERIAL=FAMILIA_MATERIAL.ID_FAMILIA_MATERIAL
-    JOIN FAMILIA_REPRO ON M.FK_FAMILIA_REPRO=FAMILIA_REPRO.ID_FAMILIA_REPRO
-    JOIN  UNIDAD U ON U.ID_UNIDAD=M.FK_UNIDAD_COMPRA
-    JOIN ADMINISTRADOR A ON M.FK_USUARIO_CREACION=A.ID_ADMINISTRADOR 
-    JOIN ADMINISTRADOR AA ON M.FK_USUARIO_ULTIMA_MODIFICACION=AA.ID_ADMINISTRADOR WHERE REFERENCIA_SCS= '" . $bd->escapeCondicional($idMaterial) . "'";
+    $sqlTipo = "SELECT * FROM MATERIAL M 
+    JOIN FAMILIA_MATERIAL ON M.ID_FAMILIA_MATERIAL=FAMILIA_MATERIAL.ID_FAMILIA_MATERIAL
+    JOIN FAMILIA_REPRO ON M.ID_FAMILIA_REPRO=FAMILIA_REPRO.ID_FAMILIA_REPRO
+    JOIN  UNIDAD U ON U.ID_UNIDAD=M.ID_UNIDAD_COMPRA
+    JOIN ADMINISTRADOR A ON M.ID_USUARIO_CREACION=A.ID_ADMINISTRADOR 
+    JOIN ADMINISTRADOR AA ON M.ID_USUARIO_ULTIMA_MODIFICACION=AA.ID_ADMINISTRADOR WHERE REFERENCIA_SCS= '" . $bd->escapeCondicional($idMaterial) . "'";
     var_dump($sqlTipo);
 
     $resTipo = $bd->ExecSQL($sqlTipo);
     $rowTipo = $bd->SigReg($resTipo);
-    $isAGM=$rowTipo->AGM;
+    $isAGM=$rowTipo->MATERIAL_AGM;
     if($isAGM==1){
         $isAGM=true;
     }else{
@@ -198,7 +209,7 @@ if ($idMaterial != ""):
     $txDenominador=$rowTipo->DENOMINADOR;
     $txNumerador=$rowTipo->NUMERADOR;
 
-    $idUnidadCompra=$rowTipo->FK_UNIDAD_COMPRA;
+    $idUnidadCompra=$rowTipo->ID_UNIDAD_COMPRA;
     $txUnidadCompra_ESP=$rowTipo->UNIDAD_ESP.' - '.$rowTipo->UNIDAD;
     $txUnidadCompra_ENG=$rowTipo->UNIDAD_ENG.' - '.$rowTipo->UNIDAD;
 
@@ -206,13 +217,13 @@ if ($idMaterial != ""):
     $txUnidadMedida_ESP=$rowTipo->UNIDAD_ESP.' - '.$rowTipo->UNIDAD;
     $txUnidadMedida_ENG=$rowTipo->UNIDAD_ENG.' - '.$rowTipo->UNIDAD;
 
-    $idFamiliaRepro=$rowTipo->FK_FAMILIA_REPRO;
+    $idFamiliaRepro=$rowTipo->ID_FAMILIA_REPRO;
     $txFamiliaRepro=$rowTipo->REFERENCIA . "- ".$rowTipo->FAMILIA_REPRO;
     $vector=array();
     var_dump($idMaterial);
     obtenerPadresFamilia($rowTipo->ID_FAMILIA_MATERIAL,$bd,$vector);
 
-    $idFamiliaMaterial=$rowTipo->FK_FAMILIA_MATERIAL;
+    $idFamiliaMaterial=$rowTipo->ID_FAMILIA_MATERIAL;
     $txFamiliaMaterial=$rowTipo->NOMBRE_FAMILIA;
     $chBaja   = $rowTipo->BAJA;
     $accion = 'Modificar';
@@ -253,7 +264,15 @@ endif;
         }
     </script>
 
+<script>
 
+    function mostrarAGMfunction () {
+        let cboxAGM = document.getElementsByName('isAGM');
+        if (cboxAGM[0].checked) {
+            mostrar_tabla_agm();
+        }
+    }
+</script>
     <script>
         function mostrarTablas(){
             let tables=document.getElementsByTagName('table');
@@ -850,8 +869,11 @@ endif;
                                                         $TamanoText = "420px";
                                                         $ClassText  = "copyright ObligatorioRellenar";
                                                         $MaxLength  = "80";
-                                                        $jscript="onclick='alert('hola')'";
+
+                                                        // $jscript = "onchange=mostrar_tabla_agm()";
+                                                        $jscript = "onchange=mostrarAGMfunction()";
                                                         $html->Option("isAGM",'Check',1, $isAGM,);
+                                                        unset($jscript)
                                                         ?>
                                                     <td> </td>
                                                     <td> </td>
