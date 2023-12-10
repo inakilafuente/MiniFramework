@@ -56,9 +56,23 @@ $i++;
 $comp->ComprobarTexto($arr_tx, "CampoSinRellenar");
 
 unset($arr_tx);
+if($accion == "Modificar_AGM"):
+    $sql       = "UPDATE MATERIAL_COMPONENTE_AGM  SET
+                CANTIDAD='" . trim( (string)$bd->escapeCondicional($cantidad_agm)) . "'
+                WHERE MATERIAL_AGM='" . $bd->escapeCondicional($txMaterial) . "' AND MATERIAL_COMPONENTE='" . $bd->escapeCondicional($id_componente_agm_grabar) . "'";
+    $TipoError = "ErrorEjecutarSql";
+    $bd->ExecSQL($sql);
 
+elseif($accion == "Borrar_AGM"):
+    $sql       = "UPDATE MATERIAL_COMPONENTE_AGM  SET
+                CANTIDAD='" . trim( (string)$bd->escapeCondicional($cantidad_agm)) . "'
+                ,BAJA=TRUE
+                WHERE MATERIAL_AGM='" . $bd->escapeCondicional($txMaterial) . "' AND MATERIAL_COMPONENTE='" . $bd->escapeCondicional($id_componente_agm_grabar) . "'";
 
-if ($accion == "Modificar"):
+$TipoError = "ErrorEjecutarSql";
+    $bd->ExecSQL($sql);
+
+elseif ($accion == "Modificar"):
 
     //$rowTipo = $bd->VerReg("INCIDENCIA_SISTEMA_TIPO", "ID_INCIDENCIA_SISTEMA_TIPO", trim( (string)$bd->escapeCondicional($idIncidenciaSistemaTipo)));
 
@@ -69,8 +83,7 @@ if ($accion == "Modificar"):
     //if ($rowNumero->NUM_REGS > 0) $html->PagErrorCond("Error", "Error", "CampoExistente", "error.php");
 
     // MODIFICO EL REGISTRO DE LA BD
-    $sql       = "UPDATE MATERIALES SET
-                REFERENCIA_SAP='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'
+    $sql       = "UPDATE MATERIAL SET
                 ,REFERENCIA_SCS='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'
                 ,DESCRIPCION_ESP='" . trim( (string)$bd->escapeCondicional($txDesc_esp)) . "'
                 ,DESCRIPCION_ENG='" . trim( (string)$bd->escapeCondicional($txDesc_eng)) . "'
@@ -78,15 +91,15 @@ if ($accion == "Modificar"):
                 ,TIPO_MATERIAL='" . trim( (string)$bd->escapeCondicional($selTipo)) . "'
                 ,MARCA='" . trim( (string)$bd->escapeCondicional($txMarca)) . "'
                 ,MODELO='" . trim( (string)$bd->escapeCondicional($txModelo)) . "'
-                ,FK_FAMILIA_MATERIAL='" . trim( (string)$bd->escapeCondicional($idFamiliaMaterial)) . "'
-                ,FK_FAMILIA_REPRO='" . trim( (string)$bd->escapeCondicional($idFamiliaRepro)) . "'
+                ,ID_FAMILIA_MATERIAL='" . trim( (string)$bd->escapeCondicional($idFamiliaMaterial)) . "'
+                ,ID_FAMILIA_REPRO='" . trim( (string)$bd->escapeCondicional($idFamiliaRepro)) . "'
                 ,MODELO='" . trim( (string)$bd->escapeCondicional($txModelo)) . "'
-                ,FK_UNIDAD_MEDIDA='" . trim( (string)$bd->escapeCondicional($idUnidadMedida)) . "'
-                ,FK_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($idUnidadCompra)) . "'
+                ,ID_UNIDAD_MEDIDA='" . trim( (string)$bd->escapeCondicional($idUnidadMedida)) . "'
+                ,ID_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($idUnidadCompra)) . "'
                 ,NUMERADOR='" . trim( (string)$bd->escapeCondicional($txNumerador)) . "'
                 ,DENOMINADOR='" . trim( (string)$bd->escapeCondicional($txDenominador)) . "'
                 ,BAJA='" . $chBaja . "'
-                WHERE ID_MATERIALES='" . $bd->escapeCondicional($txMaterial) . "'";
+                WHERE ID_MATERIAL='" . $bd->escapeCondicional($txMaterial) . "'";
     $TipoError = "ErrorEjecutarSql";
     $bd->ExecSQL($sql);
 
@@ -108,8 +121,7 @@ elseif ($accion == "Insertar"):
 if($chBaja!=1){
 $chBaja=0;
 }   // INSERTO EL REGISTRO EN LA BD
-    $sql       = "INSERT INTO MATERIALES SET
-                REFERENCIA_SAP='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'
+    $sql       = "INSERT INTO MATERIAL SET
                 ,REFERENCIA_SCS='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'
                 ,DESCRIPCION_ESP='" . trim( (string)$bd->escapeCondicional($txDesc_esp)) . "'
                 ,DESCRIPCION_ENG='" . trim( (string)$bd->escapeCondicional($txDesc_eng)) . "'
@@ -117,15 +129,14 @@ $chBaja=0;
                 ,TIPO_MATERIAL='" . trim( (string)$bd->escapeCondicional($selTipo)) . "'
                 ,MARCA='" . trim( (string)$bd->escapeCondicional($txMarca)) . "'
                 ,MODELO='" . trim( (string)$bd->escapeCondicional($txModelo)) . "'
-                ,REFERENCIA_AUTOMATICA='0'
                 ,FECHA_CREACION='" . date('Y-m-d H:i:s'). "'
-                ,FK_USUARIO_CREACION='" . $administrador->ID_ADMINISTRADOR ."'
-                ,FK_USUARIO_ULTIMA_MODIFICACION='" . $administrador->ID_ADMINISTRADOR ."'
+                ,ID_USUARIO_CREACION='" . $administrador->ID_ADMINISTRADOR ."'
+                ,ID_USUARIO_ULTIMA_MODIFICACION='" . $administrador->ID_ADMINISTRADOR ."'
                 ,FECHA_ULTIMA_MODIFICACION='" . date('Y-m-d H:i:s'). "'
-                ,FK_FAMILIA_MATERIAL='" . trim( (string)$bd->escapeCondicional($txFamiliaMaterial)) . "'
-                ,FK_FAMILIA_REPRO='" . trim( (string)$bd->escapeCondicional($txFamiliaRepro)) . "'
-                ,FK_UNIDAD_MEDIDA='" . trim( (string)$bd->escapeCondicional($txUnidadMedida_ESP)) . "'
-                ,FK_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($txUnidadCompra_ESP)) . "'
+                ,ID_FAMILIA_MATERIAL='" . trim( (string)$bd->escapeCondicional($txFamiliaMaterial)) . "'
+                ,ID_FAMILIA_REPRO='" . trim( (string)$bd->escapeCondicional($txFamiliaRepro)) . "'
+                ,ID_UNIDAD_MEDIDA='" . trim( (string)$bd->escapeCondicional($txUnidadMedida_ESP)) . "'
+                ,ID_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($txUnidadCompra_ESP)) . "'
                 ,NUMERADOR='" . trim( (string)$bd->escapeCondicional($txNumerador)) . "'
                 ,DENOMINADOR='" . trim( (string)$bd->escapeCondicional($txDenominador)) . "'
                 ,BAJA='" . $chBaja . "'";

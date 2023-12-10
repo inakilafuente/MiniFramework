@@ -28,7 +28,7 @@ function cancelarLinea($idpadre,$idhijo,$bd){
                     BAJA=false 
                     WHERE MATERIAL_AGM='" . trim( (string)$bd->escapeCondicional($idpadre)) . "' AND MATERIAL_COMPONENTE='" . trim( (string)$bd->escapeCondicional($idhijo)) . "'";
     $TipoError = "ErrorEjecutarSql";
-    var_dump($sql);
+    //var_dump($sql);
    // $bd->ExecSQL($sql);
 }
 
@@ -39,7 +39,7 @@ function obtenerHijosMateriales($id,$bd,&$vector){
     JOIN FAMILIA_MATERIAL fm ON M.ID_FAMILIA_MATERIAL = fm.ID_FAMILIA_MATERIAL 
     JOIN FAMILIA_REPRO fr ON M.ID_FAMILIA_REPRO = fr.ID_FAMILIA_REPRO 
     JOIN UNIDAD ON M.ID_UNIDAD_MEDIDA=UNIDAD.ID_UNIDAD 
-    WHERE M.ID_MATERIAL=".$id;
+    WHERE M.ID_MATERIAL=".$id." AND MCA.BAJA=FALSE";
 
     $resHijos = $bd->ExecSQL($sqlHijos);
     while($reg=$bd->SigReg($resHijos)) {
@@ -95,17 +95,17 @@ function pintar_tabla_hijos($vector,$myColor,$bd){
             $sqlagm = "SELECT M.ID_MATERIAL , M.DESCRIPCION_ESP , M.DESCRIPCION_ENG ,
        MCA.MATERIAL_AGM ,MCA.MATERIAL_COMPONENTE, MCA.CANTIDAD
     FROM MATERIAL M LEFT JOIN MATERIAL_COMPONENTE_AGM MCA ON M.ID_MATERIAL=MCA.MATERIAL_COMPONENTE
-            WHERE ID_MATERIAL=".$material->MATERIAL_COMPONENTE;
+            WHERE ID_MATERIAL=".$material->MATERIAL_COMPONENTE." AND MCA.BAJA=FALSE";
 //var_dump($sqlagm);
 //die;
             $resagm = $bd->ExecSQL($sqlagm);
             $valAGM=$bd->sigReg($resagm);
-
+            echo "<input type='hidden' id='txComponente' value='$valAGM->MATERIAL_COMPONENTE'>";
             echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><a href='ficha.php?idMaterial=$valAGM->MATERIAL_COMPONENTE' class='enlaceceldasacceso'>$valAGM->MATERIAL_COMPONENTE</a></td>";
             echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $valAGM->DESCRIPCION_ESP."</td>";
             echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><input type='text' id='txCantidad' value='$valAGM->CANTIDAD'></td>";
-            echo "<td><button style='background-color: #1b6d85; color: whitesmoke' type='button' onclick='grabar()'>Grabar</button></td>";
-            echo "<td><button style='background-color: #ac2925; color: whitesmoke' type='button'onclick='grabar()'>Borrar</button></td>";
+            echo "<td><button style='background-color: #1b6d85; color: whitesmoke' type='button' onclick='grabar_agm($valAGM->MATERIAL_COMPONENTE)'>Grabar</button></td>";
+            echo "<td><button style='background-color: #ac2925; color: whitesmoke' type='button'onclick='borrar_agm($valAGM->MATERIAL_COMPONENTE)'>Borrar</button></td>";
             echo "</tr>";
         }
         echo "</tr>";
@@ -180,7 +180,7 @@ if ($idMaterial != ""):
     JOIN  UNIDAD U ON U.ID_UNIDAD=M.ID_UNIDAD_COMPRA
     JOIN ADMINISTRADOR A ON M.ID_USUARIO_CREACION=A.ID_ADMINISTRADOR 
     JOIN ADMINISTRADOR AA ON M.ID_USUARIO_ULTIMA_MODIFICACION=AA.ID_ADMINISTRADOR WHERE REFERENCIA_SCS= '" . $bd->escapeCondicional($idMaterial) . "'";
-    var_dump($sqlTipo);
+    //var_dump($sqlTipo);
 
     $resTipo = $bd->ExecSQL($sqlTipo);
     $rowTipo = $bd->SigReg($resTipo);
@@ -220,7 +220,7 @@ if ($idMaterial != ""):
     $idFamiliaRepro=$rowTipo->ID_FAMILIA_REPRO;
     $txFamiliaRepro=$rowTipo->REFERENCIA . "- ".$rowTipo->FAMILIA_REPRO;
     $vector=array();
-    var_dump($idMaterial);
+    //var_dump($idMaterial);
     obtenerPadresFamilia($rowTipo->ID_FAMILIA_MATERIAL,$bd,$vector);
 
     $idFamiliaMaterial=$rowTipo->ID_FAMILIA_MATERIAL;
@@ -261,6 +261,67 @@ endif;
             document.FormSelect.submit();
 
             return false;
+        }
+    </script>
+
+
+
+
+    <script language="JavaScript" type="text/javascript">
+        function grabar_agm(idElemento) {
+            if (document.FormSelect.idMaterial.value != '') {
+                document.FormSelect.accion.value = 'Modificar_AGM';
+                let form=document.getElementById('FormSelect');
+                let cantidad=document.getElementById('txCantidad').value;
+                let inputId=document.createElement('input');
+                inputId.type='hidden';
+                inputId.name='id_componente_agm_grabar';
+                inputId.value=idElemento;
+
+                let inputCantidad=document.createElement('input');
+                inputCantidad.type='hidden';
+                inputCantidad.name='cantidad_agm';
+                inputCantidad.value=cantidad;
+
+                form.appendChild(inputId);
+                form.appendChild(inputCantidad);
+
+                //this.disabled = true;
+
+                document.FormSelect.submit();
+
+                return false;
+            }
+        }
+    </script>
+
+
+
+    <script language="JavaScript" type="text/javascript">
+        function borrar_agm(idElemento) {
+            if (document.FormSelect.idMaterial.value != '') {
+                document.FormSelect.accion.value = 'Borrar_AGM';
+                let form=document.getElementById('FormSelect');
+                let cantidad=document.getElementById('txCantidad').value;
+                let inputId=document.createElement('input');
+                inputId.type='hidden';
+                inputId.name='id_componente_agm_grabar';
+                inputId.value=idElemento;
+
+                let inputCantidad=document.createElement('input');
+                inputCantidad.type='hidden';
+                inputCantidad.name='cantidad_agm';
+                inputCantidad.value=cantidad;
+
+                form.appendChild(inputId);
+                form.appendChild(inputCantidad);
+
+                //this.disabled = true;
+
+                document.FormSelect.submit();
+
+                return false;
+            }
         }
     </script>
 
@@ -354,7 +415,7 @@ endif;
 </head>
 <body bgcolor="#FFFFFF" background="<? echo "$pathRaiz" ?>imagenes/fondo_pantalla.gif" leftmargin="0" topmargin="0"
       marginwidth="0" marginheight="0">
-<FORM NAME="FormSelect" ACTION="accion.php" METHOD="POST">
+<FORM id="FormSelect" NAME="FormSelect" ACTION="accion.php" METHOD="POST">
     <input type=hidden name="accion" value="<?= $accion ?>">
     <input type="hidden" name="idMaterial" value="<? echo $idMaterial?>">
     <input type="hidden" name="idFamiliaMaterial" value="<? echo $idFamiliaMaterial ?>">
@@ -982,13 +1043,14 @@ endif;
                                             </div>
                                         </td>
                                     <tr>
+
                                             <table  id="tablaAGM" width="100%" border="0" cellspacing="0"
                                                     cellpadding="1" class="tablaFiltros">
                                                 <tr><td width="640" align="left" bgcolor="d9e3ec"> FICHA AGM</td>
                                                     <td width="640" align="left" bgcolor="d9e3ec"></td>
 
                                                     <tr>
-                                                    <?if($isAGM):?>
+
                                                             <tr> </tr>
                                                             <tr>
                                                                 <tr>
@@ -1004,6 +1066,7 @@ endif;
                                                             </tr>
                                                 </tr>
                                                 </tr>
+        <?if($isAGM):?>
                                                     <?
                                                     $vector=array();
                                                     obtenerHijosMateriales($txMaterial,$bd,$vector);
