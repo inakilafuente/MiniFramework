@@ -69,8 +69,30 @@ elseif($accion == "Borrar_AGM"):
                 ,BAJA=TRUE
                 WHERE MATERIAL_AGM='" . $bd->escapeCondicional($txMaterial) . "' AND MATERIAL_COMPONENTE='" . $bd->escapeCondicional($id_componente_agm_grabar) . "'";
 
-$TipoError = "ErrorEjecutarSql";
+    $TipoError = "ErrorEjecutarSql";
     $bd->ExecSQL($sql);
+elseif($accion == "Borrar_AGM_checked"):
+    $duplas=array();
+    foreach ($_POST as $key=>$value){
+        if(preg_match('/(id_padre|id_hijo)_checked(\d+)$/',$key, $matches)){
+            $tipo=$matches[1];
+            $numero=$matches[2];
+            $duplas[$numero][$tipo]=$value;
+        }
+    }
+    foreach ($duplas as $numero=>$valores){
+        $valorPadre=$valores['id_padre'];
+        $valorHijo=$valores['id_hijo'];
+        $sql       = "UPDATE MATERIAL_COMPONENTE_AGM  SET
+                BAJA=TRUE
+                WHERE MATERIAL_AGM='" . $bd->escapeCondicional($valorPadre) . "' AND MATERIAL_COMPONENTE='" . $bd->escapeCondicional($valorHijo) . "'";
+
+        $TipoError = "ErrorEjecutarSql";
+        $bd->ExecSQL($sql);
+    }
+
+
+
 
 elseif ($accion == "Modificar"):
 

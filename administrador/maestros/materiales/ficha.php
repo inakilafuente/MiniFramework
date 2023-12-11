@@ -52,7 +52,7 @@ function obtenerHijosMateriales($id,$bd,&$vector){
 function pintar_tabla_hijos($vector,$myColor,$bd){
     if(!empty($vector)){
         echo"<tr>";
-        echo "<td height='19' bgcolor='#2f4f4f'class='blanco'><input type='checkbox' id='chboxAllAGM'></td>";
+        echo "<td height='19' bgcolor='#2f4f4f'class='blanco'><input type='checkbox' id='chboxAllAGM' onchange='marcarDesmarcarCbox()'></td>";
         echo "<td height='19' bgcolor='#2f4f4f'class='blanco'>Nivel</td>";
         echo "<td height='19' bgcolor='#2f4f4f'class='blanco'>Ref.</td>";
         echo "<td height='19' bgcolor='#2f4f4f'class='blanco' colspan='2'>Material</td>";
@@ -88,9 +88,7 @@ function pintar_tabla_hijos($vector,$myColor,$bd){
                     $myColor = '#e3c0c0';
                     break;
             };
-            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><input type='checkbox' id='chbox'></td>";
-            //echo "<input id='idMaterialTabla' type='hidden' value='$material->MATERIAL_COMPONENTE'";
-            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'>". $nivel."</td>";
+
 
             $sqlagm = "SELECT M.ID_MATERIAL , M.DESCRIPCION_ESP , M.DESCRIPCION_ENG ,
        MCA.MATERIAL_AGM ,MCA.MATERIAL_COMPONENTE, MCA.CANTIDAD
@@ -100,6 +98,11 @@ function pintar_tabla_hijos($vector,$myColor,$bd){
 //die;
             $resagm = $bd->ExecSQL($sqlagm);
             $valAGM=$bd->sigReg($resagm);
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><input type='checkbox' id='chboxAGMtable/$valAGM->MATERIAL_COMPONENTE/$material->ID_MATERIAL'></td>";
+            //echo "<input id='idMaterialTabla' type='hidden' value='$material->MATERIAL_COMPONENTE'";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'>". $nivel."</td>";
+
+
             echo "<input type='hidden' id='txComponente' value='$valAGM->MATERIAL_COMPONENTE'>";
             echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><a href='ficha.php?idMaterial=$valAGM->MATERIAL_COMPONENTE' class='enlaceceldasacceso'>$valAGM->MATERIAL_COMPONENTE</a></td>";
             echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $valAGM->DESCRIPCION_ESP."</td>";
@@ -410,6 +413,76 @@ endif;
             }
 
         }
+
+
+
+        function marcarDesmarcarCbox(){
+            let checkboxes=document.querySelectorAll('input[type="checkbox"][id^="chboxAGMtable"]');
+            let headerCheckbox=document.getElementById('chboxAllAGM');
+            checkboxes.forEach(checkbox=>{
+                checkbox.checked=headerCheckbox.checked;
+            });
+        }
+
+        function borrar_agm_checked(id_hijo,id_padre){
+            if (document.FormSelect.idMaterial.value != '') {
+                document.FormSelect.accion.value = 'Borrar_AGM_checked';
+                let form=document.getElementById('FormSelect');
+
+                let inputIdHijo=document.createElement('input');
+                inputIdHijo.type='hidden';
+                inputIdHijo.name='id_hijo_checked';
+                inputIdHijo.value=id_hijo;
+
+                let inputIdPadre=document.createElement('input');
+                inputIdPadre.type='hidden';
+                inputIdPadre.name='id_padre_checked';
+                inputIdPadre.value=id_padre;
+
+                form.appendChild(inputIdHijo);
+                form.appendChild(inputIdPadre);
+
+                //this.disabled = true;
+
+                document.FormSelect.submit();
+
+                return false;
+            }
+        }
+
+        function borrarChecked(){
+            let checkboxes=document.querySelectorAll('input[type="checkbox"][id^="chboxAGMtable"]:checked');
+            document.FormSelect.accion.value = 'Borrar_AGM_checked';
+            let valores=[];
+            checkboxes.forEach(checkbox=>{
+                let partes=checkbox.id.split("/");
+                let id=partes[0];
+                let id_hijo=partes[1];
+                let id_padre=partes[2];
+                //borrar_agm_checked(partes[1],partes[2]);
+
+
+                let form=document.getElementById('FormSelect');
+
+                let inputIdHijo=document.createElement('input');
+                inputIdHijo.type='hidden';
+                inputIdHijo.name='id_hijo_checked'+id_hijo;
+                inputIdHijo.value=id_hijo;
+
+                let inputIdPadre=document.createElement('input');
+                inputIdPadre.type='hidden';
+                inputIdPadre.name='id_padre_checked'+id_hijo;
+                inputIdPadre.value=id_padre;
+
+                form.appendChild(inputIdHijo);
+                form.appendChild(inputIdPadre);
+
+
+            })
+            document.FormSelect.submit();
+        }
+
+
     </script>
 
 </head>
@@ -1062,7 +1135,7 @@ endif;
 
 
                                                                 <td bgcolor="d9e3ec"><button style="background-color: #1b6d85; color: whitesmoke" type="button" onclick="grabar()">Añadir material</button></td>
-                                                                <td bgcolor="d9e3ec"><button style="background-color: #ac2925; color: whitesmoke" type="button" onclick="grabar()">Anular líneas seleccionadas</button></td>
+                                                                <td bgcolor="d9e3ec"><button style="background-color: #ac2925; color: whitesmoke" type="button" onclick="borrarChecked()">Anular líneas seleccionadas</button></td>
                                                             </tr>
                                                 </tr>
                                                 </tr>
