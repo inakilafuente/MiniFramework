@@ -251,7 +251,7 @@ else:
         if ($errorLinea == false):
             $NotificaErrorPorEmail = "No";
             //$rowRepetido           = $bd->VerRegRest("MATERIALES", "REFERENCIA_SCS='" . $bd->escapeCondicional($NumMaterial) . "' AND INCIDENCIA_SISTEMA_TIPO_ENG='" . $bd->escapeCondicional($incidenciaSistemaTipoEng) . "' AND BAJA=" . $baja, "No");
-            $rowRepetido           = $bd->VerRegRest("MATERIALES", "REFERENCIA_SCS=" . $bd->escapeCondicional($NumMaterial),'No');
+            $rowRepetido           = $bd->VerRegRest("MATERIAL", "REFERENCIA_SCS=" . $bd->escapeCondicional($NumMaterial),'No');
             $arrLineasValidas[$numFila]['INCIDENCIA_SISTEMA_TIPO']    = $incidenciaSistemaTipo;
             $arrLineasValidas[$numFila]['INCIDENCIA_SISTEMA_TIPO_ENG']  = $incidenciaSistemaTipoEng;
             $arrLineasValidas[$numFila]['BAJA']   = $baja;

@@ -107,9 +107,6 @@ $col = $col + 1;
 $worksheet1->write_string($i, $col, $auxiliar->traduce("Divisibilidad", $administrador->ID_IDIOMA), $formatot);
 $worksheet1->set_column(0, $col, 10);
 $col = $col + 1;
-$worksheet1->write_string($i, $col, $auxiliar->traduce("RA", $administrador->ID_IDIOMA), $formatot);
-$worksheet1->set_column(0, $col, 10);
-$col = $col + 1;
 $worksheet1->write_string($i, $col, $auxiliar->traduce("Observaciones", $administrador->ID_IDIOMA), $formatot);
 $worksheet1->set_column(0, $col, 15);
 $col = $col + 1;
@@ -120,10 +117,10 @@ $worksheet1->set_column(0, $col, 10);
 $i = 1;
 while ($row = $bd->SigReg($result)):
     $col = 0;
-    $rowInicial = $bd->VerReg("MATERIALES", "ID_MATERIALES", $row->ID_MATERIALES);
+    $rowInicial = $bd->VerReg("MATERIAL", "ID_MATERIAL", $row->ID_MATERIAL);
     $worksheet1->write_string($i, $col, $rowInicial->REFERENCIA_SCS);
     $col = $col + 1;
-    $row_desc = $bd->VerReg("MATERIALES", "ID_MATERIALES", $row->ID_MATERIALES);
+    $row_desc = $bd->VerReg("MATERIAL", "ID_MATERIAL", $row->ID_MATERIAL);
     if(($administrador->ID_IDIOMA)=='ESP'):
         $worksheet1->write_string($i, $col, $row_desc->DESCRIPCION_ESP);
     elseif(($administrador->ID_IDIOMA)=='ENG'):
@@ -134,22 +131,20 @@ while ($row = $bd->SigReg($result)):
     $col = $col + 1;
     $worksheet1->write_string($i, $col, $rowInicial->TIPO_MATERIAL);
     $col = $col + 1;
-    $rowFinal = $bd->VerReg("FAMILIA_MATERIAL", "ID_FAMILIA_MATERIAL", $rowInicial->FK_FAMILIA_REPRO);
+    $rowFinal = $bd->VerReg("FAMILIA_MATERIAL", "ID_FAMILIA_MATERIAL", $rowInicial->ID_FAMILIA_REPRO);
     $worksheet1->write_string($i, $col, $rowFinal->NOMBRE_FAMILIA);
     $col = $col + 1;
-    $rowFinal = $bd->VerReg("FAMILIA_REPRO", "ID_FAMILIA_REPRO", $rowInicial->FK_FAMILIA_REPRO);
+    $rowFinal = $bd->VerReg("FAMILIA_REPRO", "ID_FAMILIA_REPRO", $rowInicial->ID_FAMILIA_REPRO);
     $worksheet1->write_string($i, $col, $rowFinal->REFERENCIA . "- ".$rowFinal->FAMILIA_REPRO);
     $col = $col + 1;
     $worksheet1->write_string($i, $col, $rowInicial->MARCA);
     $col = $col + 1;
     $worksheet1->write_string($i, $col, $rowInicial->MODELO);
     $col = $col + 1;
-    $rowFinal = $bd->VerReg("UNIDAD", "ID_UNIDAD", $rowInicial->FK_UNIDAD_COMPRA);
+    $rowFinal = $bd->VerReg("UNIDAD", "ID_UNIDAD", $rowInicial->ID_UNIDAD_COMPRA);
     $worksheet1->write_string($i, $col, $rowFinal->UNIDAD ." ".$rowFinal->DESCRIPCION);
     $col = $col + 1;
     $worksheet1->write_string($i, $col, $rowInicial->DIVISIBILIDAD);
-    $col = $col + 1;
-    $worksheet1->write_string($i, $col, $rowInicial->REFERENCIA_AUTOMATICA);
     $col = $col + 1;
     $worksheet1->write_string($i, $col, $rowInicial->OBSERVACIONES);
     $col = $col + 1;

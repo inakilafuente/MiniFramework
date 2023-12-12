@@ -50,10 +50,10 @@ if ($referencia != ""):
     $fpdf->SetMargins($margenIzd, $margenTop, $margenDrcho);
 
     $pag = 0;
-    $sql_desc="SELECT * FROM MATERIALES M WHERE REFERENCIA_SCS=$referencia";
+    $sql_desc="SELECT * FROM MATERIAL M WHERE REFERENCIA_SCS=$referencia";
     $result_desc = $bd->ExecSQL($sql_desc);
     $row_desc        = $bd->SigReg($result_desc);
-    $sql         = "SELECT * FROM MATERIALES M JOIN FAMILIA_REPRO FR ON M.FK_FAMILIA_REPRO=FR.ID_FAMILIA_REPRO JOIN FAMILIA_MATERIAL FM ON M.FK_FAMILIA_MATERIAL=FM.ID_FAMILIA_MATERIAL WHERE REFERENCIA_SCS=$referencia";
+    $sql         = "SELECT * FROM MATERIAL M JOIN FAMILIA_REPRO FR ON M.id_FAMILIA_REPRO=FR.ID_FAMILIA_REPRO JOIN FAMILIA_MATERIAL FM ON M.id_FAMILIA_MATERIAL=FM.ID_FAMILIA_MATERIAL WHERE REFERENCIA_SCS=$referencia";
     $resultLista = $bd->ExecSQL($sql);
     $row         = $bd->SigReg($resultLista);
 
@@ -85,7 +85,7 @@ if ($referencia != ""):
             $tamañoLetra = $tamañoLetra - 10;
             $fpdf->SetFont('Times', '', $tamañoLetra);
         } while ((int)$fpdf->GetStringWidth($row->REFERENCIA_SCS) > 284);
-        $valueQR=$row->REFERENCIA_SCS.SEPARADOR_MATERIAL_PDA.$row->FK_FAMILIA_REPRO.SEPARADOR_MATERIAL_PDA.acortar($row->ESTATUS_MATERIAL);
+        $valueQR=$row->REFERENCIA_SCS.SEPARADOR_MATERIAL_PDA.$row->ID_FAMILIA_REPRO.SEPARADOR_MATERIAL_PDA.acortar($row->ESTATUS_MATERIAL);
         //PINTAMOS EL CODIGO QR
         $qrcode = new QRcode($valueQR, 'H'); // error level : L, M, Q, H
         $qrcode->disableBorder();

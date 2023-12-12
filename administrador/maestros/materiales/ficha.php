@@ -49,7 +49,7 @@ function obtenerHijosMateriales($id,$bd,&$vector){
         obtenerHijosMateriales($reg->MATERIAL_COMPONENTE, $bd, $vector);
     }
 }
-function pintar_tabla_hijos($vector,$myColor,$bd){
+function pintar_tabla_hijos($vector,$myColor,$bd,$idioma){
     if(!empty($vector)){
         echo"<tr>";
         echo "<td height='19' bgcolor='#2f4f4f'class='blanco'><input type='checkbox' id='chboxAllAGM' onchange='marcarDesmarcarCbox()'></td>";
@@ -105,7 +105,13 @@ function pintar_tabla_hijos($vector,$myColor,$bd){
 
             echo "<input type='hidden' id='txComponente' value='$valAGM->MATERIAL_COMPONENTE'>";
             echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><a href='ficha.php?idMaterial=$valAGM->MATERIAL_COMPONENTE' class='enlaceceldasacceso'>$valAGM->MATERIAL_COMPONENTE</a></td>";
-            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $valAGM->DESCRIPCION_ESP."</td>";
+
+            if($idioma=='ESP'){
+                echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $valAGM->DESCRIPCION_ESP."</td>";
+            }
+            if($idioma=='ENG'){
+                echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $valAGM->DESCRIPCION_ENG."</td>";
+            }
             echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><input type='text' id='txCantidad' value='$valAGM->CANTIDAD'></td>";
             echo "<td><button style='background-color: #1b6d85; color: whitesmoke' type='button' onclick='grabar_agm($valAGM->MATERIAL_COMPONENTE)'>Grabar</button></td>";
             echo "<td><button style='background-color: #ac2925; color: whitesmoke' type='button'onclick='borrar_agm($valAGM->MATERIAL_COMPONENTE)'>Borrar</button></td>";
@@ -480,6 +486,12 @@ endif;
 
             })
             document.FormSelect.submit();
+        }
+        function add_AGM(){
+            if (document.FormSelect.idMaterial.value != '') {
+                document.FormSelect.accion.value = 'Add_AGM';
+                document.FormSelect.submit();
+            }
         }
 
 
@@ -1118,7 +1130,7 @@ endif;
                                     <tr>
 
                                             <table  id="tablaAGM" width="100%" border="0" cellspacing="0"
-                                                    cellpadding="1" class="tablaFiltros">
+                                                    bgcolor="d9e3ec" cellpadding="1" class="tablaFiltros">
                                                 <tr><td width="640" align="left" bgcolor="d9e3ec"> FICHA AGM</td>
                                                     <td width="640" align="left" bgcolor="d9e3ec"></td>
 
@@ -1128,25 +1140,29 @@ endif;
                                                             <tr>
                                                                 <tr>
                                                                 <td bgcolor="d9e3ec"><label>Material:</label></td>
+
                                                                 <td bgcolor="d9e3ec"><label>Cantidad:</label></td>
                                                                 </tr>
                                                                 <td bgcolor="d9e3ec"><input type="text" id="material" name="material"></td>
                                                                 <td bgcolor="d9e3ec"><input type="text" id="cantidad" name="cantidad"></td>
 
 
-                                                                <td bgcolor="d9e3ec"><button style="background-color: #1b6d85; color: whitesmoke" type="button" onclick="grabar()">Añadir material</button></td>
+                                                                <td bgcolor="d9e3ec"><button style="background-color: #1b6d85; color: whitesmoke" type="button" onclick="add_AGM()">Añadir material</button></td>
                                                                 <td bgcolor="d9e3ec"><button style="background-color: #ac2925; color: whitesmoke" type="button" onclick="borrarChecked()">Anular líneas seleccionadas</button></td>
-                                                            </tr>
+
+                                    </tr>
                                                 </tr>
+
                                                 </tr>
         <?if($isAGM):?>
                                                     <?
                                                     $vector=array();
                                                     obtenerHijosMateriales($txMaterial,$bd,$vector);
-                                                    pintar_tabla_hijos($vector,"red",$bd);
+                                                    pintar_tabla_hijos($vector,"red",$bd,$administrador->ID_IDIOMA);
                                                     ?>
                                                 </tr>
                                                 <tr>
+
                                                 </tr>
                                             </table>
     <?endif;?>

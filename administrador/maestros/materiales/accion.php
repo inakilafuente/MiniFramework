@@ -62,11 +62,36 @@ if($accion == "Modificar_AGM"):
                 WHERE MATERIAL_AGM='" . $bd->escapeCondicional($txMaterial) . "' AND MATERIAL_COMPONENTE='" . $bd->escapeCondicional($id_componente_agm_grabar) . "'";
     $TipoError = "ErrorEjecutarSql";
     $bd->ExecSQL($sql);
+elseif($accion == "Add_AGM"):
+    $sqlSelect      = "SELECT * FROM MATERIAL_COMPONENTE_AGM  WHERE
+                MATERIAL_AGM='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'
+                AND MATERIAL_COMPONENTE='" . trim( (string)$bd->escapeCondicional($txMaterialAGMadd)) . "'";
 
+    $TipoError = "ErrorEjecutarSql";
+    $res=$bd->ExecSQL($sqlSelect);
+    $i=0;
+    while($reg=$bd->SigReg($res)) {
+        $i++;
+    }
+    if($i>0){
+        $sql       = "UPDATE MATERIAL_COMPONENTE_AGM  SET
+                CANTIDAD='" . trim( (string)$bd->escapeCondicional($cantidad)) . "'
+                WHERE MATERIAL_AGM='" . $bd->escapeCondicional($txMaterial) . "' AND MATERIAL_COMPONENTE='" . $bd->escapeCondicional($txMaterialAGMadd) . "'";
+        $TipoError = "ErrorEjecutarSql";
+        $bd->ExecSQL($sql);
+    }else{
+        $sql       = "INSERT INTO MATERIAL_COMPONENTE_AGM  SET
+                MATERIAL_AGM='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'
+                ,MATERIAL_COMPONENTE='" . trim( (string)$bd->escapeCondicional($txMaterialAGMadd)) . "'
+                ,CANTIDAD='" . trim( (string)$bd->escapeCondicional($cantidad)) . "'
+                ,BAJA=FALSE";
+
+        $TipoError = "ErrorEjecutarSql";
+        $bd->ExecSQL($sql);
+    }
 elseif($accion == "Borrar_AGM"):
     $sql       = "UPDATE MATERIAL_COMPONENTE_AGM  SET
-                CANTIDAD='" . trim( (string)$bd->escapeCondicional($cantidad_agm)) . "'
-                ,BAJA=TRUE
+                BAJA=TRUE
                 WHERE MATERIAL_AGM='" . $bd->escapeCondicional($txMaterial) . "' AND MATERIAL_COMPONENTE='" . $bd->escapeCondicional($id_componente_agm_grabar) . "'";
 
     $TipoError = "ErrorEjecutarSql";
@@ -321,7 +346,7 @@ endif;
                                                                                 <tr>
                                                                                     <td align="center" valign="middle">
                                                                                         <a id="botonContinuar"
-                                                                                           href="index.php?recordar_busqueda=1"
+                                                                                           href="ficha.php?idMaterial=<?echo $txMaterial?>"
                                                                                            class="senaladoazul">&nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Continuar", $administrador->ID_IDIOMA) ?>
                                                                                             &nbsp;&nbsp;&nbsp;&nbsp;</a>
                                                                                     </td>
