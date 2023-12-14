@@ -102,23 +102,7 @@ else:
 
         //OBTENEMOS VALORES
         $NumMaterial    = trim( (string)$sheet->getCell('A' . $numFila)->getValue());
-        $Desc_ESP  = trim( (string)$sheet->getCell('B' . $numFila)->getValue());
-        $Desc_ENG  = trim( (string)$sheet->getCell('C' . $numFila)->getValue());
-        $Estatus_Material   = trim( (string)$sheet->getCell('D' . $numFila)->getValue());
-
-        $Tipo_Material    = trim( (string)$sheet->getCell('E' . $numFila)->getValue());
-        $baja   = trim( (string)$sheet->getCell('F' . $numFila)->getValue());
-
-        $Familia_Material  = trim( (string)$sheet->getCell('G' . $numFila)->getValue());
-        $Familia_Repro  = trim( (string)$sheet->getCell('H' . $numFila)->getValue());
-        $Marca=trim( (string)$sheet->getCell('I' . $numFila)->getValue());
-            $Modelo=trim( (string)$sheet->getCell('J' . $numFila)->getValue());
-        $Unidad_Medida   = trim( (string)$sheet->getCell('K' . $numFila)->getValue());
-
-        $Unidad_Compra    = trim( (string)$sheet->getCell('L' . $numFila)->getValue());
-        $Numerador_Conversion  = trim( (string)$sheet->getCell('M' . $numFila)->getValue());
-        $Denominador_Conversion  = trim( (string)$sheet->getCell('N' . $numFila)->getValue());
-        $Observaciones  = trim( (string)$sheet->getCell('O' . $numFila)->getValue());
+        $Cantidad  = trim( (string)$sheet->getCell('B' . $numFila)->getValue());
 
 
         // COMPRUEBO QUE Nº Material NO ESTÉ VACÍO
@@ -129,115 +113,23 @@ else:
             $errorLinea = true;
         endif;
 
-        // COMPRUEBO QUE DESC_ESP NO ESTÉ VACÍO
-        if ($Desc_ESP == ""):
+        // COMPRUEBO QUE CANTIDAD NO ESTÉ VACÍO
+        if ($Cantidad == ""):
             $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
-            $strKo .= $auxiliar->traduce("El campo", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("Descripcion ESP", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("esta vacío", $administrador->ID_IDIOMA) . ".\n";
+            $strKo .= $auxiliar->traduce("El campo", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("Cantidad", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("esta vacío", $administrador->ID_IDIOMA) . ".\n";
             $filasKo++;
             $errorLinea = true;
         endif;
 
-        // COMPRUEBO QUE DESC_ENG NO ESTÉ VACÍO
-        if ($Desc_ENG == ""):
-            $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
-            $strKo .= $auxiliar->traduce("El campo", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("Descripcion ENG", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("esta vacío", $administrador->ID_IDIOMA) . ".\n";
-            $filasKo++;
-            $errorLinea = true;
-        endif;
-
-        // COMPRUEBO QUE ESTATUS MATERIAL NO ESTÉ VACÍO
-        if ($Estatus_Material == ""):
-            $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
-            $strKo .= $auxiliar->traduce("El campo", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("Estatus material", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("esta vacío", $administrador->ID_IDIOMA) . ".\n";
-            $filasKo++;
-            $errorLinea = true;
-        endif;
-
-        // COMPRUEBO QUE TIPO NO ESTÉ VACÍO
-        if ($Tipo_Material == ""):
-            $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
-            $strKo .= $auxiliar->traduce("El campo", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("Tipo material", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("esta vacío", $administrador->ID_IDIOMA) . ".\n";
-            $filasKo++;
-            $errorLinea = true;
-        endif;
-
-        // COMPRUEBO QUE FAMILIA MATERIAL NO ESTÉ VACÍO
-        if ($Familia_Material == ""):
-            $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
-            $strKo .= $auxiliar->traduce("El campo", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("Familia material", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("esta vacío", $administrador->ID_IDIOMA) . ".\n";
-            $filasKo++;
-            $errorLinea = true;
-        endif;
-
-        // COMPRUEBO QUE FAMILIA REPRO NO ESTÉ VACÍO
-        if ($Familia_Repro == ""):
-            $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
-            $strKo .= $auxiliar->traduce("El campo", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("Familia repro", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("esta vacío", $administrador->ID_IDIOMA) . ".\n";
-            $filasKo++;
-            $errorLinea = true;
-        endif;
-
-        // COMPRUEBO QUE UNIDAD MEDIDA NO ESTÉ VACÍO
-        if ($Unidad_Medida == ""):
-            $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
-            $strKo .= $auxiliar->traduce("El campo", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("Unidad de medida", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("esta vacío", $administrador->ID_IDIOMA) . ".\n";
-            $filasKo++;
-            $errorLinea = true;
-        endif;
-
-        // COMPRUEBO QUE UNIDAD COMPRA NO ESTÉ VACÍO
-        if ($Unidad_Compra == ""):
-            $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
-            $strKo .= $auxiliar->traduce("El campo", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("Unidad de compra", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("esta vacío", $administrador->ID_IDIOMA) . ".\n";
-            $filasKo++;
-            $errorLinea = true;
-        endif;
-
-        // COMPRUEBO QUE NUMERADOR CONVERSION NO ESTÉ VACÍO
-        if ($Numerador_Conversion == ""):
-            $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
-            $strKo .= $auxiliar->traduce("El campo", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("Numerador conversión", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("esta vacío", $administrador->ID_IDIOMA) . ".\n";
-            $filasKo++;
-            $errorLinea = true;
-        endif;
-
-        // COMPRUEBO QUE DENOMINADOR CONVERSION NO ESTÉ VACÍO
-        if ($Denominador_Conversion == ""):
-            $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
-            $strKo .= $auxiliar->traduce("El campo", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("Denominador conversion", $administrador->ID_IDIOMA) . " " . $auxiliar->traduce("esta vacío", $administrador->ID_IDIOMA) . ".\n";
-            $filasKo++;
-            $errorLinea = true;
-        endif;
-
-
-        // COMPRUEBO QUE BAJA NO ESTÉ VACÍO
-        if ($baja != "") {
-            if (is_numeric($baja)) {
-                if (($baja != 0) && ($baja != 1)) {
-                    $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
-                    $strKo .= $auxiliar->traduce("El campo baja no tiene el formato correcto", $administrador->ID_IDIOMA) . ".\n";
-                    $filasKo++;
-                    $errorLinea = true;
-                }
-            }
-            if (is_string($baja)) {
-                if (($baja != 'Y') && ($baja != 'y') && ($baja != 'n') && ($baja != 'N')) {
-                    $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
-                    $strKo .= $auxiliar->traduce("El campo baja no tiene el formato correcto", $administrador->ID_IDIOMA) . ".\n";
-                    $filasKo++;
-                    $errorLinea = true;
-                }
-            }
-        }
-
-        foreach ($arrLineasValidas as $linea):
-            if (strtoupper( (string)$linea['INCIDENCIA_SISTEMA_TIPO']) == strtoupper( (string)$incidenciaSistemaTipo) && strtoupper( (string)$linea['INCIDENCIA_SISTEMA_TIPO_ENG']) == strtoupper( (string)$incidenciaSistemaTipoEng) && strtoupper( (string)$linea['BAJA']) == strtoupper( (string)$baja)):
+        //foreach ($arrLineasValidas as $linea):
+            /*if (strtoupper( (string)$linea['INCIDENCIA_SISTEMA_TIPO']) == strtoupper( (string)$incidenciaSistemaTipo) && strtoupper( (string)$linea['INCIDENCIA_SISTEMA_TIPO_ENG']) == strtoupper( (string)$incidenciaSistemaTipoEng) && strtoupper( (string)$linea['BAJA']) == strtoupper( (string)$baja)):
                 $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
                 $strKo .= $auxiliar->traduce("El registro está duplicado en los datos introducidos", $administrador->ID_IDIOMA) . ".\n";
                 $filasKo++;
                 $campo_repetido = true;
-            endif;
-        endforeach;
+            endif;*/
+
+        //endforeach;
 
         if ($campo_repetido):
             //INCREMENTO LA LINEA
@@ -254,6 +146,8 @@ else:
             $arrLineasValidas[$numFila]['INCIDENCIA_SISTEMA_TIPO']    = $incidenciaSistemaTipo;
             $arrLineasValidas[$numFila]['INCIDENCIA_SISTEMA_TIPO_ENG']  = $incidenciaSistemaTipoEng;
             $arrLineasValidas[$numFila]['BAJA']   = $baja;
+            $arrLineasValidas[$numFila]['NumMaterial']   = $NumMaterial;
+            $arrLineasValidas[$numFila]['Cantidad']   = $Cantidad;
 
             //AÑADIMOS 1 AL NÚMERO DE LÍNEAS VÁLIDAS
             $indiceOK++;
@@ -271,9 +165,9 @@ else:
 
         //INCREMENTO LA LINEA
         $indice = $indice + 1;
+        //var_dump($NumMaterial,$Cantidad);
     endfor;
 endif;
-
 $html->PagErrorCondicionado($ultimaFila, "==", "1", "ArchivoVacio");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -327,9 +221,10 @@ $html->PagErrorCondicionado($ultimaFila, "==", "1", "ArchivoVacio");
 </head>
 <body class="fancy" bgcolor="#FFFFFF" background="<?= $pathRaiz ?>imagenes/fondo_pantalla.gif" leftmargin="0"
       topmargin="0" marginwidth="0" marginheight="0">
-<FORM NAME="FormSelect" ACTION="ficha_importacion_accion.php" METHOD="POST" style="margin-bottom:0;"
+<FORM NAME="FormSelect" ACTION="ficha_importacion_AGM_accion.php" METHOD="POST" style="margin-bottom:0;"
       enctype="multipart/form-data">
     <input type="hidden" name="claveTiempo" value="<? echo $claveTiempo; ?>">
+    <input type="hidden" name="idMaterial" value="<? echo $idMaterial; ?>">
     <? $navegar->GenerarCamposOcultosForm(); ?>
     <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" background="">
         <tr>
@@ -585,47 +480,8 @@ $html->PagErrorCondicionado($ultimaFila, "==", "1", "ArchivoVacio");
                                                                                     title="<?= $auxiliar->traduce("Nº Material", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Nº Material", $administrador->ID_IDIOMA) ?></td>
                                                                                 <td height="19" bgcolor="#2E8AF0"
                                                                                     class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Descripcion Material", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Descripcion Material", $administrador->ID_IDIOMA) ?></td>
-                                                                                <td height="19" bgcolor="#2E8AF0"
-                                                                                    class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Descripcion Material Ingles", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Descripcion Material Ingles", $administrador->ID_IDIOMA) ?></td>
-                                                                                <td height="19" bgcolor="#2E8AF0"
-                                                                                    class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Estatus Material", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Estatus Material", $administrador->ID_IDIOMA) ?></td>
-                                                                                <td height="19" bgcolor="#2E8AF0"
-                                                                                    class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Tipo Material", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Tipo Material", $administrador->ID_IDIOMA) ?></td>
-                                                                                <td height="19" bgcolor="#2E8AF0"
-                                                                                    class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Baja", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Baja", $administrador->ID_IDIOMA) ?></td>
-                                                                                <td height="19" bgcolor="#2E8AF0"
-                                                                                    class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) ?></td>
-                                                                                <td height="19" bgcolor="#2E8AF0"
-                                                                                    class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Familia Repro", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Familia Repro", $administrador->ID_IDIOMA) ?></td>
-                                                                                <td height="19" bgcolor="#2E8AF0"
-                                                                                    class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Marca", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Marca", $administrador->ID_IDIOMA) ?></td>
-                                                                                <td height="19" bgcolor="#2E8AF0"
-                                                                                    class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Modelo", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Modelo", $administrador->ID_IDIOMA) ?></td>
-                                                                                <td height="19" bgcolor="#2E8AF0"
-                                                                                    class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Unidad de medida", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Unidad de medida", $administrador->ID_IDIOMA) ?></td>
-                                                                                <td height="19" bgcolor="#2E8AF0"
-                                                                                    class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Unidad de compra", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Unidad de compra", $administrador->ID_IDIOMA) ?></td>
-                                                                                <td height="19" bgcolor="#2E8AF0"
-                                                                                    class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Numerador conversion", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Numerador conversion", $administrador->ID_IDIOMA) ?></td>
-                                                                                <td height="19" bgcolor="#2E8AF0"
-                                                                                    class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Denominador conversión", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Denominador conversion", $administrador->ID_IDIOMA) ?></td>
-                                                                                <td height="19" bgcolor="#2E8AF0"
-                                                                                    class="blanco"
-                                                                                    title="<?= $auxiliar->traduce("Observaciones", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Observaciones", $administrador->ID_IDIOMA) ?></td>
-                                                                            </tr>
+                                                                                    title="<?= $auxiliar->traduce("Cantidad", $administrador->ID_IDIOMA) ?>"><? echo $auxiliar->traduce("Cantidad", $administrador->ID_IDIOMA) ?></td>
+                                                                                </tr>
 
                                                                             <? if (count( (array)$arrLineasValidas) == 0): //NO HAY LINEAS VALIDAS PARA IMPORTAR DATOS ?>
 
@@ -642,6 +498,7 @@ $html->PagErrorCondicionado($ultimaFila, "==", "1", "ArchivoVacio");
                                                                                 ?>
 
                                                                                 <!-- PINTO LAS LINEAS -->
+                                                                            <??>
                                                                                 <? foreach ($arrLineasValidas as $indice => $arrValores): ?>
                                                                                     <?
                                                                                     //COLOR DE LA FILA
@@ -649,7 +506,10 @@ $html->PagErrorCondicionado($ultimaFila, "==", "1", "ArchivoVacio");
                                                                                     else $myColor = "#AACFF9";
 
                                                                                     //RECUPERO LOS VALORES IMPORTADOS
-
+                                                                                    $NumMaterial   = $arrValores['NumMaterial'];
+                                                                                    $Cantidad   = $arrValores['Cantidad'];
+                                                                                    //var_dump($NumMaterial);
+                                                                                    //var_dump($Cantidad);
                                                                                     $incidenciaSistemaTipo   = $arrValores['INCIDENCIA_SISTEMA_TIPO'];
                                                                                     $incidenciaSistemaTipoEng = $arrValores['INCIDENCIA_SISTEMA_TIPO_ENG'];
                                                                                     $baja  = $arrValores['BAJA'];
@@ -668,61 +528,9 @@ $html->PagErrorCondicionado($ultimaFila, "==", "1", "ArchivoVacio");
                                                                                                    name="NumMaterial_<? echo $NumMaterial ?>"
                                                                                                    value="<? echo htmlentities( (string)$NumMaterial) ?>">
                                                                                             <input type="hidden"
-                                                                                                   id="Desc_ESP_<? echo $NumMaterial ?>"
-                                                                                                   name="Desc_ESP_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo htmlentities( (string)$Desc_ESP) ?>">
-                                                                                            <input type="hidden"
-                                                                                                   id="Desc_ENG_<? echo $NumMaterial ?>"
-                                                                                                   name="Desc_ENG_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo $Desc_ENG ?>">
-                                                                                            <input type="hidden"
-                                                                                                   id="Estatus_Material_<? echo $NumMaterial ?>"
-                                                                                                   name="Estatus_Material_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo htmlentities( (string)$Estatus_Material) ?>">
-                                                                                            <input type="hidden"
-                                                                                                   id="Tipo_Material_<? echo $NumMaterial ?>"
-                                                                                                   name="Tipo_Material_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo htmlentities( (string)$Tipo_Material) ?>">
-                                                                                            <input type="hidden"
-                                                                                                   id="Baja_<? echo $NumMaterial ?>"
-                                                                                                   name="Baja_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo htmlentities( (string)$Baja) ?>">
-                                                                                            <input type="hidden"
-                                                                                                   id="Familia_Material_<? echo $NumMaterial ?>"
-                                                                                                   name="Familia_Material_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo htmlentities( (string)$Familia_Material) ?>">
-                                                                                            <input type="hidden"
-                                                                                                   id="Familia_Repro_<? echo $NumMaterial ?>"
-                                                                                                   name="Familia_Repro_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo htmlentities( (string)$Familia_Repro) ?>">
-                                                                                            <input type="hidden"
-                                                                                                   id="Marca_<? echo $NumMaterial ?>"
-                                                                                                   name="Marca_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo htmlentities( (string)$Marca) ?>">
-                                                                                            <input type="hidden"
-                                                                                                   id="Modelo_<? echo $NumMaterial ?>"
-                                                                                                   name="Modelo_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo htmlentities( (string)$Modelo) ?>">
-                                                                                            <input type="hidden"
-                                                                                                   id="Unidad_Medida_<? echo $NumMaterial ?>"
-                                                                                                   name="Unidad_Medida_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo htmlentities( (string)$Unidad_Medida) ?>">
-                                                                                            <input type="hidden"
-                                                                                                   id="Unidad_Compra_<? echo $NumMaterial ?>"
-                                                                                                   name="Unidad_Compra_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo htmlentities( (string)$Unidad_Compra) ?>">
-                                                                                            <input type="hidden"
-                                                                                                   id="Numerador_Conversion_<? echo $NumMaterial ?>"
-                                                                                                   name="Numerador_Conversion_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo htmlentities( (string)$Numerador_Conversion) ?>">
-                                                                                            <input type="hidden"
-                                                                                                   id="Denominador_Conversion_<? echo $NumMaterial ?>"
-                                                                                                   name="Denominador_Conversion_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo htmlentities( (string)$Denominador_Conversion) ?>">
-                                                                                            <input type="hidden"
-                                                                                                   id="Observaciones_<? echo $NumMaterial ?>"
-                                                                                                   name="Observaciones_<? echo $NumMaterial ?>"
-                                                                                                   value="<? echo htmlentities( (string)$Observaciones) ?>">
+                                                                                                   id="<Cantidad_><? echo $NumMaterial ?>"
+                                                                                                   name="Cantidad_<? echo $NumMaterial ?>"
+                                                                                                   value="<? echo htmlentities( (string)$Cantidad) ?>">
 
                                                                                             <? $html->Option("chLinea_" . $NumMaterial, "Check", "1", 1); ?>
                                                                                         </td>
@@ -735,85 +543,7 @@ $html->PagErrorCondicionado($ultimaFila, "==", "1", "ArchivoVacio");
                                                                                         <td align="left"
                                                                                             bgcolor="<?= $myColor ?>"
                                                                                             class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Desc_ESP ?>
-                                                                                            &nbsp;
-                                                                                        </td>
-                                                                                        <td align="left"
-                                                                                            bgcolor="<?= $myColor ?>"
-                                                                                            class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Desc_ESP ?>
-                                                                                            &nbsp;
-                                                                                        </td>
-                                                                                        <td align="center"
-                                                                                            bgcolor="<?= $myColor ?>"
-                                                                                            class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Estatus_Material ?>
-                                                                                            &nbsp;
-                                                                                        </td>
-                                                                                        <td align="center"
-                                                                                            bgcolor="<?= $myColor ?>"
-                                                                                            class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Tipo_Material ?>
-                                                                                            &nbsp;
-                                                                                        </td>
-                                                                                        <td align="center"
-                                                                                            bgcolor="<?= $myColor ?>"
-                                                                                            class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Baja ?>
-                                                                                            &nbsp;
-                                                                                        </td>
-                                                                                        <td align="center"
-                                                                                            bgcolor="<?= $myColor ?>"
-                                                                                            class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Familia_Material ?>
-                                                                                            &nbsp;
-                                                                                        </td>
-                                                                                        <td align="center"
-                                                                                            bgcolor="<?= $myColor ?>"
-                                                                                            class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Familia_Repro ?>
-                                                                                            &nbsp;
-                                                                                        </td>
-                                                                                        <td align="center"
-                                                                                            bgcolor="<?= $myColor ?>"
-                                                                                            class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Marca ?>
-                                                                                            &nbsp;
-                                                                                        </td>
-                                                                                        <td align="center"
-                                                                                            bgcolor="<?= $myColor ?>"
-                                                                                            class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Modelo ?>
-                                                                                            &nbsp;
-                                                                                        </td>
-                                                                                        <td align="center"
-                                                                                            bgcolor="<?= $myColor ?>"
-                                                                                            class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Unidad_Medida ?>
-                                                                                            &nbsp;
-                                                                                        </td>
-                                                                                        <td align="center"
-                                                                                            bgcolor="<?= $myColor ?>"
-                                                                                            class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Unidad_Compra ?>
-                                                                                            &nbsp;
-                                                                                        </td>
-                                                                                        <td align="center"
-                                                                                            bgcolor="<?= $myColor ?>"
-                                                                                            class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Numerador_Conversion ?>
-                                                                                            &nbsp;
-                                                                                        </td>
-                                                                                        <td align="center"
-                                                                                            bgcolor="<?= $myColor ?>"
-                                                                                            class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Denominador_Conversion ?>
-                                                                                            &nbsp;
-                                                                                        </td>
-                                                                                        <td align="center"
-                                                                                            bgcolor="<?= $myColor ?>"
-                                                                                            class="enlaceceldas">
-                                                                                            &nbsp;<? echo $Observaciones ?>
+                                                                                            &nbsp;<? echo $Cantidad ?>
                                                                                             &nbsp;
                                                                                         </td>
                                                                                     </tr>

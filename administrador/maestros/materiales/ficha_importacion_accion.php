@@ -84,13 +84,13 @@ foreach ($_POST as $clave => $valor):
         endif;
 
         //COMPRUEBO NO CREADO OTRO CON IGUAL CAMPO
-        $sql          = "SELECT REFERENCIA_SCS FROM MATERIALES WHERE REFERENCIA_SCS=" . trim( (string)$bd->escapeCondicional($NumMaterial_)) ;
+        $sql          = "SELECT REFERENCIA_SCS FROM MATERIAL WHERE REFERENCIA_SCS=" . trim( (string)$bd->escapeCondicional($NumMaterial_)) ;
         $resultNumero = $bd->ExecSQL($sql);
         $rowNumero    = $bd->SigReg($resultNumero);
         // COMPRUEBO ESTATUS EXISTE
         $sqlEstatus_Material          = "SELECT COLUMN_TYPE
                                             FROM INFORMATION_SCHEMA.COLUMNS
-                                            WHERE TABLE_NAME='MATERIALES'
+                                            WHERE TABLE_NAME='MATERIAL'
                                             AND COLUMN_NAME ='ESTATUS_MATERIAL'";
         $resultEstatus_Material = $bd->ExecSQL($sqlEstatus_Material);
         if($resultEstatus_Material->num_rows>0){
@@ -189,7 +189,7 @@ foreach ($_POST as $clave => $valor):
         // COMPRUEBO TIPO MATERIAL EXISTE
         $sqlTipo_Material          = "SELECT COLUMN_TYPE
                                             FROM INFORMATION_SCHEMA.COLUMNS
-                                            WHERE TABLE_NAME='MATERIALES'
+                                            WHERE TABLE_NAME='MATERIAL'
                                             AND COLUMN_NAME ='TIPO_MATERIAL'";
         $resultTipo_Material = $bd->ExecSQL($sqlTipo_Material);
         if($resultTipo_Material->num_rows>0){
@@ -209,11 +209,11 @@ foreach ($_POST as $clave => $valor):
             $rowRepetido = true;
 
             //SE OBTIENE EL CAMPO ANTIGUO
-            $rowTipo = $bd->VerReg("MATERIALES", "REFERENCIA_SCS", $NumMaterial_);
+            $rowTipo = $bd->VerReg("MATERIAL", "REFERENCIA_SCS", $NumMaterial_);
         endif;
         //FIN COMPROBACION VALORES DUPLICADOS
         if ($rowRepetido == false):
-                $sqlInsert = "INSERT INTO MATERIALES SET
+                $sqlInsert = "INSERT INTO MATERIAL SET
                 REFERENCIA_SAP='" . trim( (string)$bd->escapeCondicional($NumMaterial_)) . "'
                 ,REFERENCIA_SCS='" . trim( (string)$bd->escapeCondicional($NumMaterial_)) . "'
                 ,DESCRIPCION_ESP='" . trim( (string)$bd->escapeCondicional($Desc_ESP_)) . "'
@@ -222,15 +222,14 @@ foreach ($_POST as $clave => $valor):
                 ,TIPO_MATERIAL='" . trim( (string)$bd->escapeCondicional($Tipo_Material_)) . "'
                 ,MARCA='" . trim( (string)$bd->escapeCondicional($Marca_)) . "'
                 ,MODELO='" . trim( (string)$bd->escapeCondicional($Modelo_)) . "'
-                ,REFERENCIA_AUTOMATICA='0'
                 ,FECHA_CREACION='" . date('Y-m-d H:i:s'). "'
-                ,FK_USUARIO_CREACION='" . $administrador->ID_ADMINISTRADOR ."'
-                ,FK_USUARIO_ULTIMA_MODIFICACION='" . $administrador->ID_ADMINISTRADOR ."'
+                ,ID_USUARIO_CREACION='" . $administrador->ID_ADMINISTRADOR ."'
+                ,ID_USUARIO_ULTIMA_MODIFICACION='" . $administrador->ID_ADMINISTRADOR ."'
                 ,FECHA_ULTIMA_MODIFICACION='" . date('Y-m-d H:i:s'). "'
-                ,FK_FAMILIA_MATERIAL='" . trim( (string)$bd->escapeCondicional($Familia_Material_)) . "'
-                ,FK_FAMILIA_REPRO='" . trim( (string)$bd->escapeCondicional($Familia_Repro_)) . "'
-                ,FK_UNIDAD_MEDIDA='" . trim( (string)$bd->escapeCondicional($Unidad_Medida)) . "'
-                ,FK_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($Unidad_Compra)) . "'
+                ,ID_FAMILIA_MATERIAL='" . trim( (string)$bd->escapeCondicional($Familia_Material_)) . "'
+                ,ID_FAMILIA_REPRO='" . trim( (string)$bd->escapeCondicional($Familia_Repro_)) . "'
+                ,ID_UNIDAD_MEDIDA='" . trim( (string)$bd->escapeCondicional($Unidad_Medida)) . "'
+                ,ID_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($Unidad_Compra)) . "'
                 ,NUMERADOR='" . trim( (string)$bd->escapeCondicional($Numerador_Conversion_)) . "'
                 ,DENOMINADOR='" . trim( (string)$bd->escapeCondicional($Denominador_Conversion_)) . "'
                 ,BAJA='" . $Baja_ . "'";
@@ -243,7 +242,7 @@ foreach ($_POST as $clave => $valor):
            // $administrador->Insertar_Log_Movimientos($administrador->ID_ADMINISTRADOR, "Creación", "Maestro", $idTipo, "Incidencia Sistema Tipo", "INCIDENCIA_SISTEMA_TIPO");
         else:
             //ESTE CONDICIONAL SIRVE PARA DETERMINAR SI SE HA UTILIZADO LA IMPORTACIÓN 'COPIAR Y PEGAR'
-            $sqlUpdate = "UPDATE MATERIALES SET
+            $sqlUpdate = "UPDATE MATERIAL SET
                 REFERENCIA_SAP='" . trim( (string)$bd->escapeCondicional($NumMaterial_)) . "'
                 ,REFERENCIA_SCS='" . trim( (string)$bd->escapeCondicional($NumMaterial_)) . "'
                 ,DESCRIPCION_ESP='" . trim( (string)$bd->escapeCondicional($Desc_ESP_)) . "'
@@ -252,15 +251,14 @@ foreach ($_POST as $clave => $valor):
                 ,TIPO_MATERIAL='" . trim( (string)$bd->escapeCondicional($Tipo_Material_)) . "'
                 ,MARCA='" . trim( (string)$bd->escapeCondicional($Marca_)) . "'
                 ,MODELO='" . trim( (string)$bd->escapeCondicional($Modelo_)) . "'
-                ,REFERENCIA_AUTOMATICA='0'
                 ,FECHA_CREACION='" . date('Y-m-d H:i:s'). "'
-                ,FK_USUARIO_CREACION='" . $administrador->ID_ADMINISTRADOR ."'
-                ,FK_USUARIO_ULTIMA_MODIFICACION='" . $administrador->ID_ADMINISTRADOR ."'
+                ,ID_USUARIO_CREACION='" . $administrador->ID_ADMINISTRADOR ."'
+                ,ID_USUARIO_ULTIMA_MODIFICACION='" . $administrador->ID_ADMINISTRADOR ."'
                 ,FECHA_ULTIMA_MODIFICACION='" . date('Y-m-d H:i:s'). "'
-                ,FK_FAMILIA_MATERIAL='" . trim( (string)$bd->escapeCondicional($Familia_Material_)) . "'
-                ,FK_FAMILIA_REPRO='" . trim( (string)$bd->escapeCondicional($Familia_Repro_)) . "'
-                ,FK_UNIDAD_MEDIDA='" . trim( (string)$bd->escapeCondicional($Unidad_Medida)) . "'
-                ,FK_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($Unidad_Compra)) . "'
+                ,ID_FAMILIA_MATERIAL='" . trim( (string)$bd->escapeCondicional($Familia_Material_)) . "'
+                ,ID_FAMILIA_REPRO='" . trim( (string)$bd->escapeCondicional($Familia_Repro_)) . "'
+                ,ID_UNIDAD_MEDIDA='" . trim( (string)$bd->escapeCondicional($Unidad_Medida)) . "'
+                ,ID_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($Unidad_Compra)) . "'
                 ,NUMERADOR='" . trim( (string)$bd->escapeCondicional($Numerador_Conversion_)) . "'
                 ,DENOMINADOR='" . trim( (string)$bd->escapeCondicional($Denominador_Conversion_)) . "'
                 ,BAJA='" . $Baja_ . "' WHERE REFERENCIA_SCS=".$NumMaterial_;

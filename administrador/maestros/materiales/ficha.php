@@ -61,12 +61,14 @@ function pintar_tabla_hijos($vector,$myColor,$bd,$idioma){
         echo "<input id='idMaterialTabla' type='hidden' value='$material->MATERIAL_COMPONENTE'>";
         $nivel=0;
         $referencias=array();
-
         foreach ($vector as $material){
             echo "<tr>";
-            if(!in_array($material->ID_MATERIAL,$referencias)){
-                $referencias[]=$material->ID_MATERIAL;
+            if(!array_key_exists($material->MATERIAL_AGM,$referencias)){
                 $nivel++;
+                $referencias[$material->MATERIAL_AGM]=$nivel;
+
+            }else{
+                $nivel=$referencias[$material->MATERIAL_AGM];
             }
             switch ($nivel) {
                 case 1:
@@ -112,7 +114,7 @@ function pintar_tabla_hijos($vector,$myColor,$bd,$idioma){
             if($idioma=='ENG'){
                 echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas' colspan='2'>". $valAGM->DESCRIPCION_ENG."</td>";
             }
-            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><input type='text' id='txCantidad' value='$valAGM->CANTIDAD'></td>";
+            echo "<td height='18' align='left'bgcolor='$myColor' class='enlaceceldas'><input type='text' id='txCantidad_$valAGM->MATERIAL_COMPONENTE' value='$valAGM->CANTIDAD'></td>";
             echo "<td><button style='background-color: #1b6d85; color: whitesmoke' type='button' onclick='grabar_agm($valAGM->MATERIAL_COMPONENTE)'>Grabar</button></td>";
             echo "<td><button style='background-color: #ac2925; color: whitesmoke' type='button'onclick='borrar_agm($valAGM->MATERIAL_COMPONENTE)'>Borrar</button></td>";
             echo "</tr>";
@@ -222,7 +224,7 @@ if ($idMaterial != ""):
     $txUnidadCompra_ESP=$rowTipo->UNIDAD_ESP.' - '.$rowTipo->UNIDAD;
     $txUnidadCompra_ENG=$rowTipo->UNIDAD_ENG.' - '.$rowTipo->UNIDAD;
 
-    $idUnidadMedida=$rowTipo->FK_UNIDAD_MEDIDA;
+    $idUnidadMedida=$rowTipo->ID_UNIDAD_MEDIDA;
     $txUnidadMedida_ESP=$rowTipo->UNIDAD_ESP.' - '.$rowTipo->UNIDAD;
     $txUnidadMedida_ENG=$rowTipo->UNIDAD_ENG.' - '.$rowTipo->UNIDAD;
 
@@ -281,7 +283,7 @@ endif;
             if (document.FormSelect.idMaterial.value != '') {
                 document.FormSelect.accion.value = 'Modificar_AGM';
                 let form=document.getElementById('FormSelect');
-                let cantidad=document.getElementById('txCantidad').value;
+                let cantidad=document.getElementById('txCantidad_'+idElemento).value;
                 let inputId=document.createElement('input');
                 inputId.type='hidden';
                 inputId.name='id_componente_agm_grabar';
@@ -311,7 +313,7 @@ endif;
             if (document.FormSelect.idMaterial.value != '') {
                 document.FormSelect.accion.value = 'Borrar_AGM';
                 let form=document.getElementById('FormSelect');
-                let cantidad=document.getElementById('txCantidad').value;
+                let cantidad=document.getElementById('txCantidad_'+idElemento).value;
                 let inputId=document.createElement('input');
                 inputId.type='hidden';
                 inputId.name='id_componente_agm_grabar';
@@ -1113,14 +1115,14 @@ endif;
                                                 </a>&nbsp;
                                                 <ul>
                                                     <li>
-                                                        <a href="ficha_importacion_copiar_pegar_paso1.php"
+                                                        <a href="ficha_importacion_AGM_excel_paso1.php?idMaterial=<?= $txMaterial?>"
                                                            class="copyrightbotonesfancyboxImportacion">
                                                             <img
                                                                     src="<?= $pathRaiz ?>imagenes/edit_form.png"
                                                                     name="DeshacerAnulaciones"
                                                                     border="0"/>
                                                             &nbsp;&nbsp;&nbsp;
-                                                            <?= $auxiliar->traduce("Copiar y Pegar", $administrador->ID_IDIOMA) ?>
+                                                            <?= $auxiliar->traduce("Importacion Masiva", $administrador->ID_IDIOMA) . "(Excel)" ?>
                                                             &nbsp;&nbsp;&nbsp;
                                                         </a>
                                                     </li>

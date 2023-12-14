@@ -60,12 +60,13 @@ if($accion == "Modificar_AGM"):
     $sql       = "UPDATE MATERIAL_COMPONENTE_AGM  SET
                 CANTIDAD='" . trim( (string)$bd->escapeCondicional($cantidad_agm)) . "'
                 WHERE MATERIAL_AGM='" . $bd->escapeCondicional($txMaterial) . "' AND MATERIAL_COMPONENTE='" . $bd->escapeCondicional($id_componente_agm_grabar) . "'";
+
     $TipoError = "ErrorEjecutarSql";
     $bd->ExecSQL($sql);
 elseif($accion == "Add_AGM"):
     $sqlSelect      = "SELECT * FROM MATERIAL_COMPONENTE_AGM  WHERE
-                MATERIAL_AGM='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'
-                AND MATERIAL_COMPONENTE='" . trim( (string)$bd->escapeCondicional($txMaterialAGMadd)) . "'";
+                MATERIAL_AGM='" . trim( (string)$bd->escapeCondicional($idMaterial)) . "'
+                AND MATERIAL_COMPONENTE='" . trim( (string)$bd->escapeCondicional($material)) . "'";
 
     $TipoError = "ErrorEjecutarSql";
     $res=$bd->ExecSQL($sqlSelect);
@@ -75,14 +76,15 @@ elseif($accion == "Add_AGM"):
     }
     if($i>0){
         $sql       = "UPDATE MATERIAL_COMPONENTE_AGM  SET
-                CANTIDAD='" . trim( (string)$bd->escapeCondicional($cantidad)) . "'
-                WHERE MATERIAL_AGM='" . $bd->escapeCondicional($txMaterial) . "' AND MATERIAL_COMPONENTE='" . $bd->escapeCondicional($txMaterialAGMadd) . "'";
+                CANTIDAD='" . trim( (string)$bd->escapeCondicional($cantidad)) . "',
+                BAJA=false
+                WHERE MATERIAL_AGM='" . $bd->escapeCondicional($idMaterial) . "' AND MATERIAL_COMPONENTE='" . $bd->escapeCondicional($material) . "'";
         $TipoError = "ErrorEjecutarSql";
         $bd->ExecSQL($sql);
     }else{
         $sql       = "INSERT INTO MATERIAL_COMPONENTE_AGM  SET
-                MATERIAL_AGM='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'
-                ,MATERIAL_COMPONENTE='" . trim( (string)$bd->escapeCondicional($txMaterialAGMadd)) . "'
+                MATERIAL_AGM='" . trim( (string)$bd->escapeCondicional($idMaterial)) . "'
+                ,MATERIAL_COMPONENTE='" . trim( (string)$bd->escapeCondicional($material)) . "'
                 ,CANTIDAD='" . trim( (string)$bd->escapeCondicional($cantidad)) . "'
                 ,BAJA=FALSE";
 
@@ -129,9 +131,34 @@ elseif ($accion == "Modificar"):
     //$rowNumero    = $bd->SigReg($resultNumero);
     //if ($rowNumero->NUM_REGS > 0) $html->PagErrorCond("Error", "Error", "CampoExistente", "error.php");
 
+    var_dump($chBaja);
+    if($chBaja==1){
+        //COMPRUEBO SI TIENE MATERIALES DEPENDIENTES
+var_dump("HOLA");
+die;
+        $sqlSelect      = "SELECT * FROM MATERIAL_COMPONENTE_AGM  WHERE
+                MATERIAL_AGM='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'";
+
+        $TipoError = "ErrorEjecutarSql";
+        $res=$bd->ExecSQL($sqlSelect);
+        $i=0;
+        while($reg=$bd->SigReg($res)) {
+            $i++;
+        }
+        if($i>0){
+            //DOY DE BAJA TODAS SUS RELACIONES
+            $sql       = "UPDATE MATERIAL_COMPONENTE_AGM  SET
+                BAJA=TRUE
+                WHERE MATERIAL_AGM='" . $bd->escapeCondicional($txMaterial) . "'";
+
+            $TipoError = "ErrorEjecutarSql";
+            $bd->ExecSQL($sql);
+        }
+    }
+
     // MODIFICO EL REGISTRO DE LA BD
     $sql       = "UPDATE MATERIAL SET
-                ,REFERENCIA_SCS='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'
+                REFERENCIA_SCS='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'
                 ,DESCRIPCION_ESP='" . trim( (string)$bd->escapeCondicional($txDesc_esp)) . "'
                 ,DESCRIPCION_ENG='" . trim( (string)$bd->escapeCondicional($txDesc_eng)) . "'
                 ,ESTATUS_MATERIAL='" . trim( (string)$bd->escapeCondicional($selEstatus)) . "'
@@ -169,7 +196,7 @@ if($chBaja!=1){
 $chBaja=0;
 }   // INSERTO EL REGISTRO EN LA BD
     $sql       = "INSERT INTO MATERIAL SET
-                ,REFERENCIA_SCS='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'
+                REFERENCIA_SCS='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'
                 ,DESCRIPCION_ESP='" . trim( (string)$bd->escapeCondicional($txDesc_esp)) . "'
                 ,DESCRIPCION_ENG='" . trim( (string)$bd->escapeCondicional($txDesc_eng)) . "'
                 ,ESTATUS_MATERIAL='" . trim( (string)$bd->escapeCondicional($selEstatus)) . "'
