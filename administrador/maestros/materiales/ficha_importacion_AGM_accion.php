@@ -46,9 +46,7 @@ foreach ($_POST as $clave => $valor):
 
         $NumMaterial_=${"NumMaterial_" . $linea};
         $Cantidad=${"Cantidad_" . $linea};
-
-        var_dump($NumMaterial_);
-        var_dump($Cantidad);
+        var_dump($NumMaterial_,$Cantidad);
         /*
         //COMPROBACIONES DE DATOS OBLIGATORIOS RELLENADOS
         //INCIDENCIA SISTEMA TIPO
@@ -104,8 +102,9 @@ foreach ($_POST as $clave => $valor):
                 ,MATERIAL_COMPONENTE='" . trim( (string)$bd->escapeCondicional($NumMaterial_)) . "'
                 ,CANTIDAD='" . trim( (string)$bd->escapeCondicional($Cantidad)) . "'
                 ,BAJA='" . 0 . "'";
-            $bd->ExecSQL($sqlInsert);
 
+            $bd->ExecSQL($sqlInsert);
+var_dump($sqlInsert);
             //OBTENGO ID CREADO
             $idTipo = $bd->IdAsignado();
 
@@ -128,7 +127,6 @@ foreach ($_POST as $clave => $valor):
         endif; //FIN SI CAMPO YA EXISTE/NO EXISTE
     endif; //FIN CHECK MARCADO
 endforeach; //BUCLE CHECKS MARCADOS
-die;
 //SI SE HAN PRODUCIDO ERRORES, DESHAGO LA TRANSACCION Y MUESTRO LOS ERRORES
 if ($errorImportacionDatos == true):
     $bd->rollback_transaction();
@@ -136,6 +134,7 @@ if ($errorImportacionDatos == true):
 endif;
 
 //SI LAS OPERACIONES SE HAN REALIZADO DE FORMA CORRECTA, HAGO EL COMMIT DE LA TRANSACCION Y REDIRECCIONN
+
 if ($errorImportacionDatos == false):
     $bd->commit_transaction();
 endif;

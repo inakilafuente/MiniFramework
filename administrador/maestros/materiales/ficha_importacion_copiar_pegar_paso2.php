@@ -78,7 +78,6 @@ if (count( (array)$arrLineas) > 0):    //HAY LINEAS
                 $filasKo++;
                 $errorLinea = true;
             endif;
-
             //OBTENENGO VALORES
             $NumMaterial    = trim( (string)$arrValores[0]);
             $Desc_ESP  = trim( (string)$arrValores[1]);
@@ -210,7 +209,7 @@ if (count( (array)$arrLineas) > 0):    //HAY LINEAS
                     }
                 }
             }
-
+/*
             foreach ($arrLineasValidas as $linea):
 
                 if (strtoupper( (string)$linea['INCIDENCIA_SISTEMA_TIPO']) == strtoupper( (string)$incidenciaSistemaTipo) && strtoupper( (string)$linea['INCIDENCIA_SISTEMA_TIPO_ENG']) == strtoupper( (string)$incidenciaSistemaTipoEng) && $linea['BAJA'] == $baja):
@@ -220,7 +219,7 @@ if (count( (array)$arrLineas) > 0):    //HAY LINEAS
                     $campo_repetido = true;
                 endif;
             endforeach;
-
+*/
             if ($campo_repetido):
                 //INCREMENTO LA LINEA
                 $indice = $indice + 1;
@@ -236,6 +235,24 @@ if (count( (array)$arrLineas) > 0):    //HAY LINEAS
                 $arrLineasValidas[$numFila]['INCIDENCIA_SISTEMA_TIPO']    = $incidenciaSistemaTipo;
                 $arrLineasValidas[$numFila]['INCIDENCIA_SISTEMA_TIPO_ENG']  = $incidenciaSistemaTipoEng;
                 $arrLineasValidas[$numFila]['BAJA']   = $baja;
+
+                $arrLineasValidas[$numFila]['NumMaterial']=$NumMaterial;
+                $arrLineasValidas[$numFila]['Desc_ESP']=$Desc_ESP;
+                $arrLineasValidas[$numFila]['Desc_ENG']=$Desc_ENG;
+                $arrLineasValidas[$numFila]['Estatus_Material']=$Estatus_Material;
+                $arrLineasValidas[$numFila]['Tipo_Material']=$Tipo_Material;
+                $arrLineasValidas[$numFila]['Baja']=$Baja;
+                $arrLineasValidas[$numFila]['Familia_Material']=$Familia_Material;
+                $arrLineasValidas[$numFila]['Familia_Repro']=$Familia_Repro;
+                $arrLineasValidas[$numFila]['Marca']=$Marca;
+                $arrLineasValidas[$numFila]['Modelo']=$Modelo;
+                $arrLineasValidas[$numFila]['Unidad_Medida']=$Unidad_Medida;
+                $arrLineasValidas[$numFila]['Unidad_Compra']=$Unidad_Compra;
+                $arrLineasValidas[$numFila]['Numerador_Conversion']=$Numerador_Conversion;
+                $arrLineasValidas[$numFila]['Denominador_Conversion']=$Denominador_Conversion;
+                $arrLineasValidas[$numFila]['Observaciones']=$Observaciones;
+
+
 
                 //AÑADIMOS 1 AL NÚMERO DE LÍNEAS VÁLIDAS
                 $indiceOK++;
@@ -633,6 +650,22 @@ endif;    //FIN HAY LINEAS
                                                                                     else $myColor = "#AACFF9";
 
                                                                                     //RECUPERO LOS VALORES IMPORTADOS
+                                                                                    $NumMaterial=$arrValores['NumMaterial'];
+                                                                                    $Desc_ESP=$arrValores['Desc_ESP'];
+                                                                                    $Desc_ENG=$arrValores['Desc_ENG'];
+                                                                                    $Estatus_Material=$arrValores['Estatus_Material'];
+                                                                                    $Tipo_Material=$arrValores['Tipo_Material'];
+                                                                                    $Baja=$arrValores['Baja'];
+                                                                                    $Familia_Material=$arrValores['Familia_Material'];
+                                                                                    $Familia_Repro=$arrValores['Familia_Repro'];
+                                                                                    $Marca=$arrValores['Marca'];
+                                                                                    $Modelo=$arrValores['Modelo'];
+                                                                                    $Unidad_Medida=$arrValores['Unidad_Medida'];
+                                                                                    $Unidad_Compra=$arrValores['Unidad_Compra'];
+                                                                                    $Numerador_Conversion=$arrValores['Numerador_Conversion'];
+                                                                                    $Denominador_Conversion=$arrValores['Denominador_Conversion'];
+                                                                                    $Observaciones=$arrValores['Observaciones'];
+
                                                                                     ?>
 
                                                                                     <tr>

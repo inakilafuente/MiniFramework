@@ -127,6 +127,7 @@ if (count( (array)$arrLineas) > 0):    //HAY LINEAS
                 $errorLinea = true;
             endif;
 
+            /*
             foreach ($arrLineasValidas as $linea):
                 if (strtoupper( (string)$linea['INCIDENCIA_SISTEMA_TIPO']) == strtoupper( (string)$incidenciaSistemaTipo) && strtoupper( (string)$linea['INCIDENCIA_SISTEMA_TIPO_ENG']) == strtoupper( (string)$incidenciaSistemaTipoEng) && $linea['BAJA'] == $baja):
                     $strKo .= $auxiliar->traduce("Línea", $administrador->ID_IDIOMA) . " $indice. ";
@@ -135,7 +136,7 @@ if (count( (array)$arrLineas) > 0):    //HAY LINEAS
                     $campo_repetido = true;
                 endif;
             endforeach;
-
+*/
             if ($campo_repetido):
                 //INCREMENTO LA LINEA
                 $indice = $indice + 1;

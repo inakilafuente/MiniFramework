@@ -107,7 +107,7 @@ else:
         $Estatus_Material   = trim( (string)$sheet->getCell('D' . $numFila)->getValue());
 
         $Tipo_Material    = trim( (string)$sheet->getCell('E' . $numFila)->getValue());
-        $baja   = trim( (string)$sheet->getCell('F' . $numFila)->getValue());
+        $Baja   = trim( (string)$sheet->getCell('F' . $numFila)->getValue());
 
         $Familia_Material  = trim( (string)$sheet->getCell('G' . $numFila)->getValue());
         $Familia_Repro  = trim( (string)$sheet->getCell('H' . $numFila)->getValue());
@@ -254,6 +254,22 @@ else:
             $arrLineasValidas[$numFila]['INCIDENCIA_SISTEMA_TIPO']    = $incidenciaSistemaTipo;
             $arrLineasValidas[$numFila]['INCIDENCIA_SISTEMA_TIPO_ENG']  = $incidenciaSistemaTipoEng;
             $arrLineasValidas[$numFila]['BAJA']   = $baja;
+
+            $arrLineasValidas[$numFila]['NumMaterial']=$NumMaterial;
+            $arrLineasValidas[$numFila]['Desc_ESP']=$Desc_ESP;
+            $arrLineasValidas[$numFila]['Desc_ENG']=$Desc_ENG;
+            $arrLineasValidas[$numFila]['Estatus_Material']=$Estatus_Material;
+            $arrLineasValidas[$numFila]['Tipo_Material']=$Tipo_Material;
+            $arrLineasValidas[$numFila]['Baja']=$Baja;
+            $arrLineasValidas[$numFila]['Familia_Material']=$Familia_Material;
+            $arrLineasValidas[$numFila]['Familia_Repro']=$Familia_Repro;
+            $arrLineasValidas[$numFila]['Marca']=$Marca;
+            $arrLineasValidas[$numFila]['Modelo']=$Modelo;
+            $arrLineasValidas[$numFila]['Unidad_Medida']=$Unidad_Medida;
+            $arrLineasValidas[$numFila]['Unidad_Compra']=$Unidad_Compra;
+            $arrLineasValidas[$numFila]['Numerador_Conversion']=$Numerador_Conversion;
+            $arrLineasValidas[$numFila]['Denominador_Conversion']=$Denominador_Conversion;
+            $arrLineasValidas[$numFila]['Observaciones']=$Observaciones;
 
             //AÑADIMOS 1 AL NÚMERO DE LÍNEAS VÁLIDAS
             $indiceOK++;
@@ -653,6 +669,22 @@ $html->PagErrorCondicionado($ultimaFila, "==", "1", "ArchivoVacio");
                                                                                     $incidenciaSistemaTipo   = $arrValores['INCIDENCIA_SISTEMA_TIPO'];
                                                                                     $incidenciaSistemaTipoEng = $arrValores['INCIDENCIA_SISTEMA_TIPO_ENG'];
                                                                                     $baja  = $arrValores['BAJA'];
+
+                                                                                    $NumMaterial=$arrValores['NumMaterial'];
+                                                                                    $Desc_ESP=$arrValores['Desc_ESP'];
+                                                                                    $Desc_ENG=$arrValores['Desc_ENG'];
+                                                                                    $Estatus_Material=$arrValores['Estatus_Material'];
+                                                                                    $Tipo_Material=$arrValores['Tipo_Material'];
+                                                                                    $Baja=$arrValores['Baja'];
+                                                                                    $Familia_Material=$arrValores['Familia_Material'];
+                                                                                    $Familia_Repro=$arrValores['Familia_Repro'];
+                                                                                    $Marca=$arrValores['Marca'];
+                                                                                    $Modelo=$arrValores['Modelo'];
+                                                                                    $Unidad_Medida=$arrValores['Unidad_Medida'];
+                                                                                    $Unidad_Compra=$arrValores['Unidad_Compra'];
+                                                                                    $Numerador_Conversion=$arrValores['Numerador_Conversion'];
+                                                                                    $Denominador_Conversion=$arrValores['Denominador_Conversion'];
+                                                                                    $Observaciones=$arrValores['Observaciones'];
                                                                                     ?>
 
                                                                                     <tr>
