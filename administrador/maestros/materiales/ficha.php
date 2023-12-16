@@ -359,8 +359,10 @@ endif;
     function mostrarAGMfunction () {
         let cboxAGM = document.getElementsByName('isAGM');
         if (cboxAGM[0].checked) {
+            document.getElementById('btnAccionesLinea').style.display='block';
             document.getElementById('tablaAGM').style.display='table';
         }else{
+            document.getElementById('btnAccionesLinea').style.display='none';
             document.getElementById('tablaAGM').style.display='none';
         }
     }
@@ -497,6 +499,41 @@ endif;
         }
 
 
+    </script>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            jQuery("a.copyrightbotonesfancyboxImportacion").fancybox({
+                'type': 'iframe',
+                'width': '100%',
+                'height': '100%',
+                'hideOnOverlayClick': false
+            });
+            jQuery("a.fancyboxFamiliaMaterial").fancybox({
+                'type': 'iframe',
+                'width': '100%',
+                'height': '100%',
+                'hideOnOverlayClick': false
+            });
+            jQuery("a.fancyboxFamiliaRepro").fancybox({
+                'type': 'iframe',
+                'width': '100%',
+                'height': '100%',
+                'hideOnOverlayClick': false
+            });
+            jQuery("a.fancyboxUnidad").fancybox({
+                'type': 'iframe',
+                'width': '100%',
+                'height': '100%',
+                'hideOnOverlayClick': false
+            });
+            jQuery("a.fancyboxEtiqueta").fancybox({
+                'type': 'iframe',
+                'width': '100%',
+                'height': '100%',
+                'hideOnOverlayClick': false
+            });
+        });
     </script>
 
 </head>
@@ -823,13 +860,56 @@ endif;
                                                                     <td align="left" class="textoazul"
                                                                         width="35%"><?= $auxiliar->traduce("Familia Material", $administrador->ID_IDIOMA) . ":" ?>
                                                                     </td>
-                                                                    <td class="textoazul" width="60%">
+                                                                    <td width="24%" align="left" valign="middle">
                                                                         <?
-                                                                        $TamanoText = "420px";
-                                                                        $ClassText  = "copyright ObligatorioRellenar";
-                                                                        $MaxLength  = "80";
+                                                                        $TamanoText = "200px";
+                                                                        $ClassText  = "copyright";
+                                                                        $MaxLength  = "50";
+                                                                        $jscript    = "onchange=\"document.FormSelect.idFamiliaMaterial.value=''\"";
+                                                                        $idTextBox  = 'txFamiliaMaterial';
                                                                         $html->TextBox("txFamiliaMaterial", $txFamiliaMaterial);
+                                                                        unset($jscript);
+                                                                        unset($idTextBox);
+
                                                                         ?>
+                                                                        <input type="hidden"
+                                                                               name="idFamiliaMaterial"
+                                                                               id="idFamiliaMaterial"
+                                                                               value="<?= $txFamiliaMaterial ?>"/>
+                                                                        <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_familia_material.php?AlmacenarId=0"
+                                                                           class="fancyboxFamiliaMaterial"
+                                                                           id="categoriasUbicacion"> <img
+                                                                                    src="<?= $pathRaiz ?>imagenes/botones/listado.png"
+                                                                                    alt="<?= $auxiliar->traduce("Buscar Familia Material", $administrador->ID_IDIOMA) ?>"
+                                                                                    name="Listado"
+                                                                                    border="0" align="absbottom"
+                                                                                    id="Listado"/> </a>
+                                                                        <span id="desplegable_familia_material"
+                                                                              style="display: none;">
+                                                                                <img
+                                                                                        src="<?= $pathClases; ?>lib/ajax_script/img/esperando.gif"
+                                                                                        width="15"
+                                                                                        height="11"
+                                                                                        alt="<?= $auxiliar->traduce("Buscando...", $administrador->ID_IDIOMA) ?>"/>
+                                                                            </span>
+
+                                                                        <div class="entry" align="left"
+                                                                             id="actualizador_familia_material"></div>
+                                                                        <script type="text/javascript"
+                                                                                language="JavaScript">
+                                                                            new Ajax.Autocompleter('txFamiliaMaterial', 'actualizador_familia_material', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_familia_material.php?AlmacenarId=0',
+                                                                                {
+                                                                                    method: 'post',
+                                                                                    indicator: 'desplegable_familia_material',
+                                                                                    minChars: '1',
+                                                                                    afterUpdateElement: function (textbox, valor) {
+                                                                                        siguiente_control(jQuery('#' + this.paramName));
+                                                                                        jQuery(textbox).val(jQuery(valor).children('a').attr('alt'));//VALOR DEL PAR&Aacute;METRO ALT DEL ENLACE <a>
+                                                                                        jQuery('#idFamiliaMaterial').val(jQuery(valor).children('a').attr('rev'));
+                                                                                    }
+                                                                                }
+                                                                            );
+                                                                        </script>
                                                                     </td>
                                                                     <tr>
                                                                         <td align="center" width="5%"><img
@@ -838,13 +918,56 @@ endif;
                                                                         <td align="left" class="textoazul"
                                                                             width="35%"><?= $auxiliar->traduce("Familia Repro", $administrador->ID_IDIOMA) . ":" ?>
                                                                         </td>
-                                                                        <td class="textoazul" width="60%">
+                                                                        <td width="24%" align="left" valign="middle">
                                                                             <?
-                                                                            $TamanoText = "420px";
-                                                                            $ClassText  = "copyright ObligatorioRellenar";
-                                                                            $MaxLength  = "255";
+                                                                            $TamanoText = "200px";
+                                                                            $ClassText  = "copyright";
+                                                                            $MaxLength  = "50";
+                                                                            $jscript    = "onchange=\"document.FormSelect.idFamiliaRepro.value=''\"";
+                                                                            $idTextBox  = 'txFamiliaRepro';
                                                                             $html->TextBox("txFamiliaRepro", $txFamiliaRepro);
+                                                                            unset($jscript);
+                                                                            unset($idTextBox);
+
                                                                             ?>
+                                                                            <input type="hidden"
+                                                                                   name="idFamiliaRepro"
+                                                                                   id="idFamiliaRepro"
+                                                                                   value="<?= $idFamiliaRepro ?>"/>
+                                                                            <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_familia_repro.php?AlmacenarId=0"
+                                                                               class="fancyboxFamiliaRepro"
+                                                                               id="categoriasUbicacion"> <img
+                                                                                        src="<?= $pathRaiz ?>imagenes/botones/listado.png"
+                                                                                        alt="<?= $auxiliar->traduce("Buscar Familia Repro", $administrador->ID_IDIOMA) ?>"
+                                                                                        name="Listado"
+                                                                                        border="0" align="absbottom"
+                                                                                        id="Listado"/> </a>
+                                                                            <span id="desplegable_familia_repro"
+                                                                                  style="display: none;">
+                                                                                <img
+                                                                                        src="<?= $pathClases; ?>lib/ajax_script/img/esperando.gif"
+                                                                                        width="15"
+                                                                                        height="11"
+                                                                                        alt="<?= $auxiliar->traduce("Buscando...", $administrador->ID_IDIOMA) ?>"/>
+                                                                            </span>
+
+                                                                            <div class="entry" align="left"
+                                                                                 id="actualizador_familia_repro"></div>
+                                                                            <script type="text/javascript"
+                                                                                    language="JavaScript">
+                                                                                new Ajax.Autocompleter('txFamiliaRepro', 'actualizador_familia_repro', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_familia_repro.php?AlmacenarId=0',
+                                                                                    {
+                                                                                        method: 'post',
+                                                                                        indicator: 'desplegable_familia_repro',
+                                                                                        minChars: '1',
+                                                                                        afterUpdateElement: function (textbox, valor) {
+                                                                                            siguiente_control(jQuery('#' + this.paramName));
+                                                                                            jQuery(textbox).val(jQuery(valor).children('a').attr('alt'));//VALOR DEL PAR&Aacute;METRO ALT DEL ENLACE <a>
+                                                                                            jQuery('#idFamiliaRepro').val(jQuery(valor).children('a').attr('rev'));
+                                                                                        }
+                                                                                    }
+                                                                                );
+                                                                            </script>
                                                                         </td>
                                                                     </tr>
 
@@ -945,18 +1068,60 @@ endif;
                                                 <td align="left" class="textoazul"
                                                     width="35%"><?= $auxiliar->traduce("Unidad de medida", $administrador->ID_IDIOMA) . ":" ?>
                                                 </td>
-                                                <td class="textoazul" width="60%">
+                                                <td width="24%" align="left" valign="middle">
                                                     <?
-                                                    $TamanoText = "420px";
-                                                    $ClassText  = "copyright ObligatorioRellenar";
-                                                    $MaxLength  = "80";
+                                                    $TamanoText = "200px";
+                                                    $ClassText  = "copyright";
+                                                    $MaxLength  = "50";
+                                                    $jscript    = "onchange=\"document.FormSelect.idUnidadBase.value=''\"";
+                                                    $idTextBox  = 'txUnidadBase';
                                                     if($administrador->ID_IDIOMA=='ESP'){
-                                                        $html->TextBox("txUnidadMedida_ESP", $txUnidadMedida_ESP);
+                                                        $html->TextBox("txUnidadBase", $txUnidadMedida_ESP);
+                                                    }elseif($administrador->ID_IDIOMA=='ENG'){
+                                                        $html->TextBox("txUnidadBase", $txUnidadMedida_ENG);
                                                     }
-                                                    elseif($administrador->ID_IDIOMA=='ENG'){
-                                                        $html->TextBox("txUnidadMedida_ENG", $txUnidadMedida_ENG);
-                                                    }
+
+                                                    unset($jscript);
+                                                    unset($idTextBox);
                                                     ?>
+                                                    <input type="hidden"
+                                                           name="idUnidadBase"
+                                                           id="idUnidadBase"
+                                                           value="<?= $idUnidadBase ?>"/>
+                                                    <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_unidad.php?AlmacenarId=0&NombreCampo=UnidadBase"
+                                                       class="fancyboxUnidad"
+                                                       id="categoriasUbicacion"> <img
+                                                                src="<?= $pathRaiz ?>imagenes/botones/listado.png"
+                                                                alt="<?= $auxiliar->traduce("Buscar Unidad Base", $administrador->ID_IDIOMA) ?>"
+                                                                name="Listado"
+                                                                border="0" align="absbottom"
+                                                                id="Listado"/> </a>
+                                                    <span id="desplegable_unidad_base"
+                                                          style="display: none;">
+                                                                                <img
+                                                                                        src="<?= $pathClases; ?>lib/ajax_script/img/esperando.gif"
+                                                                                        width="15"
+                                                                                        height="11"
+                                                                                        alt="<?= $auxiliar->traduce("Buscando...", $administrador->ID_IDIOMA) ?>"/>
+                                                                            </span>
+
+                                                    <div class="entry" align="left"
+                                                         id="actualizador_unidad_base"></div>
+                                                    <script type="text/javascript"
+                                                            language="JavaScript">
+                                                        new Ajax.Autocompleter('txUnidadBase', 'actualizador_unidad_base', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_unidad.php?AlmacenarId=0&NombreCampo=UnidadBase',
+                                                            {
+                                                                method: 'post',
+                                                                indicator: 'desplegable_unidad_base',
+                                                                minChars: '1',
+                                                                afterUpdateElement: function (textbox, valor) {
+                                                                    siguiente_control(jQuery('#' + this.paramName));
+                                                                    jQuery(textbox).val(jQuery(valor).children('a').attr('alt'));//VALOR DEL PAR&Aacute;METRO ALT DEL ENLACE <a>
+                                                                    jQuery('#idUnidadBase').val(jQuery(valor).children('a').attr('rev'));
+                                                                }
+                                                            }
+                                                        );
+                                                    </script>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -966,18 +1131,59 @@ endif;
                                                 <td align="left" class="textoazul"
                                                     width="35%"><?= $auxiliar->traduce("Unidad de compra", $administrador->ID_IDIOMA) . ":" ?>
                                                 </td>
-                                                <td class="textoazul" width="60%">
+                                                <td width="24%" align="left" valign="middle">
                                                     <?
-                                                    $TamanoText = "420px";
-                                                    $ClassText  = "copyright ObligatorioRellenar";
-                                                    $MaxLength  = "255";
+                                                    $TamanoText = "200px";
+                                                    $ClassText  = "copyright";
+                                                    $MaxLength  = "50";
+                                                    $jscript    = "onchange=\"document.FormSelect.idUnidadCompra.value=''\"";
+                                                    $idTextBox  = 'txUnidadCompra';
                                                     if($administrador->ID_IDIOMA=='ESP'){
-                                                        $html->TextBox("txUnidadCompra_ESP", $txUnidadCompra_ESP);
+                                                        $html->TextBox("txUnidadCompra", $txUnidadCompra_ESP);
+                                                    }elseif($administrador->ID_IDIOMA=='ENG'){
+                                                        $html->TextBox("txUnidadCompra", $txUnidadCompra_ENG);
                                                     }
-                                                    elseif($administrador->ID_IDIOMA=='ENG'){
-                                                        $html->TextBox("txUnidadCompra_ENG", $txUnidadCompra_ENG);
-                                                    }
+                                                    unset($jscript);
+                                                    unset($idTextBox);
                                                     ?>
+                                                    <input type="hidden"
+                                                           name="idUnidadCompra"
+                                                           id="idUnidadCompra"
+                                                           value="<?= $idUnidadCompra ?>"/>
+                                                    <a href="<?= $pathRaiz ?>buscadores_maestros/busqueda_unidad.php?AlmacenarId=0&NombreCampo=UnidadCompra"
+                                                       class="fancyboxUnidad"
+                                                       id="categoriasUbicacion"> <img
+                                                                src="<?= $pathRaiz ?>imagenes/botones/listado.png"
+                                                                alt="<?= $auxiliar->traduce("Buscar Unidad Compra", $administrador->ID_IDIOMA) ?>"
+                                                                name="Listado"
+                                                                border="0" align="absbottom"
+                                                                id="Listado"/> </a>
+                                                    <span id="desplegable_unidad_compra"
+                                                          style="display: none;">
+                                                                                <img
+                                                                                        src="<?= $pathClases; ?>lib/ajax_script/img/esperando.gif"
+                                                                                        width="15"
+                                                                                        height="11"
+                                                                                        alt="<?= $auxiliar->traduce("Buscando...", $administrador->ID_IDIOMA) ?>"/>
+                                                                            </span>
+
+                                                    <div class="entry" align="left"
+                                                         id="actualizador_unidad_compra"></div>
+                                                    <script type="text/javascript"
+                                                            language="JavaScript">
+                                                        new Ajax.Autocompleter('txUnidadCompra', 'actualizador_unidad_compra', '<?=$pathRaiz?>buscadores_maestros/resp_ajax_unidad.php?AlmacenarId=0&NombreCampo=UnidadCompra',
+                                                            {
+                                                                method: 'post',
+                                                                indicator: 'desplegable_unidad_compra',
+                                                                minChars: '1',
+                                                                afterUpdateElement: function (textbox, valor) {
+                                                                    siguiente_control(jQuery('#' + this.paramName));
+                                                                    jQuery(textbox).val(jQuery(valor).children('a').attr('alt'));//VALOR DEL PAR&Aacute;METRO ALT DEL ENLACE <a>
+                                                                    jQuery('#idUnidadCompra').val(jQuery(valor).children('a').attr('rev'));
+                                                                }
+                                                            }
+                                                        );
+                                                    </script>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -1021,8 +1227,9 @@ endif;
                                                     <?
                                                     $TamanoText = "100px";
                                                     $ClassText  = "copyright";
-
+                                                    $readonly='readonly';
                                                     $html->TextBox("txUnidadManipulacion", $txUnidadManipulacion);
+                                                    unset($readonly);
                                                     ?>
                                                     <?= $auxiliar->traduce("Divisibilidad", $administrador->ID_IDIOMA) . ":" ?>
 

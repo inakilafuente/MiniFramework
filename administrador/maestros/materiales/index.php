@@ -475,6 +475,12 @@ if ($exportar_excel == "1"):
     include("exportar_excel.php");
     exit;
 endif;
+
+if ($exportar_excel_agm == "1"):
+    $sql = $navegar->copiaExport;
+    include("exportar_excel_agm.php");
+    exit;
+endif;
 /*
 $vector=array();
 obtenerHijosMateriales(2,$bd,$vector);
@@ -526,6 +532,12 @@ var_dump($vector);
             document.FormSelect.exportar_excel.value = '0';
             return false;
         }
+        function exportarExcelAGM() {
+            document.FormSelect.exportar_excel_agm.value = '1';
+            document.FormSelect.submit();
+            document.FormSelect.exportar_excel_agm.value = '0';
+            return false;
+        }
     </script>
 </head>
 <body bgcolor="#FFFFFF" background="<? echo $pathRaiz ?>imagenes/fondo_pantalla.gif" leftmargin="0" topmargin="0"
@@ -534,6 +546,7 @@ var_dump($vector);
     <INPUT TYPE="HIDDEN" NAME="nombre_fichero" VALUE="<?= $tituloPag ?>.xls">
     <INPUT TYPE="HIDDEN" NAME="nombre_hoja" VALUE="Hoja1">
     <INPUT TYPE="HIDDEN" NAME="exportar_excel" VALUE="0">
+    <INPUT TYPE="HIDDEN" NAME="exportar_excel_agm" VALUE="0">
     <? $navegar->GenerarCamposOcultosForm(); ?>
     <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
         <tr>
@@ -1260,8 +1273,52 @@ var_dump($vector);
                                                             <!--FIN VENTANA OPCIONES EMERGENTE IMPORTACION MASIVA -->
 
                                                             <a href="ficha.php" class="senaladoazul">&nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Crear", $administrador->ID_IDIOMA) ?>&nbsp;&nbsp;&nbsp;&nbsp;</a>&nbsp;
+
+                                                             <div class="menu_herramientas"
+                                                                  style="display: inline-block; ">
+                                                            <a href="#" id="btnExcelLinea"
+                                                               onmouseenter="ventana_opciones(this,event);return false;"
+                                                               class="senaladoazul"
+                                                               style="white-space: nowrap;">
+                                                                        &nbsp;&nbsp;
+                                                                        <img src="<?= $pathRaiz ?>imagenes/excel.png"
+                                                                             alt="Exportar Excel"
+                                                                             height="16px" width="16px"
+                                                                             style="vertical-align: middle;padding-bottom:2px;"/>
+                                                                        <? echo $auxiliar->traduce("Excel", $administrador->ID_IDIOMA) ?>
+                                                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                                                    </a>&nbsp;
+                                                                    <ul>
+                                                                        <li>
+                                                                            <a href="#"
+                                                                               class="copyrightbotonesfancyboxImportacion"
+                                                                               onClick="return exportarExcel();">
+                                                                                <img
+                                                                                        src="<?= $pathRaiz ?>imagenes/excel.png"
+                                                                                        border="0"/>
+                                                                                &nbsp;&nbsp;&nbsp;
+                                                                                <?= $auxiliar->traduce("Excel", $administrador->ID_IDIOMA)?>
+                                                                                &nbsp;&nbsp;&nbsp;
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a href="#"
+                                                                               class="copyrightbotonesfancyboxImportacion"
+                                                                               onClick="return exportarExcelAGM();">
+                                                                                <img
+                                                                                        src="<?= $pathRaiz ?>imagenes/excel.png"
+                                                                                        border="0"/>
+                                                                                &nbsp;&nbsp;&nbsp;
+                                                                                <?= $auxiliar->traduce("Excel AGM", $administrador->ID_IDIOMA)?>
+                                                                                &nbsp;&nbsp;&nbsp;
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                            </div>
+                                                            <!--
                                                             <a href="#" class="senaladoazul"
                                                                onClick="return exportarExcel();">&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Excel", $administrador->ID_IDIOMA) ?>&nbsp;&nbsp;&nbsp;</a>&nbsp;
+                                                            -->
                                                             <a href="#" class="senaladoamarillo"
                                                                onClick="document.FormSelect.Buscar.value='Si';document.FormSelect.submit();return false">&nbsp;&nbsp;&nbsp;&nbsp;<?= $auxiliar->traduce("Buscar", $administrador->ID_IDIOMA) ?>&nbsp;&nbsp;&nbsp;&nbsp;</a>&nbsp;
                                                         </span>

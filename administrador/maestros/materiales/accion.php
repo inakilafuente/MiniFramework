@@ -134,10 +134,8 @@ elseif ($accion == "Modificar"):
     var_dump($chBaja);
     if($chBaja==1){
         //COMPRUEBO SI TIENE MATERIALES DEPENDIENTES
-var_dump("HOLA");
-die;
-        $sqlSelect      = "SELECT * FROM MATERIAL_COMPONENTE_AGM  WHERE
-                MATERIAL_AGM='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'";
+        $sqlSelect      = "SELECT * FROM MATERIAL_COMPONENTE_AGM  
+         WHERE MATERIAL_AGM='" . $bd->escapeCondicional($txMaterial) . "' OR MATERIAL_COMPONENTE='" . $bd->escapeCondicional($txMaterial) . "'";
 
         $TipoError = "ErrorEjecutarSql";
         $res=$bd->ExecSQL($sqlSelect);
@@ -149,12 +147,47 @@ die;
             //DOY DE BAJA TODAS SUS RELACIONES
             $sql       = "UPDATE MATERIAL_COMPONENTE_AGM  SET
                 BAJA=TRUE
-                WHERE MATERIAL_AGM='" . $bd->escapeCondicional($txMaterial) . "'";
-
+                WHERE MATERIAL_AGM='" . $bd->escapeCondicional($txMaterial) . "' OR MATERIAL_COMPONENTE='" . $bd->escapeCondicional($txMaterial) . "'";
             $TipoError = "ErrorEjecutarSql";
             $bd->ExecSQL($sql);
         }
+    }else{
+        $chBaja=0;
     }
+
+    if($isAGM!=1){
+    //COMPRUEBO SI TIENE MATERIALES DEPENDIENTES
+            $sqlSelect      = "SELECT * FROM MATERIAL_COMPONENTE_AGM  WHERE
+                    MATERIAL_AGM='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'";
+
+            $TipoError = "ErrorEjecutarSql";
+            $res=$bd->ExecSQL($sqlSelect);
+            $i=0;
+            while($reg=$bd->SigReg($res)) {
+                $i++;
+            }
+            if($i>0){
+                //DOY DE BAJA TODAS SUS RELACIONES
+                $sql       = "UPDATE MATERIAL_COMPONENTE_AGM  SET
+                    BAJA=TRUE
+                    WHERE MATERIAL_AGM='" . $bd->escapeCondicional($txMaterial) . "'";
+
+                $TipoError = "ErrorEjecutarSql";
+                $bd->ExecSQL($sql);
+            }
+    }else{
+        $isAGM=1;
+    }
+
+    if(!is_numeric($idFamiliaMaterial)){
+        $sqlFamMaterial="SELECT ID_FAMILIA_MATERIAL FROM FAMILIA_MATERIAL WHERE NOMBRE_FAMILIA like '".$idFamiliaMaterial."' OR NOMBRE_FAMILIA_ENG like '".$idFamiliaMaterial."'";
+        var_dump($sqlFamMaterial);
+        $TipoError = "ErrorEjecutarSql";
+        $resultFamMaterial=$bd->ExecSQL($sqlFamMaterial);
+        $registro=$bd->SigReg($resultFamMaterial);
+        $idFamiliaMaterial=$registro->ID_FAMILIA_MATERIAL;
+    }
+
 
     // MODIFICO EL REGISTRO DE LA BD
     $sql       = "UPDATE MATERIAL SET
@@ -173,8 +206,9 @@ die;
                 ,NUMERADOR='" . trim( (string)$bd->escapeCondicional($txNumerador)) . "'
                 ,DENOMINADOR='" . trim( (string)$bd->escapeCondicional($txDenominador)) . "'
                 ,BAJA='" . $chBaja . "'
+                ,MATERIAL_AGM='" . $isAGM . "'
                 WHERE ID_MATERIAL='" . $bd->escapeCondicional($txMaterial) . "'";
-    $TipoError = "ErrorEjecutarSql";
+$TipoError = "ErrorEjecutarSql";
     $bd->ExecSQL($sql);
 
     // GUARDO LOS DATOS ACTUALIZADOS

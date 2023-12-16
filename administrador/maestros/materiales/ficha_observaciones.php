@@ -21,7 +21,7 @@ include $pathRaiz . "seguridad_admin.php";
     //MUESTRO TODAS LAS OBSERVACIONES DE LA OT
 
     $sql   = "SELECT OBSERVACIONES
-                            FROM MATERIALES WHERE REFERENCIA_SCS=".$referencia;
+                            FROM MATERIAL WHERE REFERENCIA_SCS=".$referencia;
     $result = $bd->ExecSQL($sql);
 
 $row = $bd->SigReg($result);
