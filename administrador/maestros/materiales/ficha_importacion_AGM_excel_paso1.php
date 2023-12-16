@@ -197,7 +197,7 @@ endif;
                                                                             <p><?= $auxiliar->traduce("Fichero de ejemplo", $administrador->ID_IDIOMA) ?>
                                                                                 :</p>
                                                                             <p>
-                                                                                <a href="<?= $pathRaiz . "descargarDocumento.php?key=ejemplos&ruta=documentos_app/Tipos_Ejemplo.xlsx"; ?>">
+                                                                                <a href="<?= $pathRaiz . "descargarDocumento.php?key=ejemplos&ruta=documentos_app/Linea_excel_AGM.xlsx"; ?>">
                                                                                     <?= $auxiliar->traduce("Ver Excel ejemplo", $administrador->ID_IDIOMA) ?></a>
                                                                             </p>
                                                                         </td>
@@ -205,7 +205,7 @@ endif;
                                                                             <p><?= $auxiliar->traduce("Plantilla", $administrador->ID_IDIOMA) ?>
                                                                                 :</p>
                                                                             <p>
-                                                                                <a href="<?= $pathRaiz . "descargarDocumento.php?key=ejemplos&ruta=documentos_app/Tipos_Plantilla.xlsx"; ?>">
+                                                                                <a href="<?= $pathRaiz . "descargarDocumento.php?key=ejemplos&ruta=documentos_app/Linea_excel_AGM_Plantilla.xlsx"; ?>">
                                                                                     <?= $auxiliar->traduce("Ver Plantilla", $administrador->ID_IDIOMA) ?></a>
                                                                             </p>
                                                                         </td>

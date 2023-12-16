@@ -1158,7 +1158,7 @@ var_dump($vector);
                                                             $Tamano = "205px";
                                                             $Estilo = "copyright";
                                                             if (!isset($selAGM)):
-                                                                $selAGM = "No";
+                                                                $selAGM = "Todos";
                                                             endif;
                                                             $html->SelectArr($NombreSelect, $Elementos_AGM, $selAGM, 'Todos');
                                                             ?>

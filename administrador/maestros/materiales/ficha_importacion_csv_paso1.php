@@ -237,7 +237,7 @@ endif;
                                                                                 :</p>
 
                                                                             <p>
-                                                                                <a href="<?= $pathRaiz . "descargarDocumento.php?key=ejemplos&ruta=documentos_app/Tipos_Ejemplo.xlsx"; ?>">
+                                                                                <a href="<?= $pathRaiz . "descargarDocumento.php?key=ejemplos&ruta=documentos_app/Linea_excel.csv"; ?>">
                                                                                     <?= $auxiliar->traduce("Ver Excel ejemplo", $administrador->ID_IDIOMA) ?></a>
                                                                             </p>
                                                                         </td>
@@ -246,7 +246,7 @@ endif;
                                                                             </p>
 
                                                                             <p>
-                                                                                <a href="<?= $pathRaiz . "descargarDocumento.php?key=ejemplos&ruta=documentos_app/Tipos_Plantilla.csv"; ?>">
+                                                                                <a href="<?= $pathRaiz . "descargarDocumento.php?key=ejemplos&ruta=documentos_app/Linea_excel_Plantilla.csv"; ?>">
                                                                                     <?= $auxiliar->traduce("Ver Plantilla", $administrador->ID_IDIOMA) ?></a>
                                                                             </p>
                                                                         </td>
