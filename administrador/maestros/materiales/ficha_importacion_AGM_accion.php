@@ -46,7 +46,7 @@ foreach ($_POST as $clave => $valor):
 
         $NumMaterial_=${"NumMaterial_" . $linea};
         $Cantidad=${"Cantidad_" . $linea};
-        var_dump($NumMaterial_,$Cantidad);
+        //var_dump($NumMaterial_,$Cantidad);
         /*
         //COMPROBACIONES DE DATOS OBLIGATORIOS RELLENADOS
         //INCIDENCIA SISTEMA TIPO
@@ -104,7 +104,7 @@ foreach ($_POST as $clave => $valor):
                 ,BAJA='" . 0 . "'";
 
             $bd->ExecSQL($sqlInsert);
-var_dump($sqlInsert);
+//var_dump($sqlInsert);
             //OBTENGO ID CREADO
             $idTipo = $bd->IdAsignado();
 

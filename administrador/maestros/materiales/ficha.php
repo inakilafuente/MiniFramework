@@ -248,12 +248,12 @@ if ($idMaterial != ""):
     $idUnidadCompra=$rowTipo->ID_UNIDAD_COMPRA;
 
     $txUnidadCompra_ESP=$rowUC->UNIDAD_ESP.' - '.$rowUC->UNIDAD;
-    var_dump($txUnidadCompra_ESP);
+    //var_dump($txUnidadCompra_ESP);
     $txUnidadCompra_ENG=$rowUC->UNIDAD_ENG.' - '.$rowUC->UNIDAD;
 
     $idUnidadMedida=$rowTipo->ID_UNIDAD_MEDIDA;
     $txUnidadMedida_ESP=$rowUM->UNIDAD_ESP.' - '.$rowUM->UNIDAD;
-    var_dump($txUnidadMedida_ESP);
+    //var_dump($txUnidadMedida_ESP);
     $txUnidadMedida_ENG=$rowUM->UNIDAD_ENG.' - '.$rowUM->UNIDAD;
 
     $idFamiliaRepro=$rowTipo->ID_FAMILIA_REPRO;
