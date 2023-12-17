@@ -131,7 +131,6 @@ elseif ($accion == "Modificar"):
     //$rowNumero    = $bd->SigReg($resultNumero);
     //if ($rowNumero->NUM_REGS > 0) $html->PagErrorCond("Error", "Error", "CampoExistente", "error.php");
 
-    var_dump($chBaja);
     if($chBaja==1){
         //COMPRUEBO SI TIENE MATERIALES DEPENDIENTES
         $sqlSelect      = "SELECT * FROM MATERIAL_COMPONENTE_AGM  
@@ -181,13 +180,11 @@ elseif ($accion == "Modificar"):
 
     if(!is_numeric($idFamiliaMaterial)){
         $sqlFamMaterial="SELECT ID_FAMILIA_MATERIAL FROM FAMILIA_MATERIAL WHERE NOMBRE_FAMILIA like '".$idFamiliaMaterial."' OR NOMBRE_FAMILIA_ENG like '".$idFamiliaMaterial."'";
-        var_dump($sqlFamMaterial);
         $TipoError = "ErrorEjecutarSql";
         $resultFamMaterial=$bd->ExecSQL($sqlFamMaterial);
         $registro=$bd->SigReg($resultFamMaterial);
         $idFamiliaMaterial=$registro->ID_FAMILIA_MATERIAL;
     }
-
 
     // MODIFICO EL REGISTRO DE LA BD
     $sql       = "UPDATE MATERIAL SET
@@ -205,10 +202,12 @@ elseif ($accion == "Modificar"):
                 ,ID_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($idUnidadCompra)) . "'
                 ,NUMERADOR='" . trim( (string)$bd->escapeCondicional($txNumerador)) . "'
                 ,DENOMINADOR='" . trim( (string)$bd->escapeCondicional($txDenominador)) . "'
+                 ,OBSERVACIONES='" . trim( (string)$bd->escapeCondicional($txObservaciones)) . "'
                 ,BAJA='" . $chBaja . "'
                 ,MATERIAL_AGM='" . $isAGM . "'
-                WHERE ID_MATERIAL='" . $bd->escapeCondicional($txMaterial) . "'";
-$TipoError = "ErrorEjecutarSql";
+                WHERE REFERENCIA_SCS='" . $bd->escapeCondicional($txMaterial) . "'";
+
+    $TipoError = "ErrorEjecutarSql";
     $bd->ExecSQL($sql);
 
     // GUARDO LOS DATOS ACTUALIZADOS
@@ -228,25 +227,39 @@ elseif ($accion == "Insertar"):
 
 if($chBaja!=1){
 $chBaja=0;
-}   // INSERTO EL REGISTRO EN LA BD
+}
+
+    if(!is_numeric($idFamiliaMaterial)){
+        $sqlFamMaterial="SELECT ID_FAMILIA_MATERIAL FROM FAMILIA_MATERIAL WHERE NOMBRE_FAMILIA like '".$idFamiliaMaterial."' OR NOMBRE_FAMILIA_ENG like '".$idFamiliaMaterial."'";
+        $TipoError = "ErrorEjecutarSql";
+        $resultFamMaterial=$bd->ExecSQL($sqlFamMaterial);
+        $registro=$bd->SigReg($resultFamMaterial);
+        $idFamiliaMaterial=$registro->ID_FAMILIA_MATERIAL;
+    }
+
+
+
+
+// INSERTO EL REGISTRO EN LA BD
     $sql       = "INSERT INTO MATERIAL SET
                 REFERENCIA_SCS='" . trim( (string)$bd->escapeCondicional($txMaterial)) . "'
                 ,DESCRIPCION_ESP='" . trim( (string)$bd->escapeCondicional($txDesc_esp)) . "'
                 ,DESCRIPCION_ENG='" . trim( (string)$bd->escapeCondicional($txDesc_eng)) . "'
                 ,ESTATUS_MATERIAL='" . trim( (string)$bd->escapeCondicional($selEstatus)) . "'
-                ,TIPO_MATERIAL='" . trim( (string)$bd->escapeCondicional($selTipo)) . "'
+                ,TIPO_MATERIAL='" . trim( (string)$bd->escapeCondicional($selTiposelect)) . "'
                 ,MARCA='" . trim( (string)$bd->escapeCondicional($txMarca)) . "'
                 ,MODELO='" . trim( (string)$bd->escapeCondicional($txModelo)) . "'
                 ,FECHA_CREACION='" . date('Y-m-d H:i:s'). "'
                 ,ID_USUARIO_CREACION='" . $administrador->ID_ADMINISTRADOR ."'
                 ,ID_USUARIO_ULTIMA_MODIFICACION='" . $administrador->ID_ADMINISTRADOR ."'
                 ,FECHA_ULTIMA_MODIFICACION='" . date('Y-m-d H:i:s'). "'
-                ,ID_FAMILIA_MATERIAL='" . trim( (string)$bd->escapeCondicional($txFamiliaMaterial)) . "'
-                ,ID_FAMILIA_REPRO='" . trim( (string)$bd->escapeCondicional($txFamiliaRepro)) . "'
-                ,ID_UNIDAD_MEDIDA='" . trim( (string)$bd->escapeCondicional($txUnidadMedida_ESP)) . "'
-                ,ID_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($txUnidadCompra_ESP)) . "'
+                ,ID_FAMILIA_MATERIAL='" . trim( (string)$bd->escapeCondicional($idFamiliaMaterial)) . "'
+                ,ID_FAMILIA_REPRO='" . trim( (string)$bd->escapeCondicional($idFamiliaRepro)) . "'
+                ,ID_UNIDAD_MEDIDA='" . trim( (string)$bd->escapeCondicional($idUnidadBase)) . "'
+                ,ID_UNIDAD_COMPRA='" . trim( (string)$bd->escapeCondicional($idUnidadCompra)) . "'
                 ,NUMERADOR='" . trim( (string)$bd->escapeCondicional($txNumerador)) . "'
                 ,DENOMINADOR='" . trim( (string)$bd->escapeCondicional($txDenominador)) . "'
+                ,OBSERVACIONES='" . trim( (string)$bd->escapeCondicional($txObservaciones)) . "'
                 ,BAJA='" . $chBaja . "'";
     $TipoError = "ErrorEjecutarSql";
     $bd->ExecSQL($sql);

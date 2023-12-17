@@ -201,11 +201,36 @@ if ($idMaterial != ""):
     }else{
         $isAGM=false;
     }
+
+    $sqlBasico = "SELECT * FROM MATERIAL 
+    WHERE REFERENCIA_SCS= '" . $bd->escapeCondicional($idMaterial) . "'";
+
+    $resBasico = $bd->ExecSQL($sqlBasico);
+    $rowBasico = $bd->SigReg($resBasico);
+
+
+    $sqlUC = "SELECT * FROM UNIDAD U
+    WHERE ID_UNIDAD= '" . $bd->escapeCondicional($rowBasico->ID_UNIDAD_COMPRA) . "'";
+
+    $resUC = $bd->ExecSQL($sqlUC);
+    $rowUC = $bd->SigReg($resUC);
+   // var_dump($rowUC);
+    //die;
+
+    $sqlUM = "SELECT * FROM UNIDAD U
+    WHERE ID_UNIDAD= '" . $bd->escapeCondicional($rowBasico->ID_UNIDAD_MEDIDA) . "'";
+
+    $resUM = $bd->ExecSQL($sqlUM);
+    $rowUM = $bd->SigReg($resUM);
+    //var_dump($rowUM);
+    //die;
+
+
     $txUnidadManipulacion=$rowTipo->UNIDAD ." ".$rowTipo->DESCRIPCION;
 
     $txMaterial=$rowTipo->REFERENCIA_SCS;
-    $txDesc_esp=$rowTipo->DESCRIPCION_ESP;
-    $txDesc_eng=$rowTipo->DESCRIPCION_ENG;
+    $txDesc_esp=$rowBasico->DESCRIPCION_ESP;
+    $txDesc_eng=$rowBasico->DESCRIPCION_ENG;
     $txFecha_creacion=$rowTipo->FECHA_CREACION;
     $idUsuario_creacion=$rowTipo->ID_ADMINISTRADOR;
     $txUsuario_creacion=$rowTipo->NOMBRE;
@@ -221,12 +246,15 @@ if ($idMaterial != ""):
     $txNumerador=$rowTipo->NUMERADOR;
 
     $idUnidadCompra=$rowTipo->ID_UNIDAD_COMPRA;
-    $txUnidadCompra_ESP=$rowTipo->UNIDAD_ESP.' - '.$rowTipo->UNIDAD;
-    $txUnidadCompra_ENG=$rowTipo->UNIDAD_ENG.' - '.$rowTipo->UNIDAD;
+
+    $txUnidadCompra_ESP=$rowUC->UNIDAD_ESP.' - '.$rowUC->UNIDAD;
+    var_dump($txUnidadCompra_ESP);
+    $txUnidadCompra_ENG=$rowUC->UNIDAD_ENG.' - '.$rowUC->UNIDAD;
 
     $idUnidadMedida=$rowTipo->ID_UNIDAD_MEDIDA;
-    $txUnidadMedida_ESP=$rowTipo->UNIDAD_ESP.' - '.$rowTipo->UNIDAD;
-    $txUnidadMedida_ENG=$rowTipo->UNIDAD_ENG.' - '.$rowTipo->UNIDAD;
+    $txUnidadMedida_ESP=$rowUM->UNIDAD_ESP.' - '.$rowUM->UNIDAD;
+    var_dump($txUnidadMedida_ESP);
+    $txUnidadMedida_ENG=$rowUM->UNIDAD_ENG.' - '.$rowUM->UNIDAD;
 
     $idFamiliaRepro=$rowTipo->ID_FAMILIA_REPRO;
     $txFamiliaRepro=$rowTipo->REFERENCIA . "- ".$rowTipo->FAMILIA_REPRO;
@@ -1080,7 +1108,6 @@ endif;
                                                     }elseif($administrador->ID_IDIOMA=='ENG'){
                                                         $html->TextBox("txUnidadBase", $txUnidadMedida_ENG);
                                                     }
-
                                                     unset($jscript);
                                                     unset($idTextBox);
                                                     ?>

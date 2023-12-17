@@ -301,6 +301,46 @@ if (trim( (string)$txModelo) != ""):
     $textoLista = $textoLista . "&" . $auxiliar->traduce("Modelo", $administrador->ID_IDIOMA) . ": " . $txModelo;
 endif;
 
+
+
+//TIPO MATERIAL
+if(!isset($selTiposelect)):
+    $selTiposelect = 'Todos';
+endif;
+if($selTiposelect == 'Pequeño Repuesto'):
+    $sqlTipos .= " AND (MATERIAL.TIPO_MATERIAL='Pequeño Repuesto')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("Tipo Material",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selTiposelect,$administrador->ID_IDIOMA);
+elseif($selTiposelect == 'Gran Componente'):
+    $sqlTipos .= " AND (MATERIAL.TIPO_MATERIAL='Gran Componente')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("Tipo Material",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selTiposelect,$administrador->ID_IDIOMA);
+elseif($selTiposelect == 'Consumibles'):
+    $sqlTipos .= " AND (MATERIAL.TIPO_MATERIAL='Consumibles')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("Tipo Material",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selTiposelect,$administrador->ID_IDIOMA);
+elseif($selTiposelect == 'Herramienta'):
+    $sqlTipos .= " AND (MATERIAL.TIPO_MATERIAL='Herramienta')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("Tipo Material",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selTiposelect,$administrador->ID_IDIOMA);
+elseif($selTiposelect == 'Materias Primas'):
+    $sqlTipos .= " AND (MATERIAL.TIPO_MATERIAL='Materias Primas')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("Tipo Material",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selTiposelect,$administrador->ID_IDIOMA);
+elseif($selTiposelect == 'Material de Oficina'):
+    $sqlTipos .= " AND (MATERIAL.TIPO_MATERIAL='Material de Oficina')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("Tipo Material",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selTiposelect,$administrador->ID_IDIOMA);
+elseif($selTiposelect == 'Otros Materiales'):
+    $sqlTipos .= " AND (MATERIAL.TIPO_MATERIAL='Otros Materiales')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("Tipo Material",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selTiposelect,$administrador->ID_IDIOMA);
+elseif($selTiposelect == 'Servicios Acciona'):
+    $sqlTipos .= " AND (MATERIAL.TIPO_MATERIAL='Servicios Acciona')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("Tipo Material",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selTiposelect,$administrador->ID_IDIOMA);
+elseif($selTiposelect == 'Pruebas logisticas'):
+    $sqlTipos .= " AND (MATERIAL.TIPO_MATERIAL='Pruebas logisticas')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("Tipo Material",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selTiposelect,$administrador->ID_IDIOMA);
+elseif($selTiposelect == 'Código I&C'):
+    $sqlTipos .= " AND (MATERIAL.TIPO_MATERIAL='Código I&C')";
+    $textoLista = $textoLista."&".$auxiliar->traduce("Tipo Material",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selTiposelect,$administrador->ID_IDIOMA);
+endif;
+
+
+
 //OBSERVACIONES
 if (trim( (string)$txObservaciones) != ""):
     $camposBD   = array('OBSERVACIONES');
@@ -377,6 +417,7 @@ elseif($selEstatus == 'No bloqueado'):
 endif;
 
 //RA
+/*
 if(!isset($selRA)):
     $selRA = 'Todos';
 endif;
@@ -387,7 +428,7 @@ elseif($selRA == 'No'):
     $sqlTipos .= " AND (MATERIAL.REFERENCIA_AUTOMATICA='0')";
     $textoLista = $textoLista."&".$auxiliar->traduce("RA",$administrador->ID_IDIOMA).": ".$auxiliar->traduce($selRA,$administrador->ID_IDIOMA);
 endif;
-
+*/
 
 //BAJA
 if(!isset($selBaja)):
